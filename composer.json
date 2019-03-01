@@ -1,0 +1,53 @@
+{
+  "name": "thomasjohnkane/simple-scheduled-notifications",
+  "description": "A simple scheduled notifications",
+  "license": "MIT",
+  "keywords": [
+    "simple",
+    "scheduled",
+    "notifications"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "Thomas Kane",
+      "email": "thomasjohnkane@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "illuminate/support": "~5.7.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.7.0",
+    "phpunit/phpunit": "^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Thomasjohnkane\\SimpleScheduledNotifications\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Thomasjohnkane\\SimpleScheduledNotifications\\Tests\\": "tests"
+    },
+    "files": [
+      "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
+    ]
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Thomasjohnkane\\SimpleScheduledNotifications\\ServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

@@ -1,0 +1,3 @@
+rules:
+    git.user_specific_ignored_file:
+        enabled: false

@@ -1,0 +1,31 @@
+language: php
+
+sudo: false
+
+notifications:
+    email:
+        on_success: never
+        on_failure: always
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+env:
+  - LARAVEL_VERSION=5.5.*
+
+before_install:
+  - travis_retry composer self-update --stable -n
+  - composer validate --no-check-all --strict
+  - composer require "laravel/framework:${LARAVEL_VERSION}" --no-update -n
+
+install:
+  - travis_retry composer install --no-suggest --prefer-dist -n -o
+  - travis_retry composer require --dev satooshi/php-coveralls
+
+script:
+  - composer run phpunit -- --coverage-clover ./tests/logs/clover.xml
+
+after_script:
+  - php vendor/bin/php-coveralls -v

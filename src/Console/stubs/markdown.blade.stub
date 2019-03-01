@@ -1,0 +1,12 @@
+@component('mail::message')
+# Introduction
+
+The body of your SCHEDULED email
+
+@component('mail::button', ['url' => ''])
+Scheduled Email
+@endcomponent
+
+Thanks,<br>
+Simple Scheduled Notifications Package
+@endcomponent

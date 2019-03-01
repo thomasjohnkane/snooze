@@ -1,0 +1,14 @@
+* text=auto
+/.github export-ignore
+/tests export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.travis.yml export-ignore
+/.styleci.yml export-ignore
+/.sensiolabs.yml export-ignore
+/.coveralls.yml export-ignore
+/phpunit.xml export-ignore
+/CHANGELOG-* export-ignore
+/CONTRIBUTING.md export-ignore
+/CODE_OF_CONDUCT.md export-ignore

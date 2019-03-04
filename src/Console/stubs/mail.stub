@@ -20,7 +20,7 @@ class DummyClassMailable extends Mailable
      *
      * @return void
      */
-    public function __construct(\App\User $user, $data = NULL)
+    public function __construct(\App\User $user = NULL, $data = NULL)
     {
         $this->user = $user;
         $this->data = $data;

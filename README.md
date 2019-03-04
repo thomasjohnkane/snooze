@@ -74,6 +74,12 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 - [Simple On-boarding Email Drip][5]
 - [Exposing Custom Data to the Notification/Email][4]
 
+**Using with existing Notifications and Mailable**
+
+We recommend using the Snotification generators (see below).
+
+However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here](8)
+
 **Cancelling Scheduled Notifications**
 
 ```
@@ -208,7 +214,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
 
 - [ ] Add logo and those badges
 
-- [ ] Submit V1 to Packagist
+- [x] Submit V1 to Packagist
 
 - [ ] Admin UI
     - [ ] Show tab for past notifications
@@ -253,3 +259,4 @@ This package is bootstrapped with the help of
 [5]: ./docs/examples/onboarding-email-drip.md  "On-boarding Drip Example"
 [6]: https://laravel.com/docs/5.7/scheduling#introduction "Configure Laravel Scheduler"
 [7]: https://laravel.com/docs/5.7/scheduling#introduction "Generators"
+[8]: ./docs/using-with-existing-notifications.md "Using With Existing Notifications"

@@ -1,3 +1,4 @@
+[< Back to main README.md](../README.md)
 ### Register Service Provider
 
 **Note! This and next step are optional if you use laravel>=5.5 with package

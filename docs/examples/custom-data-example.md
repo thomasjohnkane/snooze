@@ -11,7 +11,7 @@ The field must be a valid array or `NULL`. It is stored in a JSON field. Therefo
 ##### Pass the data while creating the notification:
 
 ```
-// use Thomasjohnkane\SimpleScheduledNotifications\Models\SsNotification;
+// use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
 // use Carbon/Carbon;
 
 // Create our custom data array

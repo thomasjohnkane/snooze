@@ -1,17 +1,6 @@
-# Laravel: Simple Scheduled Notifications
+# Laravel: Scheduled Notifications
 
 TODO: Insert logo and build badges
-<div style="display: none;">
-[![Build Status](https://travis-ci.org/thomasjohnkane/simple-scheduled-notifications.svg?branch=master)](https://travis-ci.org/thomasjohnkane/simple-scheduled-notifications)
-[![styleci](https://styleci.io/repos/CHANGEME/shield)](https://styleci.io/repos/CHANGEME)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thomasjohnkane/simple-scheduled-notifications/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thomasjohnkane/simple-scheduled-notifications/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/CHANGEME/mini.png)](https://insight.sensiolabs.com/projects/CHANGEME)
-[![Coverage Status](https://coveralls.io/repos/github/thomasjohnkane/simple-scheduled-notifications/badge.svg?branch=master)](https://coveralls.io/github/thomasjohnkane/simple-scheduled-notifications?branch=master)
-
-[![Packagist](https://img.shields.io/packagist/v/thomasjohnkane/simple-scheduled-notifications.svg)](https://packagist.org/packages/thomasjohnkane/simple-scheduled-notifications)
-[![Packagist](https://poser.pugx.org/thomasjohnkane/simple-scheduled-notifications/d/total.svg)](https://packagist.org/packages/thomasjohnkane/simple-scheduled-notifications)
-[![Packagist](https://img.shields.io/packagist/l/thomasjohnkane/simple-scheduled-notifications.svg)](https://packagist.org/packages/thomasjohnkane/simple-scheduled-notifications)
-</div>
 
 > A package to simplify automating future notifications and reminders in Laravel
 
@@ -34,7 +23,7 @@ The goal is convention over configuration. It's largly just providing an opinion
 
 Install via composer
 ```bash
-composer require thomasjohnkane/simple-scheduled-notifications
+composer require thomasjohnkane/scheduled-notifications
 ```
 ```bash
 php artisan migrate
@@ -44,7 +33,14 @@ php artisan migrate
 ### Publish Configuration File
 
 ```bash
-php artisan vendor:publish --provider="Thomasjohnkane\SimpleScheduledNotifications\ServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Thomasjohnkane\ScheduledNotifications\ServiceProvider" --tag="config"
+```
+
+### Run Tests
+
+```bash
+cd path/to/thomasjohnkane/scheduled-notifications
+vendor/bin/phpunit
 ```
 <small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 ## Usage
@@ -53,9 +49,9 @@ php artisan vendor:publish --provider="Thomasjohnkane\SimpleScheduledNotificatio
 
 Send "Example" notification to the authenticated user, in an hour...with some custom data
 ```
-// use Thomasjohnkane\SimpleScheduledNotifications\Models\SsNotification;
+// use Thomasjohnkane\ScheduledNotifications\Models\Snotification;
 
-SsNotification::create([
+Snotification::create([
     'user_id' => Auth::id(),
     'send_at' => Carbon::now()->addHour()->format('Y-m-d H:i:s'),
     'type'    => 'App\Notifications\ScheduledNotificationExample',
@@ -66,7 +62,7 @@ SsNotification::create([
 
 #### An important note about scheduling the `ssn:send` commmand
 
-Creating a Simple Scheduled Notification (SsNotification Model), as we did above, will add the notification to the database. It will be sent by running `ssn:send` command at, or after, the stored `send_at` time. 
+Creating a Simple Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `ssn:send` command at, or after, the stored `send_at` time. 
 
 The `ssn:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
@@ -129,9 +125,9 @@ $data = [
 It could be returned by a query like this:
 
 ```
-SsNotification::whereData('booking_id', 1)->get();
+Snotification::whereData('booking_id', 1)->get();
 ```
-<small>Note: this would be the same as doing this: `SsNotification::where('options->languages', ['en', 'de'])->get()`</small>
+<small>Note: this would be the same as doing this: `Snotification::where('options->languages', ['en', 'de'])->get()`</small>
 ###### Check nested data
 
 If a notification is saved with the following custom data:
@@ -146,11 +142,11 @@ $data = [
 
 It would be returned by this query:
 ```
-SsNotification::whereData('reservation->start', '2019-06-10')->get();
+Snotification::whereData('reservation->start', '2019-06-10')->get();
 ```
 ###### Using JSON contains
 ```
-SsNotification::whereDataContains('en')->get();
+Snotification::whereDataContains('en')->get();
 ```
 For information and examples on Laravel's `whereJsonContains` method <a href="https://laravel.com/docs/5.7/queries#json-where-clauses" target="__blank">look here</a>.
 
@@ -243,8 +239,8 @@ instead of using the issue tracker.
 
 ## Credits
 
-- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane/laravel-simple-scheduled-notifications)
-- [All contributors](https://github.com/thomasjohnkane/laravel-simple-scheduled-notifications/graphs/contributors)
+- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
+- [All contributors](https://github.com/thomasjohnkane/laravel-scheduled-notifications/graphs/contributors)
 
 This package is bootstrapped with the help of
 [melihovv/laravel-package-generator](https://github.com/melihovv/laravel-package-generator).

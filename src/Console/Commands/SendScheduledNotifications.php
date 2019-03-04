@@ -1,11 +1,11 @@
 <?php
 
-namespace Thomasjohnkane\SimpleScheduledNotifications\Console\Commands;
+namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\User;
-use Thomasjohnkane\SimpleScheduledNotifications\Models\SsNotification;
+use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
 use Carbon\Carbon;
 
 class SendScheduledNotifications extends Command

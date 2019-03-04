@@ -9,8 +9,6 @@ TODO: Insert logo and build badges
 - Want a simple on-boarding email drip?
 - How about <b>recurring</b> notifications to go out monthly, weekly, daily?
 
-This package uses the default <a href="#">Laravel Notifications</a>, <a href="#">Mailables</a>, <a href="#">View-based Emails</a>, <a href="#">Artisan Commands</a>, and <a href="#">Migrations</a> to accomplish these tasks.
-
 The goal is convention over configuration. It's largly just providing an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
 
 ### Common use cases

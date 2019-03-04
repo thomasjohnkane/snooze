@@ -1,9 +1,8 @@
 {
-  "name": "thomasjohnkane/laravel-simple-scheduled-notifications",
+  "name": "thomasjohnkane/laravel-scheduled-notifications",
   "description": "A simple scheduled notifications",
   "license": "MIT",
   "keywords": [
-    "simple",
     "scheduled",
     "notifications"
   ],
@@ -24,12 +23,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Thomasjohnkane\\SimpleScheduledNotifications\\": "src"
+      "Thomasjohnkane\\ScheduledNotifications\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Thomasjohnkane\\SimpleScheduledNotifications\\Tests\\": "tests"
+      "Thomasjohnkane\\ScheduledNotifications\\Tests\\": "tests"
     },
     "files": [
       "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
@@ -41,7 +40,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Thomasjohnkane\\SimpleScheduledNotifications\\ServiceProvider"
+        "Thomasjohnkane\\ScheduledNotifications\\ServiceProvider"
       ]
     }
   },

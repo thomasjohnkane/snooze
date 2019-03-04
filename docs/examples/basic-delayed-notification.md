@@ -11,7 +11,7 @@
 
 3. Schedule the notification for a notifiable User
 ```php
-// use Thomasjohnkane\SimpleScheduledNotifications\Models\SsNotification;;
+// use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;;
 
 $notification = SsNotification::create([
     'user_id' => Auth::id(),

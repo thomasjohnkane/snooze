@@ -1,12 +1,12 @@
 <?php
 
-namespace Thomasjohnkane\SimpleScheduledNotifications\Models;
+namespace Thomasjohnkane\ScheduledNotifications\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class SsNotification extends Model
+class Snotification extends Model
 {
     protected $table;
 
@@ -32,7 +32,7 @@ class SsNotification extends Model
     public function __construct(array $attributes = array()) {
         parent::__construct($attributes);
 
-        $this->table = config('simple-scheduled-notifications.ssn_table');
+        $this->table = config('scheduled-notifications.ssn_table');
     } 
 
     public function cancel() {

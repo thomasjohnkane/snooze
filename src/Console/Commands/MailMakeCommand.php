@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasjohnkane\SimpleScheduledNotifications\Console\Commands;
+namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;

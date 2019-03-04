@@ -1,14 +1,14 @@
 <?php
 
-namespace Thomasjohnkane\SimpleScheduledNotifications\Tests;
+namespace Thomasjohnkane\ScheduledNotifications\Tests;
 
-use Thomasjohnkane\SimpleScheduledNotifications\Facades\SimpleScheduledNotifications;
-use Thomasjohnkane\SimpleScheduledNotifications\ServiceProvider;
-use Thomasjohnkane\SimpleScheduledNotifications\Models\SsNotification;
+use Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotifications;
+use Thomasjohnkane\ScheduledNotifications\ServiceProvider;
+use Thomasjohnkane\ScheduledNotifications\Models\Snotification;
 use Orchestra\Testbench\TestCase;
 use Carbon\Carbon;
 
-class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
+class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app)
     {
@@ -18,7 +18,7 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     protected function getPackageAliases($app)
     {
         return [
-            'simple-scheduled-notifications' => SimpleScheduledNotifications::class,
+            'scheduled-notifications' => ScheduledNotifications::class,
         ];
     }
 
@@ -65,10 +65,10 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
             ],
         ];
       
-        $notification = SsNotification::create($notification_data);
+        $notification = Snotification::create($notification_data);
         $notification = $notification->fresh();
 
-        $this->assertInstanceOf(SsNotification::class, $notification);
+        $this->assertInstanceOf(Snotification::class, $notification);
         $this->assertEquals($notification_data['user_id'], $notification->user_id);
         $this->assertEquals($notification_data['type'], $notification->type);
         $this->assertEquals($notification_data['send_at'], $notification->send_at);
@@ -86,7 +86,7 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     {
         $now = Carbon::now();
 
-        $notifications = SsNotification::insert([
+        $notifications = Snotification::insert([
             [
                 'user_id'    => 1,
                 'send_at'    => $now->copy()->addHour()->format('Y-m-d H:i:s'),
@@ -133,7 +133,7 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     public function testCancelsNotification()
     {
 
-        $notification = SsNotification::whereCancelled(0)->first();
+        $notification = Snotification::whereCancelled(0)->first();
 
         $this->assertEquals($notification->cancelled(), FALSE);
 
@@ -150,7 +150,7 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     public function testReschedulesNotification()
     {
 
-        $notification = SsNotification::whereCancelled(0)->first();
+        $notification = Snotification::whereCancelled(0)->first();
         $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
         $notification->reschedule($original_send_at->copy()->addDays(3));
 
@@ -166,11 +166,11 @@ class SimpleScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     public function testDuplicatesNotification()
     {
 
-        $notification = SsNotification::whereCancelled(1)->first();
+        $notification = Snotification::whereCancelled(1)->first();
         $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
         $duplicate = $notification->scheduleAgainAt($original_send_at->copy()->addDays(7));
 
-        $this->assertInstanceOf(SsNotification::class, $duplicate);
+        $this->assertInstanceOf(Snotification::class, $duplicate);
         $this->assertNotEquals($duplicate->id, $notification->id);
         $this->assertNotEquals($duplicate->send_at, $notification->send_at);
         $this->assertEquals($duplicate->send_at, $original_send_at->copy()->addDays(7));

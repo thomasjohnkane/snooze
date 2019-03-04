@@ -5,12 +5,12 @@ auto discovery feature.**
 
 Add service provider to `config/app.php` in `providers` section
 ```php
-Thomasjohnkane\SimpleScheduledNotifications\ServiceProvider::class,
+Thomasjohnkane\ScheduledNotifications\ServiceProvider::class,
 ```
 
 ### Register Facade
 
 Register package facade in `config/app.php` in `aliases` section
 ```php
-Thomasjohnkane\SimpleScheduledNotifications\Facades\SimpleScheduledNotifications::class,
+Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotifications::class,
 ```

@@ -9,13 +9,11 @@ Laravel Scheduled Notifications
 
 [![Build Status](https://travis-ci.org/melihovv/laravel-package-generator.svg?branch=master)](https://travis-ci.org/melihovv/laravel-package-generator)
 [![styleci](https://styleci.io/repos/96041272/shield)](https://styleci.io/repos/96041272)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/91239e6a-d51b-495c-9dc7-90d2ac8805f3/mini.png)](https://insight.sensiolabs.com/projects/91239e6a-d51b-495c-9dc7-90d2ac8805f3)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/melihovv/laravel-package-generator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/melihovv/laravel-package-generator/?branch=master)
 
-[![Packagist](https://img.shields.io/packagist/v/melihovv/laravel-package-generator.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
-[![Packagist](https://poser.pugx.org/melihovv/laravel-package-generator/d/total.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
-[![Packagist](https://img.shields.io/packagist/l/melihovv/laravel-package-generator.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
-
+[![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/v/stable)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
+[![Total Downloads](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/downloads)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
+[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/v/unstable)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
+[![License](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/license)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
 
 ##### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
@@ -46,14 +44,15 @@ php artisan migrate
 ```bash
 php artisan vendor:publish --provider="Thomasjohnkane\ScheduledNotifications\ServiceProvider" --tag="config"
 ```
+<small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 
 ### Run Tests
 
 ```bash
-cd path/to/thomasjohnkane/scheduled-notifications
+cd path/to/vendor/thomasjohnkane/scheduled-notifications
+composer install
 vendor/bin/phpunit
 ```
-<small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 ## Usage
 
 **Basic Use**

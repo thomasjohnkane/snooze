@@ -1,6 +1,6 @@
 {
   "name": "thomasjohnkane/laravel-scheduled-notifications",
-  "description": "Scheduled future notifications and reminders in Laravel",
+  "description": "Schedule future notifications and reminders in Laravel",
   "license": "MIT",
   "keywords": [
     "scheduled",

@@ -55,7 +55,7 @@ vendor/bin/phpunit
 ```
 ## Usage
 
-**Basic Use**
+####Basic Use
 
 Send "Example" notification to the authenticated user, in an hour...with some custom data
 ```
@@ -72,13 +72,13 @@ Snotification::create([
 
 #### An important note about scheduling the `ssn:send` commmand
 
-Creating a Simple Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `ssn:send` command at, or after, the stored `send_at` time. 
+Creating a Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `ssn:send` command at, or after, the stored `send_at` time. 
 
 The `ssn:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
-The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here](6).
+The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
 
-**Detailed Examples**
+####Detailed Examples
 
 - [Delayed Notifcation (1 week)][3]
 - [Simple On-boarding Email Drip][5]
@@ -88,7 +88,7 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 
 We recommend using the Snotification generators (see below).
 
-However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here](8)
+However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here][8]
 
 **Cancelling Scheduled Notifications**
 

@@ -2,11 +2,11 @@
 
 namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
 
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\User;
 use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
-use Carbon\Carbon;
 
 class SendScheduledNotifications extends Command
 {
@@ -49,19 +49,19 @@ class SendScheduledNotifications extends Command
                                 ->where('send_at', '>=', Carbon::now()->subDay()->format('Y-m-d H:i:s'))
                                 ->get();
 
-        if (!$notifications->count()) {
+        if (! $notifications->count()) {
             $this->info('No Scheduled Notifications need to be sent.');
-            return FALSE;
+
+            return false;
         }
 
         $bar = $this->output->createProgressBar(count($notifications));
 
         $bar->start();
 
-        $this->info('Sending ' . $notifications->count() . ' scheduled notifications...');
+        $this->info('Sending '.$notifications->count().' scheduled notifications...');
 
         $notifications->each(function ($item, $key) use ($bar) {
-
             $bar->advance();
 
             try {
@@ -71,7 +71,7 @@ class SendScheduledNotifications extends Command
                 $this->error($e->getMessage());
                 Log::error([$e->getMessage()]);
             }
-            
+
             // Change status to sent
             $item->sent = 1;
             $item->save();
@@ -81,6 +81,6 @@ class SendScheduledNotifications extends Command
 
         $this->info('SendScheduledNotifications Command has finished sending.');
 
-        return TRUE;
+        return true;
     }
 }

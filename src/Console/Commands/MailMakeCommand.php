@@ -3,7 +3,6 @@
 namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
 
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -86,16 +85,16 @@ class MailMakeCommand extends GeneratorCommand
         $class = parent::buildClass($name);
 
         if ($this->option('markdown')) {
-            $class = str_replace('DummyView', 'scheduled-emails.' . $this->option('markdown'), $class);
+            $class = str_replace('DummyView', 'scheduled-emails.'.$this->option('markdown'), $class);
             $class = $this->replaceMailableClass($class);
         }
 
         return $class;
     }
 
-    protected function replaceMailableClass($class) 
+    protected function replaceMailableClass($class)
     {
-         return str_replace('DummyClassMailable', $this->argument('name') . 'Mailable', $class);
+        return str_replace('DummyClassMailable', $this->argument('name').'Mailable', $class);
     }
 
     /**

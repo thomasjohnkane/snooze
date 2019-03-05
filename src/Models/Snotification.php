@@ -2,71 +2,71 @@
 
 namespace Thomasjohnkane\ScheduledNotifications\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
 
 class Snotification extends Model
 {
     protected $table;
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
     ];
 
     protected $guarded = ['id'];
-    
+
     protected $fillable = [
-        'user_id', 
-        'type', 
-        'data', 
-        'send_at', 
-        'sent', 
-        'rescheduled', 
-        'cancelled', 
-        'created_at', 
-        'updated_at'
+        'user_id',
+        'type',
+        'data',
+        'send_at',
+        'sent',
+        'rescheduled',
+        'cancelled',
+        'created_at',
+        'updated_at',
     ];
 
     // Set table name from config
-    public function __construct(array $attributes = array()) {
+    public function __construct(array $attributes = [])
+    {
         parent::__construct($attributes);
 
         $this->table = config('scheduled-notifications.ssn_table');
-    } 
+    }
 
-    public function cancel() {
-        try { 
-
+    public function cancel()
+    {
+        try {
             if ($this->sent == 1) {
                 throw new \Exception('Cannot Cancel. Notification already sent.', 1);
             }
 
             $this->cancelled = 1;
             $this->save();
-
         } catch (\Exception $e) {
-
             Log::error($e->getMessage());
 
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
-    } 
+        return true;
+    }
 
-    public function cancelled() {
+    public function cancelled()
+    {
         return (bool) $this->cancelled;
     }
 
-    public function sent() {
+    public function sent()
+    {
         return (bool) $this->sent;
     }
 
-    public function reschedule($send_at, $force = FALSE) {
-
-        try { 
-
+    public function reschedule($send_at, $force = false)
+    {
+        try {
             if (Carbon::createFromFormat('Y-m-d H:i:s', $send_at) === false) {
                 throw new \Exception('Cannot Reschedule. Date format is incorrect.', 1);
             } elseif ($this->sent == 1) {
@@ -78,29 +78,26 @@ class Snotification extends Model
             $this->send_at = $send_at;
             $this->rescheduled = 1;
             $this->save();
-
         } catch (\InvalidArgumentException $e) {
-
             if ($force) {
                 return $this->scheduleAgainAt($send_at);
             }
 
             Log::error('Cannot Reschedule. Invalid date format provided.');
 
-            return FALSE;
+            return false;
         } catch (\Exception $e) {
-
             Log::error($e->getMessage());
 
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
-    } 
+        return true;
+    }
 
-    public function scheduleAgainAt($send_at) {
-        try { 
-
+    public function scheduleAgainAt($send_at)
+    {
+        try {
             if (Carbon::createFromFormat('Y-m-d H:i:s', $send_at) === false) {
                 throw new \Exception('Cannot Reschedule. Date format is incorrect.', 1);
             }
@@ -111,39 +108,38 @@ class Snotification extends Model
             $notification->rescheduled = 0;
             $notification->cancelled = 0;
             $notification->save();
-
         } catch (\InvalidArgumentException $e) {
-
             Log::error('Cannot Reschedule. Invalid date format provided.');
 
-            return FALSE;
+            return false;
         } catch (\Exception $e) {
-
             Log::error($e->getMessage());
 
-            return FALSE;
+            return false;
         }
 
         return $notification;
     }
 
-    public function scopeHasData($query, $key, $value) {
-        if (!$key) {
-            $key = "data";
+    public function scopeHasData($query, $key, $value)
+    {
+        if (! $key) {
+            $key = 'data';
         } else {
             $key = "data->{$key}";
         }
 
         return $query->where($key, $value);
-    } 
+    }
 
-    public function scopeWhereDataContains($query, $key, $value) {
-        if (!$key) {
-            $key = "data";
+    public function scopeWhereDataContains($query, $key, $value)
+    {
+        if (! $key) {
+            $key = 'data';
         } else {
             $key = "data->{$key}";
         }
 
         return $query->whereJsonContains($key, $value);
-    } 
+    }
 }

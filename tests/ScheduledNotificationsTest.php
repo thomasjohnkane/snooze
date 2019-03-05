@@ -2,11 +2,10 @@
 
 namespace Thomasjohnkane\ScheduledNotifications\Tests;
 
-use Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotifications;
+use Carbon\Carbon;
 use Thomasjohnkane\ScheduledNotifications\ServiceProvider;
 use Thomasjohnkane\ScheduledNotifications\Models\Snotification;
-use Orchestra\Testbench\TestCase;
-use Carbon\Carbon;
+use Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotifications;
 
 class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
 {
@@ -28,7 +27,7 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testItRunsMigrations()
@@ -51,7 +50,7 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testItCreatesNotification()
@@ -61,10 +60,10 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
             'type'    => 'App/Notifications/TestNotification.php',
             'send_at' => '2019-10-10 00:00:00',
             'data'    => [
-                'test_id' => 1
+                'test_id' => 1,
             ],
         ];
-      
+
         $notification = Snotification::create($notification_data);
         $notification = $notification->fresh();
 
@@ -79,7 +78,7 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testItInsertsManyNotifications()
@@ -99,14 +98,14 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
                 'send_at'    => $now->copy()->addDays(3)->format('Y-m-d H:i:s'),
                 'type'       => 'App\Notifications\WelcomeToCommunity',
                 'created_at' => $now,
-                'updated_at' => $now
+                'updated_at' => $now,
             ],
             [
                 'user_id'    => 3,
                 'send_at'    => $now->copy()->addWeek()->format('Y-m-d H:i:s'),
                 'type'       => 'App\Notifications\UpsellSubscription',
                 'created_at' => $now,
-                'updated_at' => $now
+                'updated_at' => $now,
 
             ],
         ]);
@@ -114,58 +113,53 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($notifications, 3);
 
         $this->assertDatabaseHas('scheduled_notifications', [
-            'user_id' => 1
+            'user_id' => 1,
         ]);
 
         $this->assertDatabaseHas('scheduled_notifications', [
-            'user_id' => 2
+            'user_id' => 2,
         ]);
 
         $this->assertDatabaseHas('scheduled_notifications', [
-            'user_id' => 3
+            'user_id' => 3,
         ]);
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testCancelsNotification()
     {
-
         $notification = Snotification::whereCancelled(0)->first();
 
-        $this->assertEquals($notification->cancelled(), FALSE);
+        $this->assertEquals($notification->cancelled(), false);
 
         $notification->cancel();
 
-        $this->assertEquals($notification->cancelled(), TRUE);
-
+        $this->assertEquals($notification->cancelled(), true);
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testReschedulesNotification()
     {
-
         $notification = Snotification::whereCancelled(0)->first();
         $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
         $notification->reschedule($original_send_at->copy()->addDays(3));
 
         $this->assertNotEquals($notification->send_at, $original_send_at);
         $this->assertEquals($notification->send_at, $original_send_at->copy()->addDays(3));
-
     }
 
     /**
-     * Check that the multiply method returns correct result
+     * Check that the multiply method returns correct result.
      * @return void
      */
     public function testDuplicatesNotification()
     {
-
         $notification = Snotification::whereCancelled(1)->first();
         $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
         $duplicate = $notification->scheduleAgainAt($original_send_at->copy()->addDays(7));
@@ -174,6 +168,5 @@ class ScheduledNotificationsTest extends \Orchestra\Testbench\TestCase
         $this->assertNotEquals($duplicate->id, $notification->id);
         $this->assertNotEquals($duplicate->send_at, $notification->send_at);
         $this->assertEquals($duplicate->send_at, $original_send_at->copy()->addDays(7));
-
     }
 }

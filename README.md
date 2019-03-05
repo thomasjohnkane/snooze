@@ -1,8 +1,21 @@
-# Laravel: Scheduled Notifications
+Laravel Scheduled Notifications
+=================================
 
-TODO: Insert logo and build badges
+> Schedule future notifications and reminders in Laravel
 
-> A package to simplify automating future notifications and reminders in Laravel
+<div style="padding: 20px 0px; width: 100%; text-align:center">
+    <img width="50%"  src="./snotifications-logo.png" />
+</div>
+
+[![Build Status](https://travis-ci.org/melihovv/laravel-package-generator.svg?branch=master)](https://travis-ci.org/melihovv/laravel-package-generator)
+[![styleci](https://styleci.io/repos/96041272/shield)](https://styleci.io/repos/96041272)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/91239e6a-d51b-495c-9dc7-90d2ac8805f3/mini.png)](https://insight.sensiolabs.com/projects/91239e6a-d51b-495c-9dc7-90d2ac8805f3)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/melihovv/laravel-package-generator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/melihovv/laravel-package-generator/?branch=master)
+
+[![Packagist](https://img.shields.io/packagist/v/melihovv/laravel-package-generator.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
+[![Packagist](https://poser.pugx.org/melihovv/laravel-package-generator/d/total.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
+[![Packagist](https://img.shields.io/packagist/l/melihovv/laravel-package-generator.svg)](https://packagist.org/packages/melihovv/laravel-package-generator)
+
 
 ##### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
@@ -184,7 +197,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
     - [x] Schedule the send command automatically
     - [x] Add send frequency to config file
 
-- [ ] Basic Usage
+- [x] Basic Usage
     - [x] Write example(s) for how to create notifications
     - [x] Link to articles for running the command and such...
     - [x] Add method for cancelling scheduled notifications
@@ -196,7 +209,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
         - [x] whereDataContains() using whereJsonContains with data assumed
         - [x] Add usage examples for the scopes
  
-- [ ] Generators
+- [x] Generators
     - [x] Create generator for scheduled notification stub
     - [x] Add generators for linked mailable and email view (options)
         - [x] -mail, -mm (mail + markdown)
@@ -210,7 +223,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
     - [ ] Generators
     - [ ] Send command
 
-- [ ] Add logo and those badges
+- [x] Add logo and those badges
 
 - [x] Submit V1 to Packagist
 

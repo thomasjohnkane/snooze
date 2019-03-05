@@ -13,7 +13,7 @@ php:
   - 7.2
 
 env:
-  - LARAVEL_VERSION=5.5.*
+  - LARAVEL_VERSION=5.8.*
 
 before_install:
   - travis_retry composer self-update --stable -n

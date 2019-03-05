@@ -17,7 +17,7 @@ before_install:
   - travis_retry composer self-update --stable -n
   - composer validate --no-check-all --strict
   - composer require "laravel/framework:${LARAVEL_VERSION}" --no-update -n
-  - mysql -e 'CREATE DATABASE ssn-test;'
+  - mysql -e 'CREATE DATABASE test;'
   - mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';"
   - mysql -e "GRANT ALL ON ssn-test.* TO 'root'@'localhost';"
 

@@ -13,6 +13,8 @@ php:
 env:
   - LARAVEL_VERSION=5.8.*
 
+dist: xenial
+
 before_install:
   - travis_retry composer self-update --stable -n
   - composer validate --no-check-all --strict

@@ -2,5 +2,6 @@
 
 namespace Thomasjohnkane\ScheduledNotifications;
 
-class ScheduledNotifications {
+class ScheduledNotifications
+{
 }

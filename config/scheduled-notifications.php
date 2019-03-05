@@ -2,5 +2,5 @@
 
 return [
     'ssn_table'      => 'scheduled_notifications',
-    'send_frequency' => 'everyMinute'
+    'send_frequency' => 'everyMinute',
 ];

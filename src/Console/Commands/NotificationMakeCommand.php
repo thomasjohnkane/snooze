@@ -2,10 +2,9 @@
 
 namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
 
-use Illuminate\Support\Facades\Log;
+use Artisan;
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
-use Artisan;
 
 class NotificationMakeCommand extends GeneratorCommand
 {
@@ -45,9 +44,9 @@ class NotificationMakeCommand extends GeneratorCommand
 
         // Conditionall make the other files
         if ($this->option('mm')) {
-            $this->makeMailable(TRUE);
-        }  elseif ($this->option('mail')) {
-            $this->makeMailable(FALSE);
+            $this->makeMailable(true);
+        } elseif ($this->option('mail')) {
+            $this->makeMailable(false);
         }
     }
 
@@ -62,7 +61,7 @@ class NotificationMakeCommand extends GeneratorCommand
         $class = parent::buildClass($name);
 
         if ($this->option('mm')) {
-            $class = str_replace('DummyClassMailable', $class . 'Mailable', $class);
+            $class = str_replace('DummyClassMailable', $class.'Mailable', $class);
         }
 
         return $class;
@@ -78,6 +77,7 @@ class NotificationMakeCommand extends GeneratorCommand
         if ($this->option('mm')) {
             return __DIR__.'/../stubs/markdown-notification.stub';
         }
+
         return __DIR__.'/../stubs/notification.stub';
     }
 
@@ -114,7 +114,7 @@ class NotificationMakeCommand extends GeneratorCommand
     {
         $exitCode = Artisan::call('make:mail:scheduled', [
             'name' => $this->argument('name'),
-            '--markdown' => ($markdown) ? $this->hyphenatedName() : FALSE
+            '--markdown' => ($markdown) ? $this->hyphenatedName() : false,
         ]);
     }
 

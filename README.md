@@ -4,7 +4,7 @@ Laravel Scheduled Notifications
 > Schedule future notifications and reminders in Laravel
 
 <p align="center">
-    <img width="50%"  src="./snotifications-logo.png" />
+    <img src="./snotifications-logo.png" />
 </p>
 
 [![Build Status](https://travis-ci.org/melihovv/laravel-package-generator.svg?branch=master)](https://travis-ci.org/melihovv/laravel-package-generator)

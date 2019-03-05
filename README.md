@@ -20,12 +20,12 @@ Laravel Scheduled Notifications
 - Want a simple on-boarding email drip?
 - How about <b>recurring</b> notifications to go out monthly, weekly, daily?
 
-The goal is convention over configuration. It's largly just providing an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
+The goal is convention over configuration. This package largly just provides an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
 
 ### Common use cases
-- Reminder system (e.g.: 1 week before appt, 1 day before, 1 hour before, etc)
-- Follow-up surveys (e.g.: 2 days after purchase)
-- On-boarding Email Drips (e.g.: Welcome email after sign-up, additional tips after 3 days, upsell offer after 7 days)
+- Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
+- Follow-up surveys (2 days after purchase)
+- On-boarding Email Drips (Welcome email after sign-up, additional tips after 3 days, upsell offer after 7 days)
 - Monthly Reports (or any other time-based notifications)
 
 ## Installation

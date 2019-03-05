@@ -1,4 +1,4 @@
-[< Back to main README.md](../../)
+[< Back to main README.md](/)
 # Simple On-boarding Email Drip
 
 Let's send the following emails to our new Users:

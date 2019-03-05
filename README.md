@@ -7,8 +7,8 @@ Laravel Scheduled Notifications
     <img src="./snotifications-logo.png" />
 </p>
 
-[![Build Status](https://travis-ci.org/melihovv/laravel-package-generator.svg?branch=master)](https://travis-ci.org/melihovv/laravel-package-generator)
-[![styleci](https://styleci.io/repos/96041272/shield)](https://styleci.io/repos/96041272)
+[![Build Status](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications.svg?branch=master)](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications)
+[![styleci](https://styleci.io/repos/173246329/shield)](https://styleci.io/repos/173246329)
 
 [![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/v/stable)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
 [![Total Downloads](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/downloads)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)

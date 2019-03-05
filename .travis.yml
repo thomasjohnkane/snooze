@@ -1,8 +1,5 @@
 language: php
 
-services:
-  - mysql
-
 sudo: false
 
 notifications:
@@ -20,13 +17,16 @@ before_install:
   - travis_retry composer self-update --stable -n
   - composer validate --no-check-all --strict
   - composer require "laravel/framework:${LARAVEL_VERSION}" --no-update -n
-  - mysql -u root -e 'CREATE DATABASE ssn-test;'
-  - mysql -u root -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';"
-  - mysql -u root -e "GRANT ALL ON ssn-test.* TO 'root'@'localhost';"
+  - mysql -e 'CREATE DATABASE ssn-test;'
+  - mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';"
+  - mysql -e "GRANT ALL ON ssn-test.* TO 'root'@'localhost';"
 
 install:
   - travis_retry composer install --no-suggest --prefer-dist -n -o
   - travis_retry composer require --dev satooshi/php-coveralls
+
+services:
+  - mysql
 
 script:
   - vendor/bin/phpunit

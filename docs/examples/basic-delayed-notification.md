@@ -1,4 +1,4 @@
-[< Back to main README.md](../../README.md)
+[< Back to main README.md](../../)
 # Basic Delayed Notification Example (1 week)
 
 1. Create the basic notification: `php artisan make:notification:scheduled OneWeekAfterNotice`

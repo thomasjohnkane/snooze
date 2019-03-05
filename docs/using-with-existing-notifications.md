@@ -1,4 +1,4 @@
-[< Back to main README.md](../README.md)
+[< Back to main README.md](../)
 # Using with Existing Notifications and Mailables
 
 You need to make your existing notifications accept an array as the first property in the `__contruct` method. 

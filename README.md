@@ -266,7 +266,7 @@ This package is bootstrapped with the help of
 [2]: https://carbon.nesbot.com/docs/ "Carbon"
 [3]: ./docs/examples/basic-delayed-notification.md "Delayed 1 Week Example"
 [4]: ./docs/examples/custom-data-example.md "Custom Data Example"
-[5]: ./docs/examples/onboarding-email-drip.md  "On-boarding Drip Example"
+[5]: ./docs/examples/on-boarding-email-drip.md  "On-boarding Drip Example"
 [6]: https://laravel.com/docs/5.7/scheduling#introduction "Configure Laravel Scheduler"
 [7]: https://laravel.com/docs/5.7/scheduling#introduction "Generators"
 [8]: ./docs/using-with-existing-notifications.md "Using With Existing Notifications"

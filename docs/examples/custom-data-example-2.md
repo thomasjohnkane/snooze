@@ -1,4 +1,4 @@
-[< Back to main README.md](../../README.md)
+[< Back to main README.md](../../)
 # Notification with Custom Data (2 Minutes)
 
 1. Create the basic notification: `php artisan make:notification:scheduled TwoMinuteTestNotice --mail`

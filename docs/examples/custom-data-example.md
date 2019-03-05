@@ -1,4 +1,4 @@
-[< Back to main README.md](../../README.md)
+[< Back to main README.md](../../)
 # Exposing Custom Data to Notification/Email
 
 The important thing here is the "data" field on the `SsNotification` model.

@@ -1,4 +1,4 @@
-[< Back to main README.md](../../)
+[< Back to main README.md](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
 # Basic Delayed Notification Example (1 week)
 
 1. Create the basic notification: `php artisan make:notification:scheduled OneWeekAfterNotice`

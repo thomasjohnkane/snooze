@@ -1,4 +1,4 @@
-[< Back to main README.md](../../)
+[< Back to main README.md](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
 # Exposing Custom Data to Notification/Email
 
 The important thing here is the "data" field on the `SsNotification` model.

@@ -1,4 +1,4 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
+[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
 # Basic Delayed Notification Example (1 week)
 
 1. Create the basic notification: `php artisan make:notification:scheduled OneWeekAfterNotice`
@@ -13,7 +13,7 @@
 ```php
 // use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;;
 
-$notification = SsNotification::create([
+$notification = SScheduledNotification::create([
     'user_id' => Auth::id(),
     'send_at' => $send_at,
     'type' => 'App\Notifications\OneWeekAfterNotice'

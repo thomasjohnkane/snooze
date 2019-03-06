@@ -1,12 +1,12 @@
 <?php
 
-namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
+namespace Thomasjohnkane\Snooze\Console\Commands;
 
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
+use Thomasjohnkane\Snooze\Models\ScheduledNotification;
 
 class SendScheduledNotifications extends Command
 {
@@ -15,7 +15,7 @@ class SendScheduledNotifications extends Command
      *
      * @var string
      */
-    protected $signature = 'ssn:send';
+    protected $signature = 'snooze:send';
 
     /**
      * The console command description.
@@ -43,7 +43,7 @@ class SendScheduledNotifications extends Command
     {
         $this->info('Starting "SendScheduledNotifications" Command...');
 
-        $notifications = SsNotification::whereSent(0)
+        $notifications = ScheduledNotification::whereSent(0)
                                 ->whereCancelled(0)
                                 ->where('send_at', '<=', Carbon::now()->format('Y-m-d H:i:s'))
                                 ->where('send_at', '>=', Carbon::now()->subDay()->format('Y-m-d H:i:s'))

@@ -1,10 +1,12 @@
 {
-  "name": "thomasjohnkane/laravel-scheduled-notifications",
+  "name": "thomasjohnkane/laravel-snooze",
   "description": "Schedule future notifications and reminders in Laravel",
   "license": "MIT",
   "keywords": [
     "scheduled",
-    "notifications"
+    "notifications",
+    "snooze",
+    "delayed notifications"
   ],
   "type": "library",
   "authors": [
@@ -23,12 +25,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Thomasjohnkane\\ScheduledNotifications\\": "src"
+      "Thomasjohnkane\\Snooze\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Thomasjohnkane\\ScheduledNotifications\\Tests\\": "tests"
+      "Thomasjohnkane\\Snooze\\Tests\\": "tests"
     },
     "files": [
       "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
@@ -40,7 +42,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Thomasjohnkane\\ScheduledNotifications\\ServiceProvider"
+        "Thomasjohnkane\\Snooze\\ServiceProvider"
       ]
     }
   },

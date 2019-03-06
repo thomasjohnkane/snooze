@@ -4,7 +4,7 @@ Laravel Scheduled Notifications
 > Schedule future notifications and reminders in Laravel
 
 <p align="center">
-    <img src="./snotifications-logo.png" />
+    <img src="./snotifications-logo-v3.png" />
 </p>
 
 [![Build Status](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications.svg?branch=master)](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications)
@@ -46,13 +46,6 @@ php artisan vendor:publish --provider="Thomasjohnkane\ScheduledNotifications\Ser
 ```
 <small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 
-### Run Tests
-
-```bash
-cd path/to/vendor/thomasjohnkane/scheduled-notifications
-composer install
-vendor/bin/phpunit
-```
 ## Usage
 
 #### Basic Use
@@ -207,6 +200,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
         - [x] hasData() and orHasData() using arrow notation with data pre-appended
         - [x] whereDataContains() using whereJsonContains with data assumed
         - [x] Add usage examples for the scopes
+    - [ ] Make sure the notification exists before scheduling?
  
 - [x] Generators
     - [x] Create generator for scheduled notification stub
@@ -239,6 +233,13 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
             - default to `\App\User`
         - initial each loop to send notification
 
+## Run Tests
+
+```bash
+cd path/to/vendor/thomasjohnkane/scheduled-notifications
+composer install
+vendor/bin/phpunit
+```
 
 ## Security
 

@@ -3,9 +3,9 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
+use Thomasjohnkane\Snooze\Facades\Snooze;
 use Thomasjohnkane\Snooze\ServiceProvider;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification;
-use Thomasjohnkane\Snooze\Facades\Snooze;
 
 class SnoozeTest extends \Orchestra\Testbench\TestCase
 {

@@ -13,7 +13,7 @@ class CreateScheduledNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('scheduled-notifications.ssn_table'), function (Blueprint $table) {
+        Schema::create(config('snooze.table'), function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
             $table->string('type');
@@ -33,6 +33,6 @@ class CreateScheduledNotificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('scheduled-notifications.ssn_table'));
+        Schema::dropIfExists(config('snooze.table'));
     }
 }

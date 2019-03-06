@@ -1,12 +1,12 @@
 <?php
 
-namespace Thomasjohnkane\ScheduledNotifications\Models;
+namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
-class Snotification extends Model
+class ScheduledNotification extends Model
 {
     protected $table;
 
@@ -33,7 +33,7 @@ class Snotification extends Model
     {
         parent::__construct($attributes);
 
-        $this->table = config('scheduled-notifications.ssn_table');
+        $this->table = config('snooze.snooze_table');
     }
 
     public function cancel()

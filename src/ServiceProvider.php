@@ -1,12 +1,12 @@
 <?php
 
-namespace Thomasjohnkane\ScheduledNotifications;
+namespace Thomasjohnkane\Snooze;
 
 use Illuminate\Console\Scheduling\Schedule;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    const CONFIG_PATH = __DIR__.'/../config/scheduled-notifications.php';
+    const CONFIG_PATH = __DIR__.'/../config/snooze.php';
 
     protected $commands = [
         Console\Commands\SendScheduledNotifications::class,
@@ -19,13 +19,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // Schedule base command to run every minute
 
         $this->app->booted(function () {
-            $frequency = config('scheduled-notifications.send_frequency');
+            $frequency = config('snooze.send_frequency');
             $schedule = $this->app->make(Schedule::class);
-            $schedule->command('ssn:send')->{$frequency}();
+            $schedule->command('snooze:send')->{$frequency}();
         });
 
         $this->publishes([
-            self::CONFIG_PATH => config_path('scheduled-notifications.php'),
+            self::CONFIG_PATH => config_path('snooze.php'),
         ], 'config');
 
         $this->loadMigrationsFrom(__DIR__.'/../migrations');
@@ -39,11 +39,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->mergeConfigFrom(
             self::CONFIG_PATH,
-            'scheduled-notifications'
+            'snooze'
         );
 
-        $this->app->bind('scheduled-notifications', function () {
-            return new ScheduledNotifications();
+        $this->app->bind('snooze', function () {
+            return new Snooze();
         });
     }
 }

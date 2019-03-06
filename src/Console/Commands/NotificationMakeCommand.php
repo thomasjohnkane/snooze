@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomasjohnkane\ScheduledNotifications\Console\Commands;
+namespace Thomasjohnkane\Snooze\Console\Commands;
 
 use Artisan;
 use Illuminate\Console\GeneratorCommand;

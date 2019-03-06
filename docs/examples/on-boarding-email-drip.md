@@ -1,4 +1,4 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
+[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
 # Simple On-boarding Email Drip
 
 Let's send the following emails to our new Users:
@@ -46,7 +46,7 @@ Let's send the following emails to our new Users:
     {
         $now = Carbon::now();
 
-        $notification = SsNotification::insert([
+        $notification = SScheduledNotification::insert([
             [
                 'user_id'    => $user->id,
                 'send_at'    => $now->copy()->addHour()->format('Y-m-d H:i:s'),

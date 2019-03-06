@@ -1,4 +1,4 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
+[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
 # Exposing Custom Data to Notification/Email
 
 The important thing here is the "data" field on the `SsNotification` model.
@@ -36,7 +36,7 @@ $data = [
 ]
 
 // Create Scheduled Notification, with our data
-$notification = SsNotification::create([
+$notification = SScheduledNotification::create([
     'user_id' => Auth::id(),
     'send_at' => Carbon::now()->addHour2(4)->format('Y-m-d H:i:s'),
     'type'    => 'App\Notifications\OrderReceipt',

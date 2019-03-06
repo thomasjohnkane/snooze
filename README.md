@@ -1,19 +1,19 @@
-Laravel Scheduled Notifications
+Laravel Snooze
 =================================
 
 > Schedule future notifications and reminders in Laravel
 
 <p align="center">
-    <img src="./snotifications-logo-v3.png" />
+    <img src="./snooze-logo-v1.png" />
 </p>
 
-[![Build Status](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications.svg?branch=master)](https://travis-ci.org/thomasjohnkane/laravel-scheduled-notifications)
+[![Build Status](https://travis-ci.org/thomasjohnkane/laravel-snooze.svg?branch=master)](https://travis-ci.org/thomasjohnkane/laravel-snooze)
 [![styleci](https://styleci.io/repos/173246329/shield)](https://styleci.io/repos/173246329)
 
-[![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/v/stable)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
-[![Total Downloads](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/downloads)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
-[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/v/unstable)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
-[![License](https://poser.pugx.org/thomasjohnkane/laravel-scheduled-notifications/license)](https://packagist.org/packages/thomasjohnkane/laravel-scheduled-notifications)
+[![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/laravel-snooze/v/stable)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
+[![Total Downloads](https://poser.pugx.org/thomasjohnkane/laravel-snooze/downloads)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
+[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/laravel-snooze/v/unstable)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
+[![License](https://poser.pugx.org/thomasjohnkane/laravel-snooze/license)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
 
 ##### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
@@ -32,7 +32,7 @@ The goal is convention over configuration. This package largly just provides an 
 
 Install via composer
 ```bash
-composer require thomasjohnkane/scheduled-notifications
+composer require thomasjohnkane/laravel-snooze
 ```
 ```bash
 php artisan migrate
@@ -42,7 +42,7 @@ php artisan migrate
 ### Publish Configuration File
 
 ```bash
-php artisan vendor:publish --provider="Thomasjohnkane\ScheduledNotifications\ServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="config"
 ```
 <small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 
@@ -52,9 +52,9 @@ php artisan vendor:publish --provider="Thomasjohnkane\ScheduledNotifications\Ser
 
 Send "Example" notification to the authenticated user, in an hour...with some custom data
 ```
-// use Thomasjohnkane\ScheduledNotifications\Models\Snotification;
+// use Thomasjohnkane\Snooze\Models\ScheduledNotification;
 
-Snotification::create([
+ScheduledNotification::create([
     'user_id' => Auth::id(),
     'send_at' => Carbon::now()->addHour()->format('Y-m-d H:i:s'),
     'type'    => 'App\Notifications\ScheduledNotificationExample',
@@ -134,9 +134,9 @@ $data = [
 It could be returned by a query like this:
 
 ```
-Snotification::whereData('booking_id', 1)->get();
+ScheduledNotification::whereData('booking_id', 1)->get();
 ```
-<small>Note: this would be the same as doing this: `Snotification::where('options->languages', ['en', 'de'])->get()`</small>
+<small>Note: this would be the same as doing this: `ScheduledNotification::where('options->languages', ['en', 'de'])->get()`</small>
 ###### Check nested data
 
 If a notification is saved with the following custom data:
@@ -151,11 +151,11 @@ $data = [
 
 It would be returned by this query:
 ```
-Snotification::whereData('reservation->start', '2019-06-10')->get();
+ScheduledNotification::whereData('reservation->start', '2019-06-10')->get();
 ```
 ###### Using JSON contains
 ```
-Snotification::whereDataContains('en')->get();
+ScheduledNotification::whereDataContains('en')->get();
 ```
 For information and examples on Laravel's `whereJsonContains` method <a href="https://laravel.com/docs/5.7/queries#json-where-clauses" target="__blank">look here</a>.
 
@@ -236,7 +236,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
 ## Run Tests
 
 ```bash
-cd path/to/vendor/thomasjohnkane/scheduled-notifications
+cd path/to/vendor/thomasjohnkane/laravel-snooze
 composer install
 vendor/bin/phpunit
 ```
@@ -248,7 +248,7 @@ instead of using the issue tracker.
 
 ## Contributing
 
-1. Fork it (<https://github.com/thomasjohnkane/laravel-scheduled-notifications/fork>)
+1. Fork it (<https://github.com/thomasjohnkane/laravel-snooze/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
@@ -256,8 +256,8 @@ instead of using the issue tracker.
 
 ## Credits
 
-- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane/laravel-scheduled-notifications)
-- [All contributors](https://github.com/thomasjohnkane/laravel-scheduled-notifications/graphs/contributors)
+- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane/laravel-snooze)
+- [All contributors](https://github.com/thomasjohnkane/laravel-snooze/graphs/contributors)
 
 This package is bootstrapped with the help of
 [melihovv/laravel-package-generator](https://github.com/melihovv/laravel-package-generator).

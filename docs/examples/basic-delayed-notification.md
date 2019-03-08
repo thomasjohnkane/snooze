@@ -20,11 +20,11 @@ $notification = SScheduledNotification::create([
 ]);
 ```
 
-4. Our notification will be saved in our `scheduled_notifications` table, and will be sent the first time our `ssn:send` command runs following the `$send_at` date.
+4. Our notification will be saved in our `scheduled_notifications` table, and will be sent the first time our `snooze:send` command runs following the `$send_at` date.
 
 <small>
     <b>Note:</b> 
-    if you really want to test this, set the "send_at" value to 1 minute from now (addMinute()) instead of 1 week. Then run `php artisan ssn:send` in your console in a minute.
+    if you really want to test this, set the "send_at" value to 1 minute from now (addMinute()) instead of 1 week. Then run `php artisan snooze:send` in your console in a minute.
 </small>
 
 [1]: https://carbon.nesbot.com/docs/ "Carbon"

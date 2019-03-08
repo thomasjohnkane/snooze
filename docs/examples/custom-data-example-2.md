@@ -44,4 +44,4 @@ $notification->data = $data;
 $notification->save();
 ```
 
-4. Run `php artisan ssn:send` in 2 minutes. Then check your email to see the variables. Woo!
+4. Run `php artisan snooze:send` in 2 minutes. Then check your email to see the variables. Woo!

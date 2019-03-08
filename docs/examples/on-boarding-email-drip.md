@@ -76,7 +76,7 @@ Let's send the following emails to our new Users:
 ## Send the notifications
 
 - Our notification will be saved in our `scheduled_notifications` table.
-- The `ssn:send` command is scheduled by the package to run every minute by default. It will send the notifications for us when they are ready.
+- The `snooze:send` command is scheduled by the package to run every minute by default. It will send the notifications for us when they are ready.
 - All you need to do is make sure your "schedule:run" command is running as well.
 - [Read here for more information on how to run your scheduler.](2)
 

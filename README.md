@@ -63,11 +63,11 @@ ScheduledNotification::create([
 ```
 <small>Note: "data" is an optional array. It is exposed to the notification/mailable if provided.</small>
 
-#### An important note about scheduling the `ssn:send` commmand
+#### An important note about scheduling the `snooze:send` commmand
 
-Creating a Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `ssn:send` command at, or after, the stored `send_at` time. 
+Creating a Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `snooze:send` command at, or after, the stored `send_at` time. 
 
-The `ssn:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
+The `snooze:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
 The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
 
@@ -185,7 +185,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
     - [x] Add Readme and project roadmap
     - [x] Create data model and add DB migration for table
     - [x] Add table name to package config
-    - [x] Write initital `ssn:send` command to run
+    - [x] Write initital `snooze:send` command to run
     - [x] Schedule the send command automatically
     - [x] Add send frequency to config file
 

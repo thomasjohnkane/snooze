@@ -65,7 +65,7 @@ ScheduledNotification::create([
 
 #### An important note about scheduling the `snooze:send` commmand
 
-Creating a Scheduled Notification (Snotification Model), as we did above, will add the notification to the database. It will be sent by running `snooze:send` command at, or after, the stored `send_at` time. 
+Creating a Scheduled Notification, as we did above, will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
 
 The `snooze:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 

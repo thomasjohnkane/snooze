@@ -11,9 +11,9 @@
 
 3. Schedule the notification for a notifiable User
 ```php
-// use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;;
+// use Thomasjohnkane\Snooze\Models\SScheduledNotification;;
 
-$notification = SScheduledNotification::create([
+$notification = ScheduledNotification::create([
     'user_id' => Auth::id(),
     'send_at' => $send_at,
     'type' => 'App\Notifications\OneWeekAfterNotice'

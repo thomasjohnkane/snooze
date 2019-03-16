@@ -79,7 +79,7 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 
 **Using with existing Notifications and Mailable**
 
-We recommend using the Snotification generators (see below).
+We recommend using the Snooze generators (see below).
 
 However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here][8]
 

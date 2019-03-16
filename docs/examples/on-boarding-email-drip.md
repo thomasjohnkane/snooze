@@ -39,7 +39,7 @@ Let's send the following emails to our new Users:
 2. Schedule the Notifications once a User is `created`
 
     ```
-    // use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
+    // use Thomasjohnkane\ScheduledNotifications\Models\ScheduledNotification;
     // use Carbon\Carbon;
 
     public function created(User $user)

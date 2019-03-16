@@ -29,14 +29,14 @@
 
 3. Schedule the notification for a notifiable User
 ```php
-// use Thomasjohnkane\SimpleScheduledNotification\SsNotification;
+// use Thomasjohnkane\Snooze\ScheduledNotification;
 
 $data = [
     'action_link' => 'this-variable-link',
     'message' => 'The link below should navigate to "/this-variable-link"' which should be a 404 error.",
 ];
 
-$notification = new SsNotification;
+$notification = new ScheduledNotification;
 $notification->user_id = \Auth::id();
 $notification->send_at = $send_at;
 $notification->type = 'App\Notifications\TwoMinuteTestNotice';

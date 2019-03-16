@@ -1,7 +1,7 @@
 [< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
 # Exposing Custom Data to Notification/Email
 
-The important thing here is the "data" field on the `SsNotification` model.
+The important thing here is the "data" field on the `ScheduledNotification` model.
 
 The field must be a valid array or `NULL`. It is stored in a JSON field. Therefore your database must be able to support JSON columns.
 ##### Create our example Notification
@@ -11,7 +11,7 @@ The field must be a valid array or `NULL`. It is stored in a JSON field. Therefo
 ##### Pass the data while creating the notification:
 
 ```
-// use Thomasjohnkane\ScheduledNotifications\Models\SsNotification;
+// use Thomasjohnkane\ScheduledNotifications\Models\ScheduledNotification;
 // use Carbon/Carbon;
 
 // Create our custom data array
@@ -36,7 +36,7 @@ $data = [
 ]
 
 // Create Scheduled Notification, with our data
-$notification = SScheduledNotification::create([
+$notification = ScheduledNotification::create([
     'user_id' => Auth::id(),
     'send_at' => Carbon::now()->addHour2(4)->format('Y-m-d H:i:s'),
     'type'    => 'App\Notifications\OrderReceipt',

@@ -3,18 +3,24 @@
 namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
 class ScheduledNotification extends Model
 {
     protected $table;
 
     protected $casts = [
+        'sent' => 'boolean',
+        'rescheduled' => 'boolean',
+        'cancelled' => 'boolean',
         'data' => 'array',
     ];
 
-    protected $guarded = ['id'];
+    protected $dates = [
+        'send_at',
+    ];
 
     protected $fillable = [
         'user_id',
@@ -28,7 +34,6 @@ class ScheduledNotification extends Model
         'updated_at',
     ];
 
-    // Set table name from config
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -36,87 +41,74 @@ class ScheduledNotification extends Model
         $this->table = config('snooze.snooze_table');
     }
 
+    /**
+     * @return void
+     * @throws NotificationAlreadySentException
+     */
     public function cancel()
     {
-        try {
-            if ($this->sent == 1) {
-                throw new \Exception('Cannot Cancel. Notification already sent.', 1);
-            }
-
-            $this->cancelled = 1;
-            $this->save();
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
-            return false;
+        if ($this->sent) {
+            throw new NotificationAlreadySentException('Cannot Cancel. Notification already sent.', 1);
         }
 
-        return true;
+        $this->cancelled = true;
+        $this->save();
     }
 
-    public function cancelled()
+    /**
+     * @param \DateTimeInterface|string $sendAt
+     * @param bool                      $force
+     *
+     * @return self
+     * @throws NotificationAlreadySentException
+     * @throws NotificationCancelledException
+     */
+    public function reschedule($sendAt, $force = false)
     {
-        return (bool) $this->cancelled;
-    }
-
-    public function sent()
-    {
-        return (bool) $this->sent;
-    }
-
-    public function reschedule($send_at, $force = false)
-    {
-        try {
-            if (Carbon::createFromFormat('Y-m-d H:i:s', $send_at) === false) {
-                throw new \Exception('Cannot Reschedule. Date format is incorrect.', 1);
-            } elseif ($this->sent == 1) {
-                throw new \Exception('Cannot Reschedule. Notification already sent.', 1);
-            } elseif ($this->cancelled == 1) {
-                throw new \Exception('Cannot Reschedule. Notification cancelled.', 1);
-            }
-
-            $this->send_at = $send_at;
-            $this->rescheduled = 1;
-            $this->save();
-        } catch (\InvalidArgumentException $e) {
-            if ($force) {
-                return $this->scheduleAgainAt($send_at);
-            }
-
-            Log::error('Cannot Reschedule. Invalid date format provided.');
-
-            return false;
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
-            return false;
+        if (! $sendAt instanceof \DateTimeInterface) {
+            $sendAt = Carbon::parse($sendAt);
         }
 
-        return true;
+        if (($this->sent || $this->cancelled) && $force) {
+            return $this->scheduleAgainAt($sendAt);
+        }
+
+        if ($this->sent) {
+            throw new NotificationAlreadySentException('Cannot Reschedule. Date format is incorrect.', 1);
+        }
+
+        if ($this->cancelled) {
+            throw new NotificationCancelledException('Cannot Reschedule. Notification cancelled.', 1);
+        }
+
+        $this->send_at = $sendAt;
+        $this->rescheduled = true;
+        $this->save();
+
+        return $this;
     }
 
-    public function scheduleAgainAt($send_at)
+    /**
+     * @param \DateTimeInterface|string $sendAt
+     *
+     * @return self
+     */
+    public function scheduleAgainAt($sendAt)
     {
-        try {
-            if (Carbon::createFromFormat('Y-m-d H:i:s', $send_at) === false) {
-                throw new \Exception('Cannot Reschedule. Date format is incorrect.', 1);
-            }
-
-            $notification = $this->replicate();
-            $notification->send_at = $send_at;
-            $notification->sent = 0;
-            $notification->rescheduled = 0;
-            $notification->cancelled = 0;
-            $notification->save();
-        } catch (\InvalidArgumentException $e) {
-            Log::error('Cannot Reschedule. Invalid date format provided.');
-
-            return false;
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
-            return false;
+        if (! $sendAt instanceof \DateTimeInterface) {
+            $sendAt = Carbon::parse($sendAt);
         }
+
+        $notification = $this->replicate();
+
+        $notification->fill([
+            'send_at' => $sendAt,
+            'sent' => false,
+            'rescheduled' => false,
+            'cancelled' => false,
+        ]);
+
+        $notification->save();
 
         return $notification;
     }

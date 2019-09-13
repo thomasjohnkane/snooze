@@ -4,11 +4,17 @@ namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Illuminate\Notifications\Notification;
+use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
+use Thomasjohnkane\Snooze\Exception\SendingFailedException;
 
 class ScheduledNotification extends Model
 {
+    use SerializesAndRestoresModelIdentifiers;
+
     protected $table;
 
     protected $casts = [
@@ -41,6 +47,41 @@ class ScheduledNotification extends Model
         $this->table = config('snooze.snooze_table');
     }
 
+    public static function schedule(
+        object $notifiable,
+        Notification $notification,
+        \DateTimeInterface $sendAt
+    ) {
+        if (!method_exists($notifiable, 'notify')) {
+            throw new SchedulingFailedException('%s is not notifiable', get_class($notifiable));
+        }
+
+        $data = [
+            'target' => serialize(self::getSerializedPropertyValue(clone $notifiable)),
+            'notification' => serialize(clone $notification),
+        ];
+
+        return self::create([
+            'type' => get_class($notification),
+            'data' => $data,
+            'send_at' => $sendAt,
+        ]);
+    }
+
+    public function send() {
+        if (!isset($this->data['target'], $this->data['notification'])) {
+            throw new SendingFailedException('Missing target or notification data');
+        }
+
+        $notifiable = $this->getRestoredPropertyValue(unserialize($this->data['target']));
+        $notification = unserialize($this->data['notification']);
+
+        $notifiable->notify($notification);
+
+        $this->sent = true;
+        $this->save();
+    }
+
     /**
      * @return void
      * @throws NotificationAlreadySentException
@@ -65,7 +106,7 @@ class ScheduledNotification extends Model
      */
     public function reschedule($sendAt, $force = false)
     {
-        if (! $sendAt instanceof \DateTimeInterface) {
+        if (!$sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -95,7 +136,7 @@ class ScheduledNotification extends Model
      */
     public function scheduleAgainAt($sendAt)
     {
-        if (! $sendAt instanceof \DateTimeInterface) {
+        if (!$sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -115,7 +156,7 @@ class ScheduledNotification extends Model
 
     public function scopeHasData($query, $key, $value)
     {
-        if (! $key) {
+        if (!$key) {
             $key = 'data';
         } else {
             $key = "data->{$key}";
@@ -126,7 +167,7 @@ class ScheduledNotification extends Model
 
     public function scopeWhereDataContains($query, $key, $value)
     {
-        if (! $key) {
+        if (!$key) {
             $key = 'data';
         } else {
             $key = "data->{$key}";

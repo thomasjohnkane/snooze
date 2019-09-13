@@ -3,25 +3,24 @@
 namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
+use Thomasjohnkane\Snooze\Serializer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
-use Thomasjohnkane\Snooze\Exception\SendingFailedException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
 class ScheduledNotification extends Model
 {
-    use SerializesAndRestoresModelIdentifiers;
-
+    /** @var string */
     protected $table;
+    /** @var Serializer */
+    protected $serializer;
 
     protected $casts = [
         'sent' => 'boolean',
         'rescheduled' => 'boolean',
         'cancelled' => 'boolean',
-        'data' => 'array',
     ];
 
     protected $dates = [
@@ -29,9 +28,9 @@ class ScheduledNotification extends Model
     ];
 
     protected $fillable = [
-        'user_id',
         'type',
-        'data',
+        'target',
+        'notification',
         'send_at',
         'sent',
         'rescheduled',
@@ -45,6 +44,7 @@ class ScheduledNotification extends Model
         parent::__construct($attributes);
 
         $this->table = config('snooze.snooze_table');
+        $this->serializer = Serializer::create();
     }
 
     public static function schedule(
@@ -52,29 +52,22 @@ class ScheduledNotification extends Model
         Notification $notification,
         \DateTimeInterface $sendAt
     ) {
-        if (!method_exists($notifiable, 'notify')) {
+        if (! method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException('%s is not notifiable', get_class($notifiable));
         }
 
-        $data = [
-            'target' => serialize(self::getSerializedPropertyValue(clone $notifiable)),
-            'notification' => serialize(clone $notification),
-        ];
-
         return self::create([
             'type' => get_class($notification),
-            'data' => $data,
+            'target' => Serializer::create()->serializeNotifiable($notifiable),
+            'notification' =>  Serializer::create()->serializeNotification($notification),
             'send_at' => $sendAt,
         ]);
     }
 
-    public function send() {
-        if (!isset($this->data['target'], $this->data['notification'])) {
-            throw new SendingFailedException('Missing target or notification data');
-        }
-
-        $notifiable = $this->getRestoredPropertyValue(unserialize($this->data['target']));
-        $notification = unserialize($this->data['notification']);
+    public function send()
+    {
+        $notifiable = $this->serializer->unserializeNotifiable($this->target);
+        $notification = $this->serializer->unserializeNotification($this->notification);
 
         $notifiable->notify($notification);
 
@@ -106,7 +99,7 @@ class ScheduledNotification extends Model
      */
     public function reschedule($sendAt, $force = false)
     {
-        if (!$sendAt instanceof \DateTimeInterface) {
+        if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -136,7 +129,7 @@ class ScheduledNotification extends Model
      */
     public function scheduleAgainAt($sendAt)
     {
-        if (!$sendAt instanceof \DateTimeInterface) {
+        if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -156,7 +149,7 @@ class ScheduledNotification extends Model
 
     public function scopeHasData($query, $key, $value)
     {
-        if (!$key) {
+        if (! $key) {
             $key = 'data';
         } else {
             $key = "data->{$key}";
@@ -167,7 +160,7 @@ class ScheduledNotification extends Model
 
     public function scopeWhereDataContains($query, $key, $value)
     {
-        if (!$key) {
+        if (! $key) {
             $key = 'data';
         } else {
             $key = "data->{$key}";

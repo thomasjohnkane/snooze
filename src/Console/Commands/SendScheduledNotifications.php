@@ -2,7 +2,6 @@
 
 namespace Thomasjohnkane\Snooze\Console\Commands;
 
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

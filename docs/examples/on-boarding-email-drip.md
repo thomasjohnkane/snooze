@@ -46,7 +46,7 @@ Let's send the following emails to our new Users:
     {
         $now = Carbon::now();
 
-        $notification = SScheduledNotification::insert([
+        $notification = ScheduledNotification::insert([
             [
                 'user_id'    => $user->id,
                 'send_at'    => $now->copy()->addHour()->format('Y-m-d H:i:s'),

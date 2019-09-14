@@ -243,8 +243,7 @@ vendor/bin/phpunit
 
 ## Security
 
-If you discover any security related issues, please email 
-instead of using the issue tracker.
+If you discover any security related issues, please email instead of using the issue tracker.
 
 ## Contributing
 
@@ -256,12 +255,11 @@ instead of using the issue tracker.
 
 ## Credits
 
-- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane/laravel-snooze)
+- [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane)
 - [All contributors](https://github.com/thomasjohnkane/laravel-snooze/graphs/contributors)
 
 This package is bootstrapped with the help of
 [melihovv/laravel-package-generator](https://github.com/melihovv/laravel-package-generator).
-
 
 [1]: ./docs/register-provider-and-facade.md "Register Service Provider && Facade"
 [2]: https://carbon.nesbot.com/docs/ "Carbon"

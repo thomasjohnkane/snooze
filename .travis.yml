@@ -12,8 +12,13 @@ php:
 
 env:
   - LARAVEL_VERSION=5.8.*
+  - LARAVEL_VERSION=6.0.*
 
 dist: xenial
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
 before_install:
   - travis_retry composer self-update --stable -n
@@ -31,4 +36,4 @@ services:
   - mysql
 
 script:
-  - vendor/bin/phpunit
+  - composer test

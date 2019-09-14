@@ -21,11 +21,6 @@ class SnoozeTest extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    public function testExample()
-    {
-        $this->assertEquals(1, 1);
-    }
-
     /**
      * Check that the multiply method returns correct result.
      * @return void
@@ -68,13 +63,14 @@ class SnoozeTest extends \Orchestra\Testbench\TestCase
         $notification = $notification->fresh();
 
         $this->assertInstanceOf(ScheduledNotification::class, $notification);
-        $this->assertEquals($notification_data['user_id'], $notification->user_id);
-        $this->assertEquals($notification_data['type'], $notification->type);
-        $this->assertEquals($notification_data['send_at'], $notification->send_at);
-        $this->assertEquals($notification_data['data']['test_id'], $notification->data['test_id']);
-        $this->assertEquals(0, $notification->cancelled);
-        $this->assertEquals(0, $notification->sent);
-        $this->assertEquals(0, $notification->rescheduled);
+        $this->assertSame($notification_data['user_id'], $notification->user_id);
+        $this->assertSame($notification_data['type'], $notification->type);
+        $this->assertInstanceOf(Carbon::class, $notification->send_at);
+        $this->assertSame($notification_data['send_at'], $notification->send_at->format('Y-m-d H:i:s'));
+        $this->assertSame($notification_data['data']['test_id'], $notification->data['test_id']);
+        $this->assertFalse($notification->cancelled);
+        $this->assertFalse($notification->sent);
+        $this->assertFalse($notification->rescheduled);
     }
 
     /**
@@ -131,13 +127,13 @@ class SnoozeTest extends \Orchestra\Testbench\TestCase
      */
     public function testCancelsNotification()
     {
-        $notification = ScheduledNotification::whereCancelled(0)->first();
+        $notification = ScheduledNotification::whereCancelled(false)->first();
 
-        $this->assertEquals($notification->cancelled(), false);
+        $this->assertEquals($notification->cancelled, false);
 
         $notification->cancel();
 
-        $this->assertEquals($notification->cancelled(), true);
+        $this->assertEquals($notification->cancelled, true);
     }
 
     /**
@@ -146,12 +142,12 @@ class SnoozeTest extends \Orchestra\Testbench\TestCase
      */
     public function testReschedulesNotification()
     {
-        $notification = ScheduledNotification::whereCancelled(0)->first();
-        $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
-        $notification->reschedule($original_send_at->copy()->addDays(3));
+        $notification = ScheduledNotification::whereCancelled(false)->first();
+        $originalSendAt = $notification->send_at;
+        $notification->reschedule($originalSendAt->copy()->addDays(3));
 
-        $this->assertNotEquals($notification->send_at, $original_send_at);
-        $this->assertEquals($notification->send_at, $original_send_at->copy()->addDays(3));
+        $this->assertNotEquals($notification->send_at, $originalSendAt);
+        $this->assertEquals($notification->send_at, $originalSendAt->copy()->addDays(3));
     }
 
     /**
@@ -160,13 +156,13 @@ class SnoozeTest extends \Orchestra\Testbench\TestCase
      */
     public function testDuplicatesNotification()
     {
-        $notification = ScheduledNotification::whereCancelled(1)->first();
-        $original_send_at = Carbon::createFromFormat('Y-m-d H:i:s', $notification->send_at);
-        $duplicate = $notification->scheduleAgainAt($original_send_at->copy()->addDays(7));
+        $notification = ScheduledNotification::whereCancelled(true)->first();
+        $originalSendAt = $notification->send_at;
+        $duplicate = $notification->scheduleAgainAt($originalSendAt->copy()->addDays(7));
 
         $this->assertInstanceOf(ScheduledNotification::class, $duplicate);
         $this->assertNotEquals($duplicate->id, $notification->id);
         $this->assertNotEquals($duplicate->send_at, $notification->send_at);
-        $this->assertEquals($duplicate->send_at, $original_send_at->copy()->addDays(7));
+        $this->assertEquals($duplicate->send_at, $originalSendAt->copy()->addDays(7));
     }
 }

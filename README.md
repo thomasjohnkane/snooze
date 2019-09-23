@@ -44,30 +44,28 @@ php artisan migrate
 ```bash
 php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="config"
 ```
-<small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
+<small>Note: If you need to change this, you need to do it before migrating.</small>
 
 ## Usage
 
 #### Basic Use
 
 Send "Example" notification to the authenticated user, in an hour...with some custom data
-```
-// use Thomasjohnkane\Snooze\Models\ScheduledNotification;
+```php
+use Thomasjohnkane\Snooze\ScheduledNotification;
 
-ScheduledNotification::create([
-    'user_id' => Auth::id(),
-    'send_at' => Carbon::now()->addHour()->format('Y-m-d H:i:s'),
-    'type'    => 'App\Notifications\ScheduledNotificationExample',
-    'data'    => ['order_id' => 10]
+ScheduledNotification::create(
+     Auth::user(), // Target
+     new ScheduledNotificationExample($order), // Notification
+     Carbon::now()->addHour() // Send At
 ]);
 ```
-<small>Note: "data" is an optional array. It is exposed to the notification/mailable if provided.</small>
 
 #### An important note about scheduling the `snooze:send` commmand
 
-Creating a Scheduled Notification, as we did above, will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
+Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
 
-The `snooze:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
+The `snooze:send` command is scheduled to run every minute by default. You can change this value (`sendFrequency`) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
 The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
 
@@ -85,79 +83,37 @@ However, if you have existing notifications you'd like to schedule, all you need
 
 **Cancelling Scheduled Notifications**
 
-```
-$notification->cancel(); // Returns TRUE or FALSE
+```php
+$notification->cancel();
 ```
 <small><b>Note:</b> you cannot cancel a notification that has already been sent.</small>
 
 **Rescheduling Scheduled Notifications**
 
-```
-$reschedule_at = Carbon::now()->format('Y-m-d H:i:s'); // Must be in this datetime format
+```php
+$rescheduleAt = Carbon::now()->addDay(1)
 
-$notification->reschedule($reschedule_at); // Returns TRUE or FALSE
+$notification->reschedule($rescheduleAt)
 ```
 <small><b>Note:</b> you cannot reschedule a notification that has already been sent or cancelled.</small>
-<small>If you want to duplicate a notification that has already been sent or cancelled, pass a truthy second parameter along with the new send date; `reschedule($date, TRUE)`, or use the `scheduleAgainAt($date)` method shown below.</small>
+<small>If you want to duplicate a notification that has already been sent or cancelled, pass a truthy second parameter along with the new send date; `reschedule($date, true)`, or use the `scheduleAgainAt($date)` method shown below.</small>
 
 **Duplicate a Scheduled Notification to be sent again**
 
-```
-$notification->scheduleAgainAt($new_date); // Returns the new (duplicate) $notification instance
+```php
+$notification->scheduleAgainAt($newDate); // Returns the new (duplicated) $notification
 ```
 
 **Check a scheduled notification's status**
-```
+```php
 // Check if a notification is already cancelled
 
-$result = $notification->cancelled(); // Returns TRUE or FALSE
+$result = $notification->isCancelled(); // returns a bool
 
 // Check if a notification is already sent
 
-$result = $notification->sent(); // Returns TRUE or FALSE
+$result = $notification->isSent(); // returns a bool
 ```
-
-**Search Notifications by custom data**
-
-I implemented helper methods to query the `data` JSON column. They wrap the normal Eloquent `where` and `whereJsonContains` methods.
-
-###### Query the data column:
-
-If a notification is saved with the following custom data:
-```
-$data = [
-    'booking_id'    => 1,
-    'property_name' => 'Hotel Down The Road'
-];
-```
-
-It could be returned by a query like this:
-
-```
-ScheduledNotification::whereData('booking_id', 1)->get();
-```
-<small>Note: this would be the same as doing this: `ScheduledNotification::where('options->languages', ['en', 'de'])->get()`</small>
-###### Check nested data
-
-If a notification is saved with the following custom data:
-```
-$data = [
-    'reservation' => [
-        'start' => '2019-06-10',
-        'end'   => '2019-06-12'
-    ]
-];
-```
-
-It would be returned by this query:
-```
-ScheduledNotification::whereData('reservation->start', '2019-06-10')->get();
-```
-###### Using JSON contains
-```
-ScheduledNotification::whereDataContains('en')->get();
-```
-For information and examples on Laravel's `whereJsonContains` method <a href="https://laravel.com/docs/5.7/queries#json-where-clauses" target="__blank">look here</a>.
 
 #### Scheduled Notification Generator
 
@@ -236,9 +192,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
 ## Run Tests
 
 ```bash
-cd path/to/vendor/thomasjohnkane/laravel-snooze
-composer install
-vendor/bin/phpunit
+composer test
 ```
 
 ## Security

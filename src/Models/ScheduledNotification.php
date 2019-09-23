@@ -39,6 +39,12 @@ class ScheduledNotification extends Model
         'updated_at',
     ];
 
+    protected $attributes = [
+        'sent' => false,
+        'rescheduled' => false,
+        'cancelled' => false,
+    ];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -47,25 +53,16 @@ class ScheduledNotification extends Model
         $this->serializer = Serializer::create();
     }
 
-    public static function schedule(
-        object $notifiable,
-        Notification $notification,
-        \DateTimeInterface $sendAt
-    ) {
-        if (! method_exists($notifiable, 'notify')) {
-            throw new SchedulingFailedException('%s is not notifiable', get_class($notifiable));
-        }
-
-        return self::create([
-            'type' => get_class($notification),
-            'target' => Serializer::create()->serializeNotifiable($notifiable),
-            'notification' =>  Serializer::create()->serializeNotification($notification),
-            'send_at' => $sendAt,
-        ]);
-    }
-
     public function send()
     {
+        if ($this->cancelled) {
+            throw new NotificationCancelledException('Cannot Send. Notification cancelled.', 1);
+        }
+
+        if ($this->sent) {
+            throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
+        }
+
         $notifiable = $this->serializer->unserializeNotifiable($this->target);
         $notification = $this->serializer->unserializeNotification($this->notification);
 
@@ -145,27 +142,5 @@ class ScheduledNotification extends Model
         $notification->save();
 
         return $notification;
-    }
-
-    public function scopeHasData($query, $key, $value)
-    {
-        if (! $key) {
-            $key = 'data';
-        } else {
-            $key = "data->{$key}";
-        }
-
-        return $query->where($key, $value);
-    }
-
-    public function scopeWhereDataContains($query, $key, $value)
-    {
-        if (! $key) {
-            $key = 'data';
-        } else {
-            $key = "data->{$key}";
-        }
-
-        return $query->whereJsonContains($key, $value);
     }
 }

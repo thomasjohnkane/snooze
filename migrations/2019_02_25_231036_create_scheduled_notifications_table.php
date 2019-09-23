@@ -22,9 +22,9 @@ class CreateScheduledNotificationsTable extends Migration
 
             $table->datetime('send_at');
 
-            $table->boolean('sent')->default(0);
-            $table->boolean('rescheduled')->default(0);
-            $table->boolean('cancelled')->default(0);
+            $table->tinyInteger('sent')->default(0);
+            $table->tinyInteger('rescheduled')->default(0);
+            $table->tinyInteger('cancelled')->default(0);
 
             $table->timestamps();
         });

@@ -19,7 +19,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // Schedule base command to run every minute
 
         $this->app->booted(function () {
-            $frequency = config('snooze.send_frequency');
+            $frequency = config('snooze.sendFrequency');
             $schedule = $this->app->make(Schedule::class);
             $schedule->command('snooze:send')->{$frequency}();
         });

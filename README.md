@@ -64,14 +64,16 @@ Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3));
 
 #### Using the ScheduledNotification::create helper
 You can also use the `create` method on the `ScheduledNotification`. 
-This is also useful for scheduling anonymous notifications (routed direct, rather than on a model)
 ```php
 ScheduledNotification::create(
      Auth::user(), // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addHour() // Send At
 ]);
+```
 
+This is also useful for scheduling anonymous notifications (routed direct, rather than on a model).
+```php
 $target = (new AnonymousNotifiable)
     ->route('mail', 'hello@example.com')
     ->route('sms', '56546456566');
@@ -81,7 +83,6 @@ ScheduledNotification::create(
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addDay() // Send At
 ]);
-
 ```
 
 #### An important note about scheduling the `snooze:send` command

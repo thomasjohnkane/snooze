@@ -71,11 +71,11 @@ $user->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'))
 #### Using the ScheduledNotification::create helper
 You can also use the `create` method on the `ScheduledNotification`. 
 ```php
-ScheduledNotification::create([
+ScheduledNotification::create(
      Auth::user(), // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addHour() // Send At
-]);
+);
 ```
 
 This is also useful for scheduling anonymous notifications (routed direct, rather than on a model).
@@ -88,7 +88,7 @@ ScheduledNotification::create(
      $target, // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addDay() // Send At
-]);
+);
 ```
 
 #### An important note about scheduling the `snooze:send` command

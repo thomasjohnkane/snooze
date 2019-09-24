@@ -1,4 +1,4 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
+[< Back to main README.md](https://github.com/thomasjohnkane/snooze)
 # Simple On-boarding Email Drip
 
 Let's send the following emails to our new Users:
@@ -10,12 +10,12 @@ Let's send the following emails to our new Users:
 <hr />
 
 ## Add the trait to your user model
-Add the `ScheduledNotifiable` trait to your user model
+Add the `SnoozeNotifable` trait to your user model
 ```php
-use Thomasjohnkane\Snooze\Traits\ScheduledNotifiable;
+use Thomasjohnkane\Snooze\Traits\SnoozeNotifable;
 
 class User {
-    use ScheduledNotifiable;
+    use SnoozeNotifable;
 }
 ```
 ## Generate the Scheduled Notifications:

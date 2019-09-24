@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 
-trait ScheduledNotifiable
+trait SnoozeNotifiable
 {
     /**
      * @param Notification      $notification

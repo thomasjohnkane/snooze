@@ -1,4 +1,4 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
+[< Back to main README.md](https://github.com/thomasjohnkane/snooze)
 ### Register Service Provider
 
 **Note! This and next step are optional if you use laravel>=5.5 with package

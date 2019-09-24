@@ -1,5 +1,5 @@
 {
-  "name": "thomasjohnkane/laravel-snooze",
+  "name": "thomasjohnkane/snooze",
   "description": "Schedule future notifications and reminders in Laravel",
   "license": "MIT",
   "keywords": [

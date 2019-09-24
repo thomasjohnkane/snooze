@@ -20,7 +20,7 @@ Laravel Snooze
 - Want a simple on-boarding email drip?
 - How about <b>recurring</b> notifications to go out monthly, weekly, daily?
 
-The goal is convention over configuration. This package largly just provides an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
+The goal is convention over configuration. This package largely just provides an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
 
 ### Common use cases
 - Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
@@ -44,7 +44,6 @@ php artisan migrate
 ```bash
 php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="config"
 ```
-<small>Note: If you need to change this, you need to do it before migrating.</small>
 
 ## Usage
 
@@ -60,7 +59,7 @@ class User {
 }
 
 // Schedule a notification
-Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3);
+Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3));
 ```
 
 #### Using the ScheduledNotification::create helper
@@ -87,11 +86,18 @@ ScheduledNotification::create(
 
 #### An important note about scheduling the `snooze:send` command
 
-Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
+Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time. 
 
 The `snooze:send` command is scheduled to run every minute by default. You can change this value (`sendFrequency`) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
 The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
+
+### Setting the send tolerance
+
+If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of 
+the old scheduled notifications at once, the command will only send mail within the configured tolerance. 
+By default this is set to 24 hours, so only mail scheduled to be sent within that window will be sent. This can be
+configured in the `snooze.php` config file. 
 
 #### Detailed Examples
 

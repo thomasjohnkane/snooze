@@ -59,13 +59,13 @@ class User extends Model {
 }
 
 // Schedule a birthday notification
-$user()->notifyAt(new BirthdayNotification, Carbon::parse($user->birthday));
+$user->notifyAt(new BirthdayNotification, Carbon::parse($user->birthday));
 
 // Schedule for a week from now
-$user()->notifyAt(new NextWeekNotification, Carbon::now()->addDays(7));
+$user->notifyAt(new NextWeekNotification, Carbon::now()->addDays(7));
 
 // Schedule for new years eve
-$user()->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'));
+$user->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'));
 ```
 
 #### Using the ScheduledNotification::create helper

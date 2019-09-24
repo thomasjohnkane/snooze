@@ -27,9 +27,9 @@ class ScheduledNotificationTest extends TestCase
             'target',
             'notification',
             'send_at',
-            'sent',
-            'rescheduled',
-            'cancelled',
+            'sent_at',
+            'rescheduled_at',
+            'cancelled_at',
             'created_at',
             'updated_at',
         ], $columns);

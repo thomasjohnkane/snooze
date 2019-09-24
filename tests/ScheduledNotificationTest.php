@@ -12,7 +12,7 @@ use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
 
-class SnoozeTest extends TestCase
+class ScheduledNotificationTest extends TestCase
 {
     /**
      * Check that the multiply method returns correct result.
@@ -42,11 +42,7 @@ class SnoozeTest extends TestCase
 
         $target = User::find(1);
 
-        $notification = ScheduledNotification::create(
-            $target,
-            new TestNotification(User::find(2)),
-            Carbon::now()->addSeconds(10)
-        );
+        $notification = $target->notifyAt(new TestNotification(User::find(2)),  Carbon::now()->addSeconds(10));
 
         $this->assertInstanceOf(ScheduledNotification::class, $notification);
         $this->assertDatabaseHas('scheduled_notifications', ['id' => $notification->getId()]);

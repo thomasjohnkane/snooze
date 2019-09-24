@@ -48,20 +48,44 @@ php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --
 
 ## Usage
 
-#### Basic Use
+#### Using the model trait
+Snooze provides a trait for your model, similar to the standard `Notifiable` trait. 
+It adds a `notifyAt()` method to your model to schedule notifications.
 
-Send "Example" notification to the authenticated user, in an hour...with some custom data
 ```php
-use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Traits\ScheduledNotifiable;
 
+class User {
+    use ScheduledNotifiable;
+}
+
+// Schedule a notification
+Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3);
+```
+
+#### Using the ScheduledNotification::create helper
+You can also use the `create` method on the `ScheduledNotification`. 
+This is also useful for scheduling anonymous notifications (routed direct, rather than on a model)
+```php
 ScheduledNotification::create(
      Auth::user(), // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addHour() // Send At
 ]);
+
+$target = (new AnonymousNotifiable)
+    ->route('mail', 'hello@example.com')
+    ->route('sms', '56546456566');
+
+ScheduledNotification::create(
+     $target, // Target
+     new ScheduledNotificationExample($order), // Notification
+     Carbon::now()->addDay() // Send At
+]);
+
 ```
 
-#### An important note about scheduling the `snooze:send` commmand
+#### An important note about scheduling the `snooze:send` command
 
 Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
 
@@ -74,12 +98,6 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 - [Delayed Notifcation (1 week)][3]
 - [Simple On-boarding Email Drip][5]
 - [Exposing Custom Data to the Notification/Email][4]
-
-**Using with existing Notifications and Mailable**
-
-We recommend using the Snooze generators (see below).
-
-However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here][8]
 
 **Cancelling Scheduled Notifications**
 
@@ -114,25 +132,6 @@ $result = $notification->isCancelled(); // returns a bool
 
 $result = $notification->isSent(); // returns a bool
 ```
-
-#### Scheduled Notification Generator
-
-`php artisan make:notification:scheduled NotificationName {--mail?} {-mm?}`
-
-**Options:**
-
-`--mail`
-Generates a Mailable class that accepts the "data" array and User as parameters from the notification and is automatically added to the `toMail` method of the notification
-
-`--mm` Generates the same Mailable class AND a markdown email template with access to `$data` and `$user` variables.
-
-<small>
-Note: Notification, Mailable, and Markdown are all placed in their normal folders. The markdown templates are placed in a "scheduled-emails" subfolder.
-
-- `app/Notifications/NotificationName.php`
-- `app/Mail/NotificationNameMailable.php`
-- `app/resources/views/scheduled-emails/notification-name.blade.php`
-</small>
 
 ## Project Roadmap
 
@@ -222,4 +221,3 @@ This package is bootstrapped with the help of
 [5]: ./docs/examples/on-boarding-email-drip.md  "On-boarding Drip Example"
 [6]: https://laravel.com/docs/5.7/scheduling#introduction "Configure Laravel Scheduler"
 [7]: https://laravel.com/docs/5.7/scheduling#introduction "Generators"
-[8]: ./docs/using-with-existing-notifications.md "Using With Existing Notifications"

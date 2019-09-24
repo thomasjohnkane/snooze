@@ -10,16 +10,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected $commands = [
         Console\Commands\SendScheduledNotifications::class,
-        Console\Commands\NotificationMakeCommand::class,
-        Console\Commands\MailMakeCommand::class,
     ];
 
     public function boot()
     {
         // Schedule base command to run every minute
-
         $this->app->booted(function () {
-            $frequency = config('snooze.sendFrequency');
+            $frequency = config('snooze.sendFrequency', 'everyMinute');
             $schedule = $this->app->make(Schedule::class);
             $schedule->command('snooze:send')->{$frequency}();
         });

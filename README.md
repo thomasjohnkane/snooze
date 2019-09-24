@@ -18,13 +18,13 @@ Laravel Snooze
 ### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
 - Want a simple on-boarding email drip?
-- How about <b>recurring</b> notifications to go out monthly, weekly, daily?
+- How about happy birthday emails?
 
 #### Common use cases
 - Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
 - Follow-up surveys (2 days after purchase)
 - On-boarding Email Drips (Welcome email after sign-up, additional tips after 3 days, upsell offer after 7 days)
-- Birthday Emails
+- Short-Term Recurring reports (send every week for the next 4 weeks)
 
 ## Installation
 

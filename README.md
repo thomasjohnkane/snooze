@@ -20,7 +20,7 @@ Laravel Snooze
 - Want a simple on-boarding email drip?
 - How about <b>recurring</b> notifications to go out monthly, weekly, daily?
 
-The goal is convention over configuration. This package largly just provides an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
+The goal is convention over configuration. This package largely just provides an opinionated architecture similar for existing Laravel functionality. Hope this makes your life easier like it did mine!
 
 ### Common use cases
 - Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
@@ -44,32 +44,60 @@ php artisan migrate
 ```bash
 php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="config"
 ```
-<small>Note: The only important config value here is the table name. If you need to change this, you need to do it before migrating.</small>
 
 ## Usage
 
-#### Basic Use
+#### Using the model trait
+Snooze provides a trait for your model, similar to the standard `Notifiable` trait. 
+It adds a `notifyAt()` method to your model to schedule notifications.
 
-Send "Example" notification to the authenticated user, in an hour...with some custom data
+```php
+use Thomasjohnkane\Snooze\Traits\ScheduledNotifiable;
+
+class User {
+    use ScheduledNotifiable;
+}
+
+// Schedule a notification
+Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3));
 ```
-// use Thomasjohnkane\Snooze\Models\ScheduledNotification;
 
-ScheduledNotification::create([
-    'user_id' => Auth::id(),
-    'send_at' => Carbon::now()->addHour()->format('Y-m-d H:i:s'),
-    'type'    => 'App\Notifications\ScheduledNotificationExample',
-    'data'    => ['order_id' => 10]
+#### Using the ScheduledNotification::create helper
+You can also use the `create` method on the `ScheduledNotification`. 
+This is also useful for scheduling anonymous notifications (routed direct, rather than on a model)
+```php
+ScheduledNotification::create(
+     Auth::user(), // Target
+     new ScheduledNotificationExample($order), // Notification
+     Carbon::now()->addHour() // Send At
 ]);
+
+$target = (new AnonymousNotifiable)
+    ->route('mail', 'hello@example.com')
+    ->route('sms', '56546456566');
+
+ScheduledNotification::create(
+     $target, // Target
+     new ScheduledNotificationExample($order), // Notification
+     Carbon::now()->addDay() // Send At
+]);
+
 ```
-<small>Note: "data" is an optional array. It is exposed to the notification/mailable if provided.</small>
 
-#### An important note about scheduling the `snooze:send` commmand
+#### An important note about scheduling the `snooze:send` command
 
-Creating a Scheduled Notification, as we did above, will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `send_at` time. 
+Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time. 
 
-The `snooze:send` command is scheduled to run every minute by default. You can change this value (send_frequency) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
+The `snooze:send` command is scheduled to run every minute by default. You can change this value (`sendFrequency`) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
 The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
+
+### Setting the send tolerance
+
+If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of 
+the old scheduled notifications at once, the command will only send mail within the configured tolerance. 
+By default this is set to 24 hours, so only mail scheduled to be sent within that window will be sent. This can be
+configured in the `snooze.php` config file. 
 
 #### Detailed Examples
 
@@ -77,106 +105,39 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 - [Simple On-boarding Email Drip][5]
 - [Exposing Custom Data to the Notification/Email][4]
 
-**Using with existing Notifications and Mailable**
-
-We recommend using the Snooze generators (see below).
-
-However, if you have existing notifications you'd like to schedule, all you need to do is accept the `data` array in your notification. [Read more here][8]
-
 **Cancelling Scheduled Notifications**
 
-```
-$notification->cancel(); // Returns TRUE or FALSE
+```php
+$notification->cancel();
 ```
 <small><b>Note:</b> you cannot cancel a notification that has already been sent.</small>
 
 **Rescheduling Scheduled Notifications**
 
-```
-$reschedule_at = Carbon::now()->format('Y-m-d H:i:s'); // Must be in this datetime format
+```php
+$rescheduleAt = Carbon::now()->addDay(1)
 
-$notification->reschedule($reschedule_at); // Returns TRUE or FALSE
+$notification->reschedule($rescheduleAt)
 ```
 <small><b>Note:</b> you cannot reschedule a notification that has already been sent or cancelled.</small>
-<small>If you want to duplicate a notification that has already been sent or cancelled, pass a truthy second parameter along with the new send date; `reschedule($date, TRUE)`, or use the `scheduleAgainAt($date)` method shown below.</small>
+<small>If you want to duplicate a notification that has already been sent or cancelled, pass a truthy second parameter along with the new send date; `reschedule($date, true)`, or use the `scheduleAgainAt($date)` method shown below.</small>
 
 **Duplicate a Scheduled Notification to be sent again**
 
-```
-$notification->scheduleAgainAt($new_date); // Returns the new (duplicate) $notification instance
+```php
+$notification->scheduleAgainAt($newDate); // Returns the new (duplicated) $notification
 ```
 
 **Check a scheduled notification's status**
-```
+```php
 // Check if a notification is already cancelled
 
-$result = $notification->cancelled(); // Returns TRUE or FALSE
+$result = $notification->isCancelled(); // returns a bool
 
 // Check if a notification is already sent
 
-$result = $notification->sent(); // Returns TRUE or FALSE
+$result = $notification->isSent(); // returns a bool
 ```
-
-**Search Notifications by custom data**
-
-I implemented helper methods to query the `data` JSON column. They wrap the normal Eloquent `where` and `whereJsonContains` methods.
-
-###### Query the data column:
-
-If a notification is saved with the following custom data:
-```
-$data = [
-    'booking_id'    => 1,
-    'property_name' => 'Hotel Down The Road'
-];
-```
-
-It could be returned by a query like this:
-
-```
-ScheduledNotification::whereData('booking_id', 1)->get();
-```
-<small>Note: this would be the same as doing this: `ScheduledNotification::where('options->languages', ['en', 'de'])->get()`</small>
-###### Check nested data
-
-If a notification is saved with the following custom data:
-```
-$data = [
-    'reservation' => [
-        'start' => '2019-06-10',
-        'end'   => '2019-06-12'
-    ]
-];
-```
-
-It would be returned by this query:
-```
-ScheduledNotification::whereData('reservation->start', '2019-06-10')->get();
-```
-###### Using JSON contains
-```
-ScheduledNotification::whereDataContains('en')->get();
-```
-For information and examples on Laravel's `whereJsonContains` method <a href="https://laravel.com/docs/5.7/queries#json-where-clauses" target="__blank">look here</a>.
-
-#### Scheduled Notification Generator
-
-`php artisan make:notification:scheduled NotificationName {--mail?} {-mm?}`
-
-**Options:**
-
-`--mail`
-Generates a Mailable class that accepts the "data" array and User as parameters from the notification and is automatically added to the `toMail` method of the notification
-
-`--mm` Generates the same Mailable class AND a markdown email template with access to `$data` and `$user` variables.
-
-<small>
-Note: Notification, Mailable, and Markdown are all placed in their normal folders. The markdown templates are placed in a "scheduled-emails" subfolder.
-
-- `app/Notifications/NotificationName.php`
-- `app/Mail/NotificationNameMailable.php`
-- `app/resources/views/scheduled-emails/notification-name.blade.php`
-</small>
 
 ## Project Roadmap
 
@@ -236,9 +197,7 @@ Note: Notification, Mailable, and Markdown are all placed in their normal folder
 ## Run Tests
 
 ```bash
-cd path/to/vendor/thomasjohnkane/laravel-snooze
-composer install
-vendor/bin/phpunit
+composer test
 ```
 
 ## Security
@@ -256,6 +215,7 @@ If you discover any security related issues, please email instead of using the i
 ## Credits
 
 - [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane)
+- [Atymic](https://github.com/atymic)
 - [All contributors](https://github.com/thomasjohnkane/laravel-snooze/graphs/contributors)
 
 This package is bootstrapped with the help of
@@ -268,4 +228,3 @@ This package is bootstrapped with the help of
 [5]: ./docs/examples/on-boarding-email-drip.md  "On-boarding Drip Example"
 [6]: https://laravel.com/docs/5.7/scheduling#introduction "Configure Laravel Scheduler"
 [7]: https://laravel.com/docs/5.7/scheduling#introduction "Generators"
-[8]: ./docs/using-with-existing-notifications.md "Using With Existing Notifications"

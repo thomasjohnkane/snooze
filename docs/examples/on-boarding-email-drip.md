@@ -8,25 +8,29 @@ Let's send the following emails to our new Users:
 3. Upsell to Subscription - will be sent 1 week after they register
 
 <hr />
+
+## Add the trait to your user model
+Add the `ScheduledNotifiable` trait to your user model
+```php
+use Thomasjohnkane\Snooze\Traits\ScheduledNotifiable;
+
+class User {
+    use ScheduledNotifiable;
+}
+```
 ## Generate the Scheduled Notifications:
 
 1. Create the "sign-up confirmation" notification: 
 
-    `php artisan make:notification:scheduled SignUpConfirmation --mm`
-    
-    <b>Quick Notes:</b>
-
-    * <small>This uses a custom generator. You could do this with the normal Laravel generators though if you prefer</small>
-    * <small>The --mm flag tells the generator to also create and connect a Mailable class and Markdown email template for us</small>
-    * <small>The markdown emails are in the `resources/views/emails` folder by default</small>
+    `php artisan make:notification SignUpConfirmation --m`
 
 2. Create the "welcome to the community" notification:
 
-    `php artisan make:notification:scheduled WelcomeToCommunity --mm`
+    `php artisan make:notification WelcomeToCommunity --m`
 
 3. Create the "upsell subscription" notification:
 
-    `php artisan make:notification:scheduled UpsellSubscription --mm`
+    `php artisan make:notification UpsellSubscription --m`
 
 ## Schedule our notifications after sign-up:
 1. Create a User Observer to watch for the sign-ups
@@ -39,37 +43,15 @@ Let's send the following emails to our new Users:
 2. Schedule the Notifications once a User is `created`
 
     ```
-    // use Thomasjohnkane\ScheduledNotifications\Models\ScheduledNotification;
     // use Carbon\Carbon;
 
     public function created(User $user)
     {
         $now = Carbon::now();
-
-        $notification = ScheduledNotification::insert([
-            [
-                'user_id'    => $user->id,
-                'send_at'    => $now->copy()->addHour()->format('Y-m-d H:i:s'),
-                'type'       => 'App\Notifications\SignUpConfirmation',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'user_id'    => $user->id,
-                'send_at'    => $now->copy()->addDays(3)->format('Y-m-d H:i:s'),
-                'type'       => 'App\Notifications\WelcomeToCommunity',
-                'created_at' => $now,
-                'updated_at' => $now
-            ],
-            [
-                'user_id'    => $user->id,
-                'send_at'    => $now->copy()->addWeek()->format('Y-m-d H:i:s'),
-                'type'       => 'App\Notifications\UpsellSubscription',
-                'created_at' => $now,
-                'updated_at' => $now
-
-            ],
-        ]);
+   
+        $user->notifyAt(new SignUpConfirmation($user), Carbon::now()->addHour();
+        $user->notifyAt(new WelcomeToCommunity($user), Carbon::now()->addDays(3);
+        $user->notifyAt(new UpsellSubscription($user), Carbon::now()->addWeek();
     }
     ```
 

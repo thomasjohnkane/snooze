@@ -9,9 +9,9 @@ Add service provider to `config/app.php` in `providers` section
 Thomasjohnkane\ScheduledNotifications\ServiceProvider::class,
 ```
 
-### Register Facade
+### Register Facade\
 
 Register package facade in `config/app.php` in `aliases` section
 ```php
-Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotifications::class,
+Thomasjohnkane\ScheduledNotifications\Facades\ScheduledNotification::class,
 ```

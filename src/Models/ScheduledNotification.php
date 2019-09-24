@@ -3,19 +3,22 @@
 namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
+use Thomasjohnkane\Snooze\Serializer;
 use Illuminate\Database\Eloquent\Model;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
 class ScheduledNotification extends Model
 {
+    /** @var string */
     protected $table;
+    /** @var Serializer */
+    protected $serializer;
 
     protected $casts = [
         'sent' => 'boolean',
         'rescheduled' => 'boolean',
         'cancelled' => 'boolean',
-        'data' => 'array',
     ];
 
     protected $dates = [
@@ -23,9 +26,9 @@ class ScheduledNotification extends Model
     ];
 
     protected $fillable = [
-        'user_id',
         'type',
-        'data',
+        'target',
+        'notification',
         'send_at',
         'sent',
         'rescheduled',
@@ -34,11 +37,37 @@ class ScheduledNotification extends Model
         'updated_at',
     ];
 
+    protected $attributes = [
+        'sent' => false,
+        'rescheduled' => false,
+        'cancelled' => false,
+    ];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
         $this->table = config('snooze.snooze_table');
+        $this->serializer = Serializer::create();
+    }
+
+    public function send()
+    {
+        if ($this->cancelled) {
+            throw new NotificationCancelledException('Cannot Send. Notification cancelled.', 1);
+        }
+
+        if ($this->sent) {
+            throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
+        }
+
+        $notifiable = $this->serializer->unserializeNotifiable($this->target);
+        $notification = $this->serializer->unserializeNotification($this->notification);
+
+        $notifiable->notify($notification);
+
+        $this->sent = true;
+        $this->save();
     }
 
     /**
@@ -111,27 +140,5 @@ class ScheduledNotification extends Model
         $notification->save();
 
         return $notification;
-    }
-
-    public function scopeHasData($query, $key, $value)
-    {
-        if (! $key) {
-            $key = 'data';
-        } else {
-            $key = "data->{$key}";
-        }
-
-        return $query->where($key, $value);
-    }
-
-    public function scopeWhereDataContains($query, $key, $value)
-    {
-        if (! $key) {
-            $key = 'data';
-        } else {
-            $key = "data->{$key}";
-        }
-
-        return $query->whereJsonContains($key, $value);
     }
 }

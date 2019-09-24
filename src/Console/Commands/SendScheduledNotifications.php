@@ -2,7 +2,6 @@
 
 namespace Thomasjohnkane\Snooze\Console\Commands;
 
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -31,10 +30,12 @@ class SendScheduledNotifications extends Command
      */
     public function handle()
     {
+        $tolerance = config('snooze.sendTolerance');
+
         $notifications = ScheduledNotification::whereSent(false)
                                 ->whereCancelled(false)
-                                ->where('send_at', '<=', Carbon::now()->format('Y-m-d H:i:s'))
-                                ->where('send_at', '>=', Carbon::now()->subDay()->format('Y-m-d H:i:s'))
+                                ->where('send_at', '<=', Carbon::now())
+                                ->where('send_at', '>=', Carbon::now()->subSeconds($tolerance ?? 60))
                                 ->get();
 
         if (! $notifications->count()) {
@@ -51,20 +52,15 @@ class SendScheduledNotifications extends Command
 
         $this->info(sprintf('Sending %d scheduled notifications...', $notifications->count()));
 
-        $notifications->each(function ($notification) use ($bar) {
+        $notifications->each(function (ScheduledNotification $notification) use ($bar) {
             $bar->advance();
 
             try {
-                $user = User::find($notification->user_id);
-                $user->notify(new $notification->type($notification->data));
+                $notification->send();
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 Log::error($e->getMessage());
             }
-
-            // Change status to sent
-            $notification->sent = true;
-            $notification->save();
         });
 
         $bar->finish();

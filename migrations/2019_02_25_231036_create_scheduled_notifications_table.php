@@ -15,13 +15,17 @@ class CreateScheduledNotificationsTable extends Migration
     {
         Schema::create(config('snooze.table'), function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+
             $table->string('type');
-            $table->json('data')->nullable();
+            $table->text('target');
+            $table->text('notification');
+
             $table->datetime('send_at');
-            $table->boolean('sent')->default(0);
-            $table->boolean('rescheduled')->default(0);
-            $table->boolean('cancelled')->default(0);
+
+            $table->tinyInteger('sent')->default(0);
+            $table->tinyInteger('rescheduled')->default(0);
+            $table->tinyInteger('cancelled')->default(0);
+
             $table->timestamps();
         });
     }

@@ -1,7 +1,7 @@
-[< Back to main README.md](https://github.com/thomasjohnkane/laravel-snooze)
+[< Back to main README.md](https://github.com/thomasjohnkane/snooze)
 # Basic Delayed Notification Example (1 week)
 
-1. Add the `ScheduledNotifiable` trait to your notifiable model
+1. Add the `SnoozeNotifiable` trait to your notifiable model
 2. Create the basic notification: `php artisan make:notification OneWeekAfterNotice`
 3. Get the datetime for when we should send the notification
     * `$sendAt = Carbon::now()->addDays(7)` // 7 days from now

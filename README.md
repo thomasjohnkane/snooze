@@ -7,32 +7,30 @@ Laravel Snooze
     <img src="./snooze-logo-v1.png" />
 </p>
 
-[![Build Status](https://travis-ci.org/thomasjohnkane/laravel-snooze.svg?branch=master)](https://travis-ci.org/thomasjohnkane/laravel-snooze)
+[![Build Status](https://travis-ci.org/thomasjohnkane/snooze.svg?branch=master)](https://travis-ci.org/thomasjohnkane/snooze)
 [![styleci](https://styleci.io/repos/173246329/shield)](https://styleci.io/repos/173246329)
 
-[![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/laravel-snooze/v/stable)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
-[![Total Downloads](https://poser.pugx.org/thomasjohnkane/laravel-snooze/downloads)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
-[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/laravel-snooze/v/unstable)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
-[![License](https://poser.pugx.org/thomasjohnkane/laravel-snooze/license)](https://packagist.org/packages/thomasjohnkane/laravel-snooze)
+[![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/snooze/v/stable)](https://packagist.org/packages/thomasjohnkane/snooze)
+[![Total Downloads](https://poser.pugx.org/thomasjohnkane/snooze/downloads)](https://packagist.org/packages/thomasjohnkane/snooze)
+[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/snooze/v/unstable)](https://packagist.org/packages/thomasjohnkane/snooze)
+[![License](https://poser.pugx.org/thomasjohnkane/snooze/license)](https://packagist.org/packages/thomasjohnkane/snooze)
 
-##### Why use this package?
+### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
 - Want a simple on-boarding email drip?
-- How about <b>recurring</b> notifications to go out monthly, weekly, daily?
+- How about happy birthday emails?
 
-The goal is convention over configuration. This package largely just provides an opinionated architecture similar for existing Laravel functionality. Hope this makes your life easier like it did mine!
-
-### Common use cases
+#### Common use cases
 - Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
 - Follow-up surveys (2 days after purchase)
 - On-boarding Email Drips (Welcome email after sign-up, additional tips after 3 days, upsell offer after 7 days)
-- Monthly Reports (or any other time-based notifications)
+- Short-Term Recurring reports (send every week for the next 4 weeks)
 
 ## Installation
 
 Install via composer
 ```bash
-composer require thomasjohnkane/laravel-snooze
+composer require thomasjohnkane/snooze
 ```
 ```bash
 php artisan migrate
@@ -52,14 +50,22 @@ Snooze provides a trait for your model, similar to the standard `Notifiable` tra
 It adds a `notifyAt()` method to your model to schedule notifications.
 
 ```php
-use Thomasjohnkane\Snooze\Traits\ScheduledNotifiable;
+use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
 
-class User {
-    use ScheduledNotifiable;
+class User extends Model {
+    use SnoozeNotifiable;
+
+    // ...
 }
 
-// Schedule a notification
-Auth::user()->notifyAt(new TestNotification, Carbon::now()->addDays(3));
+// Schedule a birthday notification
+$user->notifyAt(new BirthdayNotification, Carbon::parse($user->birthday));
+
+// Schedule for a week from now
+$user->notifyAt(new NextWeekNotification, Carbon::now()->addDays(7));
+
+// Schedule for new years eve
+$user->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'));
 ```
 
 #### Using the ScheduledNotification::create helper
@@ -69,7 +75,7 @@ ScheduledNotification::create(
      Auth::user(), // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addHour() // Send At
-]);
+);
 ```
 
 This is also useful for scheduling anonymous notifications (routed direct, rather than on a model).
@@ -82,7 +88,7 @@ ScheduledNotification::create(
      $target, // Target
      new ScheduledNotificationExample($order), // Notification
      Carbon::now()->addDay() // Send At
-]);
+);
 ```
 
 #### An important note about scheduling the `snooze:send` command
@@ -182,6 +188,8 @@ $result = $notification->isSent(); // returns a bool
 
 - [x] Submit V1 to Packagist
 
+- [ ] Change model/facade name to "SnoozeNotification" instead of "ScheduledNotification"???
+
 - [ ] Admin UI
     - [ ] Show tab for past notifications
     - [ ] Show tab for scheduled notifications
@@ -207,7 +215,7 @@ If you discover any security related issues, please email instead of using the i
 
 ## Contributing
 
-1. Fork it (<https://github.com/thomasjohnkane/laravel-snooze/fork>)
+1. Fork it (<https://github.com/thomasjohnkane/snooze/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
@@ -217,7 +225,7 @@ If you discover any security related issues, please email instead of using the i
 
 - [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane)
 - [Atymic](https://github.com/atymic)
-- [All contributors](https://github.com/thomasjohnkane/laravel-snooze/graphs/contributors)
+- [All contributors](https://github.com/thomasjohnkane/snooze/graphs/contributors)
 
 This package is bootstrapped with the help of
 [melihovv/laravel-package-generator](https://github.com/melihovv/laravel-package-generator).

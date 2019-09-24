@@ -4,17 +4,12 @@ namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
-use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
+use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
-use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
 
 class SendCommandTest extends TestCase
 {
-
     public function testItSendScheduledNotifications()
     {
         Notification::fake();
@@ -33,7 +28,7 @@ class SendCommandTest extends TestCase
             ->expectsOutput('Starting Sending Scheduled Notifications')
             ->assertExitCode(0);
 
-        $notification1 =ScheduledNotification::find($notification1->getId());
+        $notification1 = ScheduledNotification::find($notification1->getId());
         $this->assertTrue($notification1->isSent());
 
         $notification2 = ScheduledNotification::find($notification2->getId());

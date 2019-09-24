@@ -4,13 +4,13 @@ namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
-use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
+use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
 class ScheduledNotificationTest extends TestCase
 {
@@ -20,7 +20,6 @@ class ScheduledNotificationTest extends TestCase
      */
     public function testItRunsMigrations()
     {
-
         $columns = \Schema::getColumnListing('scheduled_notifications');
         $this->assertEquals([
             'id',
@@ -42,7 +41,7 @@ class ScheduledNotificationTest extends TestCase
 
         $target = User::find(1);
 
-        $notification = $target->notifyAt(new TestNotification(User::find(2)),  Carbon::now()->addSeconds(10));
+        $notification = $target->notifyAt(new TestNotification(User::find(2)), Carbon::now()->addSeconds(10));
 
         $this->assertInstanceOf(ScheduledNotification::class, $notification);
         $this->assertDatabaseHas('scheduled_notifications', ['id' => $notification->getId()]);

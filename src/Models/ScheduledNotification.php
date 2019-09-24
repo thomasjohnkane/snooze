@@ -5,8 +5,6 @@ namespace Thomasjohnkane\Snooze\Models;
 use Carbon\Carbon;
 use Thomasjohnkane\Snooze\Serializer;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notification;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 

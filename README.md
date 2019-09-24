@@ -20,7 +20,7 @@ Laravel Snooze
 - Want a simple on-boarding email drip?
 - How about <b>recurring</b> notifications to go out monthly, weekly, daily?
 
-The goal is convention over configuration. This package largely just provides an opinionated architecture and generators for existing Laravel functionality. Hope this makes your life easier like it did mine!
+The goal is convention over configuration. This package largely just provides an opinionated architecture similar for existing Laravel functionality. Hope this makes your life easier like it did mine!
 
 ### Common use cases
 - Reminder system (1 week before appt, 1 day before, 1 hour before, etc)
@@ -215,6 +215,7 @@ If you discover any security related issues, please email instead of using the i
 ## Credits
 
 - [Thomas Kane && Flux Bucket](https://github.com/thomasjohnkane)
+- [Atymic](https://github.com/atymic)
 - [All contributors](https://github.com/thomasjohnkane/laravel-snooze/graphs/contributors)
 
 This package is bootstrapped with the help of

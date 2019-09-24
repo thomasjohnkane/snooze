@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Thomasjohnkane\Snooze\Traits;
 
 use DateTimeInterface;
 use Illuminate\Notifications\Notification;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 
 trait ScheduledNotifiable
 {

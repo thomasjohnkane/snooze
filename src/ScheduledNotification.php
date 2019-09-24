@@ -3,13 +3,13 @@
 namespace Thomasjohnkane\Snooze;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use DateTimeInterface;
-use Illuminate\Notifications\Notification;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Illuminate\Notifications\Notification;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 
 class ScheduledNotification
@@ -35,7 +35,7 @@ class ScheduledNotification
         Notification $notification,
         DateTimeInterface $sendAt
     ): self {
-        if (!method_exists($notifiable, 'notify')) {
+        if (! method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }
 

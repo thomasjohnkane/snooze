@@ -15,14 +15,11 @@ class ScheduledNotification extends Model
     /** @var Serializer */
     protected $serializer;
 
-    protected $casts = [
-        'sent' => 'boolean',
-        'rescheduled' => 'boolean',
-        'cancelled' => 'boolean',
-    ];
-
     protected $dates = [
         'send_at',
+        'sent_at',
+        'rescheduled_at',
+        'cancelled_at',
     ];
 
     protected $fillable = [
@@ -38,9 +35,9 @@ class ScheduledNotification extends Model
     ];
 
     protected $attributes = [
-        'sent' => false,
-        'rescheduled' => false,
-        'cancelled' => false,
+        'sent_at' => null,
+        'rescheduled_at' => null,
+        'cancelled_at' => null,
     ];
 
     public function __construct(array $attributes = [])
@@ -53,11 +50,11 @@ class ScheduledNotification extends Model
 
     public function send()
     {
-        if ($this->cancelled) {
+        if ($this->cancelled_at !== null) {
             throw new NotificationCancelledException('Cannot Send. Notification cancelled.', 1);
         }
 
-        if ($this->sent) {
+        if ($this->sent_at !== null) {
             throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
         }
 
@@ -66,7 +63,7 @@ class ScheduledNotification extends Model
 
         $notifiable->notify($notification);
 
-        $this->sent = true;
+        $this->sent_at = Carbon::now();
         $this->save();
     }
 
@@ -76,11 +73,11 @@ class ScheduledNotification extends Model
      */
     public function cancel()
     {
-        if ($this->sent) {
+        if ($this->sent_at !== null) {
             throw new NotificationAlreadySentException('Cannot Cancel. Notification already sent.', 1);
         }
 
-        $this->cancelled = true;
+        $this->cancelled_at = Carbon::now();
         $this->save();
     }
 
@@ -98,20 +95,20 @@ class ScheduledNotification extends Model
             $sendAt = Carbon::parse($sendAt);
         }
 
-        if (($this->sent || $this->cancelled) && $force) {
+        if (($this->sent_at !== null || $this->cancelled_at !== null) && $force) {
             return $this->scheduleAgainAt($sendAt);
         }
 
-        if ($this->sent) {
+        if ($this->sent_at !== null) {
             throw new NotificationAlreadySentException('Cannot Reschedule. Date format is incorrect.', 1);
         }
 
-        if ($this->cancelled) {
+        if ($this->cancelled_at !== null) {
             throw new NotificationCancelledException('Cannot Reschedule. Notification cancelled.', 1);
         }
 
         $this->send_at = $sendAt;
-        $this->rescheduled = true;
+        $this->rescheduled_at = Carbon::now();
         $this->save();
 
         return $this;
@@ -132,9 +129,9 @@ class ScheduledNotification extends Model
 
         $notification->fill([
             'send_at' => $sendAt,
-            'sent' => false,
-            'rescheduled' => false,
-            'cancelled' => false,
+            'sent_at' => null,
+            'rescheduled_at' => null,
+            'cancelled_at' => null,
         ]);
 
         $notification->save();

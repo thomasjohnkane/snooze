@@ -62,7 +62,11 @@ class ScheduledNotification
     {
         $modelClass = self::getScheduledNotificationModelClass();
 
-        return self::collection($modelClass::whereType($notificationClass)->whereSent($includeSent)->get());
+        if ($includeSent) {
+            return self::collection($modelClass::whereType($notificationClass)->get());
+        }
+
+        return self::collection($modelClass::whereType($notificationClass)->whereNull('sent_at')->get());
     }
 
     public static function all(bool $includeSent = false): Collection
@@ -73,7 +77,7 @@ class ScheduledNotification
             return self::collection($modelClass::get());
         }
 
-        return self::collection($modelClass::whereSent($includeSent)->get());
+        return self::collection($modelClass::whereNull('sent_at')->get());
     }
 
     /**
@@ -111,17 +115,17 @@ class ScheduledNotification
 
     public function isSent(): bool
     {
-        return $this->scheduleNotificationModel->sent;
+        return $this->scheduleNotificationModel->sent_at !== null;
     }
 
     public function isCancelled(): bool
     {
-        return $this->scheduleNotificationModel->cancelled;
+        return $this->scheduleNotificationModel->cancelled_at !== null;
     }
 
     public function isRescheduled(): bool
     {
-        return $this->scheduleNotificationModel->rescheduled;
+        return $this->scheduleNotificationModel->rescheduled_at !== null;
     }
 
     public function getId()
@@ -132,6 +136,21 @@ class ScheduledNotification
     public function getType()
     {
         return $this->scheduleNotificationModel->type;
+    }
+
+    public function getSentAt()
+    {
+        return $this->scheduleNotificationModel->sent_at;
+    }
+
+    public function getCancelledAt()
+    {
+        return $this->scheduleNotificationModel->cancelled_at;
+    }
+
+    public function getRescheduledAt()
+    {
+        return $this->scheduleNotificationModel->rescheduled_at;
     }
 
     /**

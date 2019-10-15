@@ -79,7 +79,6 @@ class ScheduledNotification extends Model
         }
 
         return false;
-        
     }
 
     /**

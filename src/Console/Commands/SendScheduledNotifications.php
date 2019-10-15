@@ -56,6 +56,13 @@ class SendScheduledNotifications extends Command
             $bar->advance();
 
             try {
+                if ($notification->shouldInterrupt()) {
+                    // Maybe dispatch an event?
+                    $this->info('Interreupted Send for Scheduled Notification...');
+
+                    return;
+                }
+                
                 $notification->send();
             } catch (\Exception $e) {
                 $this->error($e->getMessage());

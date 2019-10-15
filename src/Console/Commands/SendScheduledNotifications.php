@@ -62,8 +62,8 @@ class SendScheduledNotifications extends Command
 
                     return;
                 }
-                
                 $notification->send();
+                
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 Log::error($e->getMessage());

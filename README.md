@@ -146,6 +146,17 @@ $result = $notification->isCancelled(); // returns a bool
 $result = $notification->isSent(); // returns a bool
 ```
 
+**Conditionally interrupt a scheduled notification**
+If you'd like to stop an email from being sent conditionally, you can add the `shouldInterrupt()` method to any notification.
+
+For example, you might not send a future drip notification if a user has become inactive.
+```php
+public function shouldInterrupt($notifiable) {
+    return $notifiable->isInactive();
+}
+```
+If this method is not present on your notification, the notification will NOT be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
+
 ## Project Roadmap
 
 - [x] Initial setup

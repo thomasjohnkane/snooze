@@ -75,7 +75,7 @@ class ScheduledNotification extends Model
         $notification = $this->serializer->unserializeNotification($this->notification);
 
         if (method_exists($notification, 'shouldInterrupt')) {
-            return $notification->shouldInterrupt();
+            return !!$notification->shouldInterrupt();
         }
 
         return false;

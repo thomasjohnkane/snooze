@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
-use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestInterruptableNotification;
 
@@ -32,7 +31,7 @@ class CanInterruptNotificationTest extends TestCase
         // Check wasn't sent (exception?)
         $this->assertFalse($notification->isSent());
         $this->assertTrue($notification->getShouldInterrupt());
-        
+
         Notification::assertNothingSent();
 
         Event::assertDispatched(NotificationInterrupted::class, 1);

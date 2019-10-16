@@ -3,10 +3,10 @@
 namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
-use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
-use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Serializer;
 use Illuminate\Database\Eloquent\Model;
+use Thomasjohnkane\Snooze\Events\NotificationSent;
+use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
@@ -65,6 +65,7 @@ class ScheduledNotification extends Model
 
         if ($this->shouldInterrupt($notification)) {
             event(new NotificationInterrupted($this));
+
             return;
         }
 
@@ -83,7 +84,7 @@ class ScheduledNotification extends Model
      */
     public function shouldInterrupt(?object $notification = null)
     {
-        if (!$notification) {
+        if (! $notification) {
             $notification = $this->serializer->unserializeNotification($this->notification);
         }
 

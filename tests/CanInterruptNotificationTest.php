@@ -22,7 +22,7 @@ class CanInterruptNotificationTest extends TestCase
         $target = User::find(1);
 
         // Act
-        $notification = $target->notifyAt(new TestInterruptableNotification(User::find(2)), Carbon::now()->addSeconds(10));
+        $notification = $target->notifyAt(new TestInterruptableNotification(User::find(2)), Carbon::now()->subSeconds(10));
         $this->assertDatabaseHas('scheduled_notifications', ['id' => $notification->getId()]);
 
         $this->artisan('snooze:send');

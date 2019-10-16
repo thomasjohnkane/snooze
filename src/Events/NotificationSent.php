@@ -14,7 +14,7 @@ class NotificationSent
     /**
      * Create a new event instance.
      *
-     * @param  \App\Order  $order
+     * @param  \Thomasjohnkane\Snooze\Models\ScheduledNotification $scheduledNotification
      * @return void
      */
     public function __construct(ScheduledNotification $scheduledNotification)

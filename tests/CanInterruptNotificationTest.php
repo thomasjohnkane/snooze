@@ -3,8 +3,11 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
+use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestInterruptableNotification;
 
 class CanInterruptNotificationTest extends TestCase
@@ -14,6 +17,8 @@ class CanInterruptNotificationTest extends TestCase
         // Arrange
         // Create Stub
         Notification::fake();
+
+        Event::fake();
 
         $target = User::find(1);
 
@@ -26,8 +31,10 @@ class CanInterruptNotificationTest extends TestCase
         // Assert
         // Check wasn't sent (exception?)
         $this->assertFalse($notification->isSent());
-        $this->assertTrue($notification->shouldInterrupt());
-
+        $this->assertTrue($notification->getShouldInterrupt());
+        
         Notification::assertNothingSent();
+
+        Event::assertDispatched(NotificationInterrupted::class, 1);
     }
 }

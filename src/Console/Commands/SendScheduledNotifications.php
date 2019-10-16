@@ -58,7 +58,6 @@ class SendScheduledNotifications extends Command
             try {
                 if (! $notification->shouldInterrupt()) {
                     $notification->send();
-                    event(new \Thomasjohnkane\Snooze\Events\NotificationSent($notification));
                 } else {
                     event(new \Thomasjohnkane\Snooze\Events\NotificationInterrupted($notification));
                 }

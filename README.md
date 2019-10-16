@@ -147,6 +147,7 @@ $result = $notification->isSent(); // returns a bool
 ```
 
 **Conditionally interrupt a scheduled notification**
+
 If you'd like to stop an email from being sent conditionally, you can add the `shouldInterrupt()` method to any notification.
 
 For example, you might not send a future drip notification if a user has become inactive.

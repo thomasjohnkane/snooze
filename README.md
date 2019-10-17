@@ -148,15 +148,17 @@ $result = $notification->isSent(); // returns a bool
 
 **Conditionally interrupt a scheduled notification**
 
-If you'd like to stop an email from being sent conditionally, you can add the `shouldInterrupt()` method to any notification.
+If you'd like to stop an email from being sent conditionally, you can add the `shouldInterrupt()` method to any notification. This method will be checked immediately before the notification is sent.
 
-For example, you might not send a future drip notification if a user has become inactive.
+For example, you might not send a future drip notification if a user has become inactive, or the order the notification was for has been canceled.
+
 ```php
 public function shouldInterrupt($notifiable) {
-    return $notifiable->isInactive();
+    return $notifiable->isInactive() || $this->order->isCanceled();
 }
 ```
-If this method is not present on your notification, the notification will NOT be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
+
+If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
 
 ## Project Roadmap
 
@@ -192,15 +194,12 @@ If this method is not present on your notification, the notification will NOT be
     - [x] Get basic coverage for "create"
     - [x] Cancel
     - [x] Reschedule
-    - [x] scheduleAgainAt (duplocate)
-    - [ ] Generators
-    - [ ] Send command
+    - [x] scheduleAgainAt (duplicate)
+    - [x] Send command
 
 - [x] Add logo and those badges
 
-- [x] Submit V1 to Packagist
-
-- [ ] Change model/facade name to "SnoozeNotification" instead of "ScheduledNotification"???
+- [ ] Submit V1 to Packagist
 
 - [ ] Admin UI
     - [ ] Show tab for past notifications

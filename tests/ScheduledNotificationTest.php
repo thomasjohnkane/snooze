@@ -23,8 +23,10 @@ class ScheduledNotificationTest extends TestCase
         $columns = \Schema::getColumnListing('scheduled_notifications');
         $this->assertEquals([
             'id',
-            'type',
+            'target_id',
+            'target_type',
             'target',
+            'notification_type',
             'notification',
             'send_at',
             'sent_at',

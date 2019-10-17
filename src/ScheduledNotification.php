@@ -5,6 +5,7 @@ namespace Thomasjohnkane\Snooze;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
@@ -41,8 +42,14 @@ class ScheduledNotification
 
         $modelClass = self::getScheduledNotificationModelClass();
 
+        $targetId = $notifiable instanceof Model
+            ? $notifiable->getKey()
+            : null; // how do we handle anon notifications
+
         return new self($modelClass::create([
-            'type' => get_class($notification),
+            'target_id' => $targetId,
+            'target_type' => get_class($notifiable),
+            'notification_type' => get_class($notification),
             'target' => Serializer::create()->serializeNotifiable($notifiable),
             'notification' => Serializer::create()->serializeNotification($notification),
             'send_at' => $sendAt,
@@ -63,10 +70,10 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
 
         if ($includeSent) {
-            return self::collection($modelClass::whereType($notificationClass)->get());
+            return self::collection($modelClass::whereNotificationType($notificationClass)->get());
         }
 
-        return self::collection($modelClass::whereType($notificationClass)->whereNull('sent_at')->get());
+        return self::collection($modelClass::whereNotificationType($notificationClass)->whereNull('sent_at')->get());
     }
 
     public static function all(bool $includeSent = false): Collection
@@ -78,6 +85,21 @@ class ScheduledNotification
         }
 
         return self::collection($modelClass::whereNull('sent_at')->get());
+    }
+
+    public static function cancelByTarget(object $notifiable): int
+    {
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        $targetId = $notifiable instanceof Model
+            ? $notifiable->getKey()
+            : null; // how do we handle anon notifications
+
+        return $modelClass::whereNull('sent_at')
+            ->whereNull('canceled_at')
+            ->whereTargetId($targetId)
+            ->whereTargetType(get_class($notifiable))
+            ->update('canceled_at', Carbon::now());
     }
 
     /**
@@ -135,7 +157,17 @@ class ScheduledNotification
 
     public function getType()
     {
-        return $this->scheduleNotificationModel->type;
+        return $this->scheduleNotificationModel->notification_type;
+    }
+
+    public function getTargetType()
+    {
+        return $this->scheduleNotificationModel->target_type;
+    }
+
+    public function getTargetId()
+    {
+        return $this->scheduleNotificationModel->target_id;
     }
 
     public function getSentAt()

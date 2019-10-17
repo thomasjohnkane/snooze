@@ -177,6 +177,14 @@ class ScheduledNotification
         return $this->scheduleNotificationModel->updated_at;
     }
 
+    /**
+     * @return bool
+     */
+    public function getShouldInterrupt()
+    {
+        return $this->scheduleNotificationModel->shouldInterrupt();
+    }
+
     private static function getScheduledNotificationModelClass(): string
     {
         return config('snooze.model') ?? ScheduledNotificationModel::class;

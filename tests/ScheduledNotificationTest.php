@@ -220,6 +220,8 @@ class ScheduledNotificationTest extends TestCase
         $type2 = ScheduledNotification::findByType(TestNotificationTwo::class);
         $this->assertSame(2, $type2->count());
 
+        $this->assertSame(5, ScheduledNotification::findByTarget($target)->count());
+
         $all->first()->sendNow();
 
         $allNotSent = ScheduledNotification::all();

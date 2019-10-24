@@ -36,4 +36,7 @@ services:
   - mysql
 
 script:
-  - composer test
+  - composer test:ci
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

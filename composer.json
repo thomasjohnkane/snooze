@@ -37,7 +37,8 @@
     ]
   },
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "test:ci": "phpunit --coverage-clover=coverage.xml"
   },
   "extra": {
     "laravel": {

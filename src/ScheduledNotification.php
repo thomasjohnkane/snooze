@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
@@ -111,7 +112,8 @@ class ScheduledNotification
     public static function cancelByTarget(object $notifiable): int
     {
         if (! $notifiable instanceof Model) {
-            return 0;
+            throw new LaravelSnoozeException(
+                'Cannot cancel AnonymousNotifiable by instance. Use the `cancelAnonymousNotificationsByChannel` method instead');
         }
 
         $modelClass = self::getScheduledNotificationModelClass();

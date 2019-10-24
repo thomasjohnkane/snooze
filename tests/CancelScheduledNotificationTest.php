@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Notification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\ScheduledNotification;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
 
@@ -102,5 +103,16 @@ class CancelScheduledNotificationTest extends TestCase
         $all = ScheduledNotification::all();
         $this->assertSame(2, $all->count());
         $this->assertNull($all->first()->getTargetId());
+    }
+
+    public function testCannotCancelAnonTarget()
+    {
+        $target = (new AnonymousNotifiable())->route('email', 'hello@example.com');
+
+        $this->expectException(LaravelSnoozeException::class);
+        $this->expectExceptionMessage('Cannot cancel AnonymousNotifiable by instance');
+
+        $this->assertNull(ScheduledNotification::findByTarget($target));
+        ScheduledNotification::cancelByTarget($target);
     }
 }

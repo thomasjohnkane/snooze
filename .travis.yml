@@ -24,16 +24,13 @@ before_install:
   - travis_retry composer self-update --stable -n
   - composer validate --no-check-all --strict
   - composer require "laravel/framework:${LARAVEL_VERSION}" --no-update -n
-  - mysql -e 'CREATE DATABASE test;'
-  - mysql -e "CREATE USER 'testing'@'localhost' IDENTIFIED BY 'testing';"
-  - mysql -e "GRANT ALL ON test.* TO 'testing'@'localhost';"
 
 install:
   - travis_retry composer install --no-suggest --prefer-dist -n -o
   - travis_retry composer require --dev satooshi/php-coveralls
 
-services:
-  - mysql
-
 script:
-  - composer test
+  - composer test:ci
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

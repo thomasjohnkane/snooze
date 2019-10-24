@@ -3,15 +3,12 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
-use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\ScheduledNotification;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 
 class CancelScheduledNotificationTest extends TestCase
 {

@@ -3,15 +3,15 @@
 namespace Thomasjohnkane\Snooze;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\AnonymousNotifiable;
-use Illuminate\Notifications\Notification;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
-use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 
 class ScheduledNotification
@@ -78,7 +78,7 @@ class ScheduledNotification
 
     public static function findByTarget(object $notifiable): ?Collection
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             return null;
         }
 
@@ -97,11 +97,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
         $query = $modelClass::query();
 
-        if (!$includeSent) {
+        if (! $includeSent) {
             $query->whereNull('sent_at');
         }
 
-        if (!$includeCanceled) {
+        if (! $includeCanceled) {
             $query->whereNull('cancelled_at');
         }
 
@@ -110,7 +110,7 @@ class ScheduledNotification
 
     public static function cancelByTarget(object $notifiable): int
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             return 0;
         }
 
@@ -135,10 +135,10 @@ class ScheduledNotification
             ->map(function (ScheduledNotificationModel $model) {
                 return [
                     'id' => $model->id,
-                    'routes' => Serializer::create()->unserializeNotifiable($model->target)->routes
+                    'routes' => Serializer::create()->unserializeNotifiable($model->target)->routes,
                 ];
             })
-            ->filter(function (array $item) use($channel, $route) {
+            ->filter(function (array $item) use ($channel, $route) {
                 // Check if the notifiable has a matching route for the specified channel
                 return collect($item['routes'])->search($route, true) === $channel;
             })

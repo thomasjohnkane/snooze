@@ -6,7 +6,10 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
@@ -41,8 +44,13 @@ class ScheduledNotification
 
         $modelClass = self::getScheduledNotificationModelClass();
 
+        $targetId = $notifiable instanceof Model ? $notifiable->getKey() : null;
+        $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
+
         return new self($modelClass::create([
-            'type' => get_class($notification),
+            'target_id' => $targetId,
+            'target_type' => $targetType,
+            'notification_type' => get_class($notification),
             'target' => Serializer::create()->serializeNotifiable($notifiable),
             'notification' => Serializer::create()->serializeNotification($notification),
             'send_at' => $sendAt,
@@ -63,21 +71,82 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
 
         if ($includeSent) {
-            return self::collection($modelClass::whereType($notificationClass)->get());
+            return self::collection($modelClass::whereNotificationType($notificationClass)->get());
         }
 
-        return self::collection($modelClass::whereType($notificationClass)->whereNull('sent_at')->get());
+        return self::collection($modelClass::whereNotificationType($notificationClass)->whereNull('sent_at')->get());
     }
 
-    public static function all(bool $includeSent = false): Collection
+    public static function findByTarget(object $notifiable): ?Collection
+    {
+        if (! $notifiable instanceof Model) {
+            return null;
+        }
+
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        $models = $modelClass::query()
+            ->whereTargetId($notifiable->getKey())
+            ->whereTargetType(get_class($notifiable))
+            ->get();
+
+        return self::collection($models);
+    }
+
+    public static function all(bool $includeSent = false, bool $includeCanceled = false): Collection
+    {
+        $modelClass = self::getScheduledNotificationModelClass();
+        $query = $modelClass::query();
+
+        if (! $includeSent) {
+            $query->whereNull('sent_at');
+        }
+
+        if (! $includeCanceled) {
+            $query->whereNull('cancelled_at');
+        }
+
+        return self::collection($query->get());
+    }
+
+    public static function cancelByTarget(object $notifiable): int
+    {
+        if (! $notifiable instanceof Model) {
+            throw new LaravelSnoozeException(
+                'Cannot cancel AnonymousNotifiable by instance. Use the `cancelAnonymousNotificationsByChannel` method instead');
+        }
+
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        return $modelClass::whereNull('sent_at')
+            ->whereNull('cancelled_at')
+            ->whereTargetId($notifiable->getKey())
+            ->whereTargetType(get_class($notifiable))
+            ->update(['cancelled_at' => Carbon::now()]);
+    }
+
+    public static function cancelAnonymousNotificationsByChannel(string $channel, string $route)
     {
         $modelClass = self::getScheduledNotificationModelClass();
 
-        if ($includeSent) {
-            return self::collection($modelClass::get());
-        }
+        $notificationsToCancel = $modelClass::whereNull('sent_at')
+            ->whereNull('cancelled_at')
+            ->whereTargetId(null)
+            ->whereTargetType(AnonymousNotifiable::class)
+            ->get()
+            ->map(function (ScheduledNotificationModel $model) {
+                return [
+                    'id' => $model->id,
+                    'routes' => Serializer::create()->unserializeNotifiable($model->target)->routes,
+                ];
+            })
+            ->filter(function (array $item) use ($channel, $route) {
+                // Check if the notifiable has a matching route for the specified channel
+                return collect($item['routes'])->search($route, true) === $channel;
+            })
+            ->pluck('id');
 
-        return self::collection($modelClass::whereNull('sent_at')->get());
+        return $modelClass::whereIn('id', $notificationsToCancel)->update(['cancelled_at' => Carbon::now()]);
     }
 
     /**
@@ -135,7 +204,17 @@ class ScheduledNotification
 
     public function getType()
     {
-        return $this->scheduleNotificationModel->type;
+        return $this->scheduleNotificationModel->notification_type;
+    }
+
+    public function getTargetType()
+    {
+        return $this->scheduleNotificationModel->target_type;
+    }
+
+    public function getTargetId()
+    {
+        return $this->scheduleNotificationModel->target_id;
     }
 
     public function getSentAt()

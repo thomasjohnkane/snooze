@@ -23,8 +23,10 @@ class ScheduledNotificationTest extends TestCase
         $columns = \Schema::getColumnListing('scheduled_notifications');
         $this->assertEquals([
             'id',
-            'type',
+            'target_id',
+            'target_type',
             'target',
+            'notification_type',
             'notification',
             'send_at',
             'sent_at',
@@ -41,6 +43,7 @@ class ScheduledNotificationTest extends TestCase
 
         $target = User::find(1);
 
+        /** @var ScheduledNotification $notification */
         $notification = $target->notifyAt(new TestNotification(User::find(2)), Carbon::now()->addSeconds(10));
 
         $this->assertInstanceOf(ScheduledNotification::class, $notification);
@@ -56,6 +59,9 @@ class ScheduledNotificationTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getSendAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getCreatedAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getUpdatedAt());
+
+        $this->assertEquals(1, $notification->getTargetId());
+        $this->assertSame(User::class, $notification->getTargetType());
 
         Notification::assertSentTo(
             $target,
@@ -217,6 +223,8 @@ class ScheduledNotificationTest extends TestCase
 
         $type2 = ScheduledNotification::findByType(TestNotificationTwo::class);
         $this->assertSame(2, $type2->count());
+
+        $this->assertSame(5, ScheduledNotification::findByTarget($target)->count());
 
         $all->first()->sendNow();
 

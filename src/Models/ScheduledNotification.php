@@ -25,8 +25,10 @@ class ScheduledNotification extends Model
     ];
 
     protected $fillable = [
-        'type',
+        'target_id',
+        'target_type',
         'target',
+        'notification_type',
         'notification',
         'send_at',
         'sent',

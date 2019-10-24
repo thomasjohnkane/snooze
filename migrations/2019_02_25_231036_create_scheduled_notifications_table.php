@@ -16,8 +16,11 @@ class CreateScheduledNotificationsTable extends Migration
         Schema::create(config('snooze.table'), function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('type');
+            $table->string('target_id')->nullable();
+            $table->string('target_type');
             $table->text('target');
+
+            $table->string('notification_type');
             $table->text('notification');
 
             $table->datetime('send_at');

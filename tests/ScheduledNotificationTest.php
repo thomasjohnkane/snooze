@@ -179,6 +179,18 @@ class ScheduledNotificationTest extends TestCase
         );
     }
 
+    public function testCannotCreateNotificationWithPastSentAt()
+    {
+        $this->expectException(SchedulingFailedException::class);
+        $target = User::find(1);
+
+        ScheduledNotification::create(
+            $target,
+            new TestNotification(User::find(2)),
+            Carbon::now()->subHour()
+        );
+    }
+
     public function testNotificationsCanBeQueried()
     {
         Notification::fake();

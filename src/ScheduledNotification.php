@@ -38,6 +38,10 @@ class ScheduledNotification
         Notification $notification,
         DateTimeInterface $sendAt
     ): self {
+        if ($sendAt <= Carbon::now()->subMinute()) {
+            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s', $sendAt->format(DATE_ISO8601)));
+        }
+
         if (! method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }

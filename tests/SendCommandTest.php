@@ -3,7 +3,9 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
@@ -51,6 +53,24 @@ class SendCommandTest extends TestCase
     {
         $this->artisan('snooze:send')
             ->expectsOutput('No Scheduled Notifications need to be sent.')
+            ->assertExitCode(0);
+    }
+
+    public function testItCatchesFailedScheduledNotifications()
+    {
+        $target = User::find(1);
+
+        $notification = $target->notifyAt(new TestNotification(User::find(2)), Carbon::now());
+
+        $model = ScheduledNotificationModel::find(1);
+        $model->target = 'gobelygook';
+        $model->save();
+
+        Log::shouldReceive('error')
+            ->with('Failed to send notification: unserialize(): Error at offset 0 of 10 bytes');
+
+        $this->artisan('snooze:send')
+            ->expectsOutput('Starting Sending Scheduled Notifications')
             ->assertExitCode(0);
     }
 }

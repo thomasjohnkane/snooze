@@ -130,7 +130,7 @@ class ScheduledNotification extends Model
         }
 
         if ($this->sent_at !== null) {
-            throw new NotificationAlreadySentException('Cannot Reschedule. Date format is incorrect.', 1);
+            throw new NotificationAlreadySentException('Cannot Reschedule. Notification Already Sent', 1);
         }
 
         if ($this->cancelled_at !== null) {

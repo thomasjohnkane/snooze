@@ -18,7 +18,7 @@ trait SnoozeNotifiable
      * @return ScheduledNotification
      * @throws SchedulingFailedException
      */
-    public function notifyAt($notification, DateTimeInterface $sendAt)
+    public function notifyAt($notification, DateTimeInterface $sendAt): ScheduledNotification
     {
         return ScheduledNotification::create($this, $notification, $sendAt);
     }

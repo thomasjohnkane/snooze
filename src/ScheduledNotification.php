@@ -3,16 +3,16 @@
 namespace Thomasjohnkane\Snooze;
 
 use Carbon\Carbon;
-use DateTimeInterface;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Collection;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
-use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 
 class ScheduledNotification

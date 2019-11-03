@@ -3,12 +3,12 @@
 namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
-use Thomasjohnkane\Snooze\Serializer;
 use Illuminate\Database\Eloquent\Model;
-use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
-use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
+use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Serializer;
 
 class ScheduledNotification extends Model
 {

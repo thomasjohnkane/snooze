@@ -6,8 +6,8 @@ namespace Thomasjohnkane\Snooze\Traits;
 
 use DateTimeInterface;
 use Illuminate\Notifications\Notification;
-use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
+use Thomasjohnkane\Snooze\ScheduledNotification;
 
 trait SnoozeNotifiable
 {

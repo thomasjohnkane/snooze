@@ -3,10 +3,10 @@
 namespace Thomasjohnkane\Snooze\Tests\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Thomasjohnkane\Snooze\Tests\Models\User;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Thomasjohnkane\Snooze\Tests\Models\User;
 
 class TestNotification extends Notification implements ShouldQueue
 {

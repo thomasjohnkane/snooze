@@ -5,8 +5,8 @@ namespace Thomasjohnkane\Snooze\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
-use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
+use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestInterruptableNotification;
 
 class CanInterruptNotificationTest extends TestCase

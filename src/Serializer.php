@@ -9,17 +9,17 @@ class Serializer
 {
     use SerializesAndRestoresModelIdentifiers;
 
-    public static function create()
+    public static function create(): self
     {
         return new self();
     }
 
-    public function serializeNotifiable(object $notifiable)
+    public function serializeNotifiable(object $notifiable): string
     {
         return serialize(self::getSerializedPropertyValue(clone $notifiable));
     }
 
-    public function serializeNotification(Notification $notification)
+    public function serializeNotification(Notification $notification): string
     {
         return serialize(clone $notification);
     }

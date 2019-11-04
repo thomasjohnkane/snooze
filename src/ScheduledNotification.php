@@ -4,6 +4,7 @@ namespace Thomasjohnkane\Snooze;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -129,7 +130,7 @@ class ScheduledNotification
             ->update(['cancelled_at' => Carbon::now()]);
     }
 
-    public static function cancelAnonymousNotificationsByChannel(string $channel, string $route)
+    public static function cancelAnonymousNotificationsByChannel(string $channel, string $route): int
     {
         $modelClass = self::getScheduledNotificationModelClass();
 
@@ -244,7 +245,7 @@ class ScheduledNotification
     /**
      * @return Carbon|CarbonImmutable
      */
-    public function getSendAt()
+    public function getSendAt(): CarbonInterface
     {
         return $this->scheduleNotificationModel->send_at;
     }
@@ -252,7 +253,7 @@ class ScheduledNotification
     /**
      * @return Carbon|CarbonImmutable
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): CarbonInterface
     {
         return $this->scheduleNotificationModel->created_at;
     }
@@ -260,7 +261,7 @@ class ScheduledNotification
     /**
      * @return Carbon|CarbonImmutable
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): CarbonInterface
     {
         return $this->scheduleNotificationModel->updated_at;
     }
@@ -268,7 +269,7 @@ class ScheduledNotification
     /**
      * @return bool
      */
-    public function getShouldInterrupt()
+    public function shouldInterrupt(): bool
     {
         return $this->scheduleNotificationModel->shouldInterrupt();
     }

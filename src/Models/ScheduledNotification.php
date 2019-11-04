@@ -52,7 +52,7 @@ class ScheduledNotification extends Model
         $this->serializer = Serializer::create();
     }
 
-    public function send()
+    public function send(): void
     {
         if ($this->cancelled_at !== null) {
             throw new NotificationCancelledException('Cannot Send. Notification cancelled.', 1);
@@ -85,7 +85,7 @@ class ScheduledNotification extends Model
      *
      * @return bool
      */
-    public function shouldInterrupt(?object $notification = null)
+    public function shouldInterrupt(?object $notification = null): bool
     {
         if (! $notification) {
             $notification = $this->serializer->unserializeNotification($this->notification);
@@ -102,7 +102,7 @@ class ScheduledNotification extends Model
      * @return void
      * @throws NotificationAlreadySentException
      */
-    public function cancel()
+    public function cancel(): void
     {
         if ($this->sent_at !== null) {
             throw new NotificationAlreadySentException('Cannot Cancel. Notification already sent.', 1);
@@ -120,7 +120,7 @@ class ScheduledNotification extends Model
      * @throws NotificationAlreadySentException
      * @throws NotificationCancelledException
      */
-    public function reschedule($sendAt, $force = false)
+    public function reschedule($sendAt, $force = false): self
     {
         if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
@@ -131,7 +131,7 @@ class ScheduledNotification extends Model
         }
 
         if ($this->sent_at !== null) {
-            throw new NotificationAlreadySentException('Cannot Reschedule. Date format is incorrect.', 1);
+            throw new NotificationAlreadySentException('Cannot Reschedule. Notification Already Sent', 1);
         }
 
         if ($this->cancelled_at !== null) {
@@ -150,7 +150,7 @@ class ScheduledNotification extends Model
      *
      * @return self
      */
-    public function scheduleAgainAt($sendAt)
+    public function scheduleAgainAt($sendAt): self
     {
         if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);

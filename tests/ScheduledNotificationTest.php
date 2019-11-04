@@ -40,6 +40,7 @@ class ScheduledNotificationTest extends TestCase
     public function testItCreatesAndSendsNotification()
     {
         Notification::fake();
+        Carbon::setTestNow('2025-01-01 01:00:00');
 
         $target = User::find(1);
 
@@ -55,6 +56,10 @@ class ScheduledNotificationTest extends TestCase
         $this->assertFalse($notification->isRescheduled());
         $this->assertFalse($notification->isCancelled());
         $this->assertSame(TestNotification::class, $notification->getType());
+
+        $this->assertEquals(Carbon::now(), $notification->getSentAt());
+        $this->assertNull($notification->getCancelledAt());
+        $this->assertNull($notification->getRescheduledAt());
 
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getSendAt());
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getCreatedAt());
@@ -131,6 +136,30 @@ class ScheduledNotificationTest extends TestCase
         $notification->sendNow();
     }
 
+    public function testNotificationCanBeRescheduled()
+    {
+        $target = User::find(1);
+
+        $notification = ScheduledNotification::create(
+            $target,
+            new TestNotification(User::find(2)),
+            Carbon::now()->addSeconds(10)
+        );
+
+        $notification2 = $notification->reschedule(Carbon::parse('2040-01-01'));
+        $this->assertSame('2040-01-01', $notification2->getSendAt()->format('Y-m-d'));
+
+        $notification3 = $notification->reschedule('2050-01-01');
+        $this->assertSame('2050-01-01', $notification3->getSendAt()->format('Y-m-d'));
+
+        $notification3->sendNow();
+
+        // Force reschedule
+        $notification4 = $notification->reschedule('2060-01-01', true);
+        $this->assertSame('2060-01-01', $notification4->getSendAt()->format('Y-m-d'));
+        $this->assertNotSame($notification3->getId(), $notification4->getId());
+    }
+
     public function testSentNotificationCanBeScheduledAgain()
     {
         $target = User::find(1);
@@ -145,8 +174,10 @@ class ScheduledNotificationTest extends TestCase
 
         $this->assertTrue($notification->isSent());
         $notification2 = $notification->scheduleAgainAt(Carbon::now()->addDay());
+        $notification3 = $notification->scheduleAgainAt('2050-01-01');
 
         $this->assertNotSame($notification->getId(), $notification2->getId());
+        $this->assertNotSame($notification->getId(), $notification3->getId());
     }
 
     public function testSentNotificationCannotBeRescheduled()
@@ -163,9 +194,24 @@ class ScheduledNotificationTest extends TestCase
 
         $this->expectException(NotificationAlreadySentException::class);
 
-        $notification2 = $notification->reschedule(Carbon::now()->addDay());
+        $notification->reschedule(Carbon::now()->addDay());
+    }
 
-        $this->assertNotSame($notification->getId(), $notification2->getId());
+    public function testCancelledNotificationCannotBeRescheduled()
+    {
+        $target = User::find(1);
+
+        $notification = ScheduledNotification::create(
+            $target,
+            new TestNotification(User::find(2)),
+            Carbon::now()->addSeconds(10)
+        );
+
+        $notification->cancel();
+
+        $this->expectException(NotificationCancelledException::class);
+
+        $notification->reschedule(Carbon::now()->addDay());
     }
 
     public function testCannotCreateNotificationWithNonNotifiable()

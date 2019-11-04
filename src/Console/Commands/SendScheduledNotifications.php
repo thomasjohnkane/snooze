@@ -28,7 +28,7 @@ class SendScheduledNotifications extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $tolerance = config('snooze.sendTolerance');
 
@@ -59,7 +59,7 @@ class SendScheduledNotifications extends Command
                 $notification->send();
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
-                Log::error($e->getMessage());
+                Log::error(sprintf('Failed to send notification: %s', $e->getMessage()));
             }
         });
 

@@ -29,8 +29,10 @@ class CanInterruptNotificationTest extends TestCase
 
         // Assert
         // Check wasn't sent (exception?)
+        $notification->refresh();
         $this->assertFalse($notification->isSent());
-        $this->assertTrue($notification->shouldInterrupt());
+        $this->assertTrue($notification->isCancelled());
+        $this->assertTrue($notification->getShouldInterrupt());
 
         Notification::assertNothingSent();
 

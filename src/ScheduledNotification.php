@@ -187,6 +187,11 @@ class ScheduledNotification
         $this->scheduleNotificationModel->send();
     }
 
+    public function refresh(): void
+    {
+        $this->scheduleNotificationModel->refresh();
+    }
+
     public function isSent(): bool
     {
         return $this->scheduleNotificationModel->sent_at !== null;

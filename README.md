@@ -12,7 +12,6 @@ Laravel Snooze
 
 [![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/snooze/v/stable)](https://packagist.org/packages/thomasjohnkane/snooze)
 [![Total Downloads](https://poser.pugx.org/thomasjohnkane/snooze/downloads)](https://packagist.org/packages/thomasjohnkane/snooze)
-[![Latest Unstable Version](https://poser.pugx.org/thomasjohnkane/snooze/v/unstable)](https://packagist.org/packages/thomasjohnkane/snooze)
 [![License](https://poser.pugx.org/thomasjohnkane/snooze/license)](https://packagist.org/packages/thomasjohnkane/snooze)
 
 ### Why use this package?
@@ -160,61 +159,7 @@ public function shouldInterrupt($notifiable) {
 
 If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
 
-## Project Roadmap
-
-- [x] Initial setup
-    - [x] Create boilerplate template
-    - [x] Add Readme and project roadmap
-    - [x] Create data model and add DB migration for table
-    - [x] Add table name to package config
-    - [x] Write initital `snooze:send` command to run
-    - [x] Schedule the send command automatically
-    - [x] Add send frequency to config file
-
-- [x] Basic Usage
-    - [x] Write example(s) for how to create notifications
-    - [x] Link to articles for running the command and such...
-    - [x] Add method for cancelling scheduled notifications
-        - [x] Handle already sent notifications
-    - [x] Add method for rescheduling notifications
-        - [x] Handle notifications that already sent, or are cancelled?
-    - [x] Add scope for searching data column
-        - [x] hasData() and orHasData() using arrow notation with data pre-appended
-        - [x] whereDataContains() using whereJsonContains with data assumed
-        - [x] Add usage examples for the scopes
-    - [ ] Make sure the notification exists before scheduling?
- 
-- [x] Generators
-    - [x] Create generator for scheduled notification stub
-    - [x] Add generators for linked mailable and email view (options)
-        - [x] -mail, -mm (mail + markdown)
-    - [x] Add instructions for using generators
-
-- [ ] Tests
-    - [x] Get basic coverage for "create"
-    - [x] Cancel
-    - [x] Reschedule
-    - [x] scheduleAgainAt (duplicate)
-    - [x] Send command
-
-- [x] Add logo and those badges
-
-- [ ] Submit V1 to Packagist
-
-- [ ] Admin UI
-    - [ ] Show tab for past notifications
-    - [ ] Show tab for scheduled notifications
-    - [ ] Give CRUD options for scheduled notifications
-    - [ ] Create as a Nova Package
-
-- [ ] Create generator for new "interval notification command"
-    - [ ] Include available input flags
-        - frequency; monthly, weekly, daily, etc
-        - notifiable model type
-            - default to `\App\User`
-        - initial each loop to send notification
-
-## Run Tests
+## Running the Tests
 
 ```bash
 composer test

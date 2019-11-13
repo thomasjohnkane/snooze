@@ -41,8 +41,8 @@ class TestInterruptableNotification extends Notification implements ShouldQueue
             ->line(sprintf('Email: %s', $this->newUser->email));
     }
 
-    public function shouldInterrupt()
+    public function shouldInterrupt(object $notifiable)
     {
-        return true;
+        return $notifiable->id === 1;
     }
 }

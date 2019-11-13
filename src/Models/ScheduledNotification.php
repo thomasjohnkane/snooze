@@ -65,7 +65,7 @@ class ScheduledNotification extends Model
         $notifiable = $this->serializer->unserializeNotifiable($this->target);
         $notification = $this->serializer->unserializeNotification($this->notification);
 
-        if ($this->shouldInterrupt($notification)) {
+        if ($this->shouldInterrupt($notification, $notifiable)) {
             $this->cancel();
             event(new NotificationInterrupted($this));
 
@@ -81,18 +81,24 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param object $notification
+     * @param object|null $notification
+     *
+     * @param object|null $notifiable
      *
      * @return bool
      */
-    public function shouldInterrupt(?object $notification = null): bool
+    public function shouldInterrupt(?object $notification = null, ?object $notifiable = null): bool
     {
         if (! $notification) {
             $notification = $this->serializer->unserializeNotification($this->notification);
         }
 
+        if (! $notifiable) {
+            $notifiable = $this->serializer->unserializeNotifiable($this->target);
+        }
+
         if (method_exists($notification, 'shouldInterrupt')) {
-            return (bool) $notification->shouldInterrupt();
+            return (bool) $notification->shouldInterrupt($notifiable);
         }
 
         return false;

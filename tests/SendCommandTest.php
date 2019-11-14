@@ -67,7 +67,7 @@ class SendCommandTest extends TestCase
         $model->save();
 
         Log::shouldReceive('error')
-            ->with('Failed to send notification: unserialize(): Error at offset 0 of 10 bytes');
+            ->withSomeOfArgs('unserialize(): Error at offset 0 of 10 bytes');
 
         $this->artisan('snooze:send')
             ->expectsOutput('Starting Sending Scheduled Notifications')

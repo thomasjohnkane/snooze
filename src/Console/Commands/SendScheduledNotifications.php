@@ -4,7 +4,6 @@ namespace Thomasjohnkane\Snooze\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification;
 
 class SendScheduledNotifications extends Command
@@ -58,8 +57,8 @@ class SendScheduledNotifications extends Command
             try {
                 $notification->send();
             } catch (\Exception $e) {
+                report($e);
                 $this->error($e->getMessage());
-                Log::error(sprintf('Failed to send notification: %s', $e->getMessage()));
             }
         });
 

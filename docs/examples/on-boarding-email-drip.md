@@ -49,9 +49,9 @@ class User {
     {
         $now = Carbon::now();
    
-        $user->notifyAt(new SignUpConfirmation($user), Carbon::now()->addHour();
-        $user->notifyAt(new WelcomeToCommunity($user), Carbon::now()->addDays(3);
-        $user->notifyAt(new UpsellSubscription($user), Carbon::now()->addWeek();
+        $user->notifyAt(new SignUpConfirmation($user), Carbon::now()->addHour());
+        $user->notifyAt(new WelcomeToCommunity($user), Carbon::now()->addDays(3));
+        $user->notifyAt(new UpsellSubscription($user), Carbon::now()->addWeek());
     }
     ```
 

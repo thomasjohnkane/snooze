@@ -45,7 +45,6 @@ class PruneCommandTest extends TestCase
         $cancelled2MonthsAgo->cancelled_at = Carbon::now()->subMonths(2);
         $cancelled2MonthsAgo->save();
 
-
         $sent1WeekAgo = $base->replicate();
         $sent1WeekAgo->sent_at = Carbon::now()->subWeek();
         $sent1WeekAgo->save();
@@ -53,7 +52,6 @@ class PruneCommandTest extends TestCase
         $cancelled1WeekAgo = $base->replicate();
         $cancelled1WeekAgo->cancelled_at = Carbon::now()->subWeek();
         $cancelled1WeekAgo->save();
-
 
         $this->artisan('snooze:prune')
             ->expectsOutput('Pruned 2 scheduled notifications')

@@ -103,11 +103,17 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of 
 the old scheduled notifications at once, the command will only send mail within the configured tolerance. 
 By default this is set to 24 hours, so only mail scheduled to be sent within that window will be sent. This can be
-configured in the `snooze.php` config file. 
+configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` environment variable or in the `snooze.php` config file. 
+
+### Setting the prune age
+
+By default the package will prune sent and cancelled messages that were sent/cancelled more than 30 days ago. You can
+configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file 
+(unit is days). You can also disable pruning completely by setting the value to `null`
 
 #### Detailed Examples
 
-- [Delayed Notifcation (1 week)][3]
+- [Delayed Notification (1 week)][3]
 - [Simple On-boarding Email Drip][5]
 - [Exposing Custom Data to the Notification/Email][4]
 

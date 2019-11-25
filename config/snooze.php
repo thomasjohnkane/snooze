@@ -29,7 +29,6 @@ return [
      */
     'sendTolerance' => env('SCHEDULED_NOTIFICATION_SEND_TOLERANCE', 60 * 60 * 24),
 
-
     /*
      * The age at which to prune sent/cancelled notifications, in days.
      * If set to null, pruning will be turned off. By default it's set to 30 days

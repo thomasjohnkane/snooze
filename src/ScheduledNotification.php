@@ -49,8 +49,10 @@ class ScheduledNotification
 
         $modelClass = self::getScheduledNotificationModelClass();
 
-        $targetId = $notifiable instanceof Model ? $notifiable->getKey() : null;
-        $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
+        $isModel = $notifiable instanceof Model;
+        
+        $targetId = $isModel ? $notifiable->getKey() : null;
+        $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : $isModel ? $notifiable->getMorphClass() : get_class($notifiable);
 
         return new self($modelClass::create([
             'target_id' => $targetId,

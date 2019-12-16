@@ -10,6 +10,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected $commands = [
         Console\Commands\SendScheduledNotifications::class,
+        Console\Commands\PruneScheduledNotifications::class,
     ];
 
     public function boot()
@@ -19,6 +20,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $frequency = config('snooze.sendFrequency', 'everyMinute');
             $schedule = $this->app->make(Schedule::class);
             $schedule->command('snooze:send')->{$frequency}();
+
+            if (config('snooze.pruneAge') !== null) {
+                $schedule->command('snooze:prune')->daily();
+            }
         });
 
         $this->publishes([

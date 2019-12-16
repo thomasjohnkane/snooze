@@ -107,9 +107,9 @@ configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` enviro
 
 ### Setting the prune age
 
-By default the package will prune sent and cancelled messages that were sent/cancelled more than 30 days ago. You can
+The package can prune sent and cancelled messages that were sent/cancelled more than x days ago. You can
 configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file 
-(unit is days). You can also disable pruning completely by setting the value to `null`
+(unit is days). This feature is turned off by default.
 
 #### Detailed Examples
 

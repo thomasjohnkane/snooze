@@ -31,7 +31,7 @@ return [
 
     /*
      * The age at which to prune sent/cancelled notifications, in days.
-     * If set to null, pruning will be turned off. By default it's set to 30 days
+     * If set to null, pruning will be turned off. By default it's turned off
      */
-    'pruneAge' => env('SCHEDULED_NOTIFICATION_PRUNE_AGE', 30),
+    'pruneAge' => env('SCHEDULED_NOTIFICATION_PRUNE_AGE', null),
 ];

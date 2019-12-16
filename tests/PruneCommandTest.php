@@ -11,14 +11,14 @@ class PruneCommandTest extends TestCase
 {
     public function testItCanBeDisabled()
     {
-        $this->app->config->set('snooze.pruneAge', null);
-
         $this->artisan('snooze:prune')
             ->expectsOutput('Pruning of scheduled notifications is disabled');
     }
 
     public function testItDoesNotPruneRecentNotifications()
     {
+        $this->app->config->set('snooze.pruneAge', 30);
+
         $target = User::find(1);
 
         $target->notifyAt(new TestNotification(User::find(2)), Carbon::now());
@@ -32,6 +32,8 @@ class PruneCommandTest extends TestCase
 
     public function testPrunesCorrectNotifications()
     {
+        $this->app->config->set('snooze.pruneAge', 30);
+
         $target = User::find(1);
 
         $notification = $target->notifyAt(new TestNotification(User::find(2)), Carbon::now());

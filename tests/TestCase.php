@@ -70,6 +70,8 @@ class TestCase extends Orchestra
     {
         file_put_contents($this->getTempDirectory().'/database.sqlite', null);
 
+        include_once __DIR__.'/../migrations/create_scheduled_notifications_table.stub';
+        (new \CreateScheduledNotificationsTable())->up();
         $this->artisan('migrate')->run();
 
         $app['db']->connection()->getSchemaBuilder()->create('users', function (Blueprint $table) {

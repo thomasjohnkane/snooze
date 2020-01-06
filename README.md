@@ -31,12 +31,17 @@ Install via composer
 ```bash
 composer require thomasjohnkane/snooze
 ```
+
+### Publish & run migrations
+
 ```bash
+php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="migrations"
 php artisan migrate
 ```
+
 *For Laravel < 5.5:* [Register Service Provider && Facade][1]
 
-### Publish Configuration File
+### Publish Configuration File (optional)
 
 ```bash
 php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --tag="config"

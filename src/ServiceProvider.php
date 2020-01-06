@@ -30,7 +30,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             self::CONFIG_PATH => config_path('snooze.php'),
         ], 'config');
 
-        $this->loadMigrationsFrom(__DIR__.'/../migrations');
+        if (! class_exists('CreateScheduledNotificationsTable')) {
+            $this->publishes([
+                __DIR__ . '/../migrations/create_scheduled_notifications_table.stub' => database_path('migrations/' . date('Y_m_d_His') . '_create_scheduled_notifications_table.php'),
+            ], 'migrations');
+        }
 
         if ($this->app->runningInConsole()) {
             $this->commands($this->commands);

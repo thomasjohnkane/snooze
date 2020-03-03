@@ -34,7 +34,6 @@ composer require thomasjohnkane/snooze
 ```bash
 php artisan migrate
 ```
-*For Laravel < 5.5:* [Register Service Provider && Facade][1]
 
 ### Publish Configuration File
 

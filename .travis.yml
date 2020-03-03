@@ -9,10 +9,12 @@ notifications:
 
 php:
   - 7.2
+  - 7.4
 
 env:
   - LARAVEL_VERSION=5.8.*
   - LARAVEL_VERSION=6.0.*
+  - LARAVEL_VERSION=7.0.*
 
 dist: xenial
 

@@ -21,7 +21,7 @@ class Serializer
 
     public function serializeNotification(Notification $notification): string
     {
-        return serialize(clone $notification);
+        return base64_encode(serialize(clone $notification));
     }
 
     public function unserializeNotifiable(string $serialized)
@@ -31,6 +31,6 @@ class Serializer
 
     public function unserializeNotification(string $serialized)
     {
-        return unserialize($serialized);
+        return unserialize(base64_decode($serialized));
     }
 }

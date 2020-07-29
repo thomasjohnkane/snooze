@@ -206,9 +206,9 @@ class ScheduledNotification
     {
         return $this->scheduleNotificationModel->rescheduled_at !== null;
     }
-    
+
     /**
-     * Unserialize and return the underlying notification class from the model
+     * Unserialize and return the underlying notification class from the model.
      *
      * @return mixed
      */

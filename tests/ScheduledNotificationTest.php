@@ -292,4 +292,15 @@ class ScheduledNotificationTest extends TestCase
         $all = ScheduledNotification::all(true);
         $this->assertSame(5, $all->count());
     }
+
+    public function testNotificationClassCanBeRetreived()
+    {
+        $target = User::find(1);
+        $notification = new TestNotification(User::find(2));
+
+        $scheduled_notification = ScheduledNotification::create($target, $notification, Carbon::now()->addSeconds(10));
+
+        $this->assertInstanceOf(TestNotification::class, $scheduled_notification->getNotification());
+        $this->assertEquals($scheduled_notification->getNotification()->newUser->email, $notification->newUser->email);
+    }
 }

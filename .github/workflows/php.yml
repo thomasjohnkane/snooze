@@ -18,12 +18,12 @@ jobs:
       uses: shivammathur/setup-php@master
       with:
         php-version: ${{ matrix.php-versions }}
-        extension-csv: mbstring, xdebug
+        extensions: mbstring, xdebug
         coverage: xdebug
     - name: Install dependencies
       run: |
         composer require --no-update --no-interaction "illuminate/support:${{ matrix.laravel-version }}" satooshi/php-coveralls
-        composer update --prefer-${{ matrix.stabilty }} --no-interaction --prefer-dist --no-suggest
+        composer update --no-interaction --prefer-dist --no-suggest
     - name: Lint composer.json
       run: composer validate
     - name: Run Tests

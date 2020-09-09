@@ -9,6 +9,7 @@ use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationM
 use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
+use TiMacDonald\Log\LogFake;
 
 class SendCommandTest extends TestCase
 {
@@ -58,6 +59,8 @@ class SendCommandTest extends TestCase
 
     public function testItCatchesFailedScheduledNotifications()
     {
+        Log::swap(new LogFake());
+
         $target = User::find(1);
 
         $notification = $target->notifyAt(new TestNotification(User::find(2)), Carbon::now());
@@ -66,11 +69,10 @@ class SendCommandTest extends TestCase
         $model->target = 'gobelygook';
         $model->save();
 
-        Log::shouldReceive('error')
-            ->withSomeOfArgs('unserialize(): Error at offset 0 of 10 bytes');
-
         $this->artisan('snooze:send')
             ->expectsOutput('Starting Sending Scheduled Notifications')
             ->assertExitCode(0);
+
+        Log::assertLoggedMessage('error', 'unserialize(): Error at offset 0 of 10 bytes');
     }
 }

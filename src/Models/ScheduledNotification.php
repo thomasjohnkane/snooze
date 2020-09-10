@@ -31,7 +31,7 @@ class ScheduledNotification extends Model
         'notification_type',
         'notification',
         'send_at',
-        'sent',
+        'sent_at',
         'rescheduled',
         'cancelled',
         'created_at',

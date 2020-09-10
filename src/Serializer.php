@@ -1,36 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Thomasjohnkane\Snooze;
 
-use Illuminate\Notifications\Notification;
+use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\PostgresConnection;
 use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
+use Illuminate\Support\Str;
 
 class Serializer
 {
     use SerializesAndRestoresModelIdentifiers;
 
-    public static function create(): self
+    /** @var ConnectionInterface */
+    protected $connection;
+
+    public function __construct(ConnectionInterface $connection)
     {
-        return new self();
+        $this->connection = $connection;
     }
 
-    public function serializeNotifiable(object $notifiable): string
+    public function serialize(object $notifiable): string
     {
-        return serialize(self::getSerializedPropertyValue(clone $notifiable));
+        $result = serialize($this->getSerializedPropertyValue(clone $notifiable));
+
+        if ($this->connection instanceof PostgresConnection && Str::contains($result, "\0")) {
+            $result = base64_encode($result);
+        }
+
+        return $result;
     }
 
-    public function serializeNotification(Notification $notification): string
+    public function unserialize(string $serialized)
     {
-        return serialize(clone $notification);
-    }
+        if ($this->connection instanceof PostgresConnection && ! Str::contains($serialized, [':', ';'])) {
+            $serialized = base64_decode($serialized);
+        }
 
-    public function unserializeNotifiable(string $serialized)
-    {
-        return $this->getRestoredPropertyValue(unserialize($serialized));
-    }
+        $object = unserialize($serialized);
 
-    public function unserializeNotification(string $serialized)
-    {
-        return unserialize($serialized);
+        return $this->getRestoredPropertyValue(
+            $object
+        );
     }
 }

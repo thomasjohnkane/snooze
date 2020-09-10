@@ -47,6 +47,7 @@ class ScheduledNotification
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }
 
+        $serializer = app(Serializer::class);
         $modelClass = self::getScheduledNotificationModelClass();
 
         $targetId = $notifiable instanceof Model ? $notifiable->getKey() : null;
@@ -56,8 +57,8 @@ class ScheduledNotification
             'target_id' => $targetId,
             'target_type' => $targetType,
             'notification_type' => get_class($notification),
-            'target' => Serializer::create()->serializeNotifiable($notifiable),
-            'notification' => Serializer::create()->serializeNotification($notification),
+            'target' => $serializer->serialize($notifiable),
+            'notification' => $serializer->serialize($notification),
             'send_at' => $sendAt,
         ]));
     }
@@ -132,6 +133,7 @@ class ScheduledNotification
 
     public static function cancelAnonymousNotificationsByChannel(string $channel, string $route): int
     {
+        $serializer = app(Serializer::class);
         $modelClass = self::getScheduledNotificationModelClass();
 
         $notificationsToCancel = $modelClass::whereNull('sent_at')
@@ -139,10 +141,10 @@ class ScheduledNotification
             ->whereTargetId(null)
             ->whereTargetType(AnonymousNotifiable::class)
             ->get()
-            ->map(function (ScheduledNotificationModel $model) {
+            ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
                     'id' => $model->id,
-                    'routes' => Serializer::create()->unserializeNotifiable($model->target)->routes,
+                    'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
             ->filter(function (array $item) use ($channel, $route) {
@@ -214,7 +216,7 @@ class ScheduledNotification
      */
     public function getNotification()
     {
-        return Serializer::create()->unserializeNotification($this->scheduleNotificationModel->notification);
+        return app(Serializer::class)->unserialize($this->scheduleNotificationModel->notification);
     }
 
     public function getId()

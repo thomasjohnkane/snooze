@@ -207,6 +207,16 @@ class ScheduledNotification
         return $this->scheduleNotificationModel->rescheduled_at !== null;
     }
 
+    /**
+     * Unserialize and return the underlying notification class from the model.
+     *
+     * @return mixed
+     */
+    public function getNotification()
+    {
+        return Serializer::create()->unserializeNotification($this->scheduleNotificationModel->notification);
+    }
+
     public function getId()
     {
         return $this->scheduleNotificationModel->id;

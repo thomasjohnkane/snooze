@@ -49,7 +49,7 @@ class ScheduledNotification extends Model
         parent::__construct($attributes);
 
         $this->table = config('snooze.snooze_table');
-        $this->serializer = Serializer::create();
+        $this->serializer = app(Serializer::class);
     }
 
     public function send(): void
@@ -62,8 +62,8 @@ class ScheduledNotification extends Model
             throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
         }
 
-        $notifiable = $this->serializer->unserializeNotifiable($this->target);
-        $notification = $this->serializer->unserializeNotification($this->notification);
+        $notifiable = $this->serializer->unserialize($this->target);
+        $notification = $this->serializer->unserialize($this->notification);
 
         if ($this->shouldInterrupt($notification, $notifiable)) {
             $this->cancel();
@@ -90,11 +90,11 @@ class ScheduledNotification extends Model
     public function shouldInterrupt(?object $notification = null, ?object $notifiable = null): bool
     {
         if (! $notification) {
-            $notification = $this->serializer->unserializeNotification($this->notification);
+            $notification = $this->serializer->unserialize($this->notification);
         }
 
         if (! $notifiable) {
-            $notifiable = $this->serializer->unserializeNotifiable($this->target);
+            $notifiable = $this->serializer->unserialize($this->target);
         }
 
         if (method_exists($notification, 'shouldInterrupt')) {

@@ -48,7 +48,7 @@ class ScheduledNotification extends Model
     {
         parent::__construct($attributes);
 
-        $this->table = config('snooze.snooze_table');
+        $this->table = config('snooze.table');
         $this->serializer = app(Serializer::class);
     }
 

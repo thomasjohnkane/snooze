@@ -17,11 +17,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         // Schedule base command to run every minute
         $this->app->booted(function () {
-            $shouldCancelSchedule = env('SNOOZE_CANCEL_SCHEDULE', false);
-            if($shouldCancelSchedule) return;
-            $frequency = config('snooze.sendFrequency', 'everyMinute');
-            $schedule = $this->app->make(Schedule::class);
-            $schedule->command('snooze:send')->{$frequency}();
+            if(!env('SNOOZE_CANCEL_SCHEDULE', false)) {
+                $frequency = config('snooze.sendFrequency', 'everyMinute');
+                $schedule = $this->app->make(Schedule::class);
+                $schedule->command('snooze:send')->{$frequency}();
+            }
+
 
             if (config('snooze.pruneAge') !== null) {
                 $schedule->command('snooze:prune')->daily();

@@ -164,6 +164,10 @@ public function shouldInterrupt($notifiable) {
 
 If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
 
+**Conditionally turn off scheduler**
+
+If you would like to turn off all notifications for your app, set an env variable of `SNOOZE_CANCEL_SCHEDULE` to `true` and it will turn off the scheduler
+
 ## Running the Tests
 
 ```bash

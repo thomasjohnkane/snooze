@@ -166,7 +166,7 @@ If this method is not present on your notification, the notification will *not* 
 
 **Conditionally turn off scheduler**
 
-If you would like to turn off all notifications for your app, set an env variable of `SNOOZE_CANCEL_SCHEDULE` to `true` and it will turn off the scheduler
+If you would like to turn off all notifications for your app, set an env variable of `SCHEDULED_NOTIFICATIONS_DISABLED` to `true` and it will turn off the auto scheduler. 
 
 ## Running the Tests
 

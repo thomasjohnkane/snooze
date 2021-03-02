@@ -35,10 +35,9 @@ return [
      */
     'pruneAge' => env('SCHEDULED_NOTIFICATION_PRUNE_AGE', null),
 
-
     /*
      * Use this to disable the auto scheduling of the notifications
      */
 
-    'disabled' => env('SCHEDULED_NOTIFICATIONS_DISABLED', false)
+    'disabled' => env('SCHEDULED_NOTIFICATIONS_DISABLED', false),
 ];

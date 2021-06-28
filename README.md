@@ -164,6 +164,12 @@ public function shouldInterrupt($notifiable) {
 
 If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
 
+**Conditionally turn off scheduler**
+
+If you would like to disable sending of scheduled notifications, set an env variable of `SCHEDULED_NOTIFICATIONS_DISABLED` to `true`. You will still be able to schedule notifications, and they will be sent once the scheduler is enabled.
+
+This could be useful for ensuring that scheduled notifications are only sent by a specific server, for example.
+
 ## Running the Tests
 
 ```bash

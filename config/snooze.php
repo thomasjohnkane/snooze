@@ -34,4 +34,12 @@ return [
      * If set to null, pruning will be turned off. By default it's turned off
      */
     'pruneAge' => env('SCHEDULED_NOTIFICATION_PRUNE_AGE', null),
+
+    /*
+     * Disable sending of scheduled notifications
+     * You will still be able to schedule notifications,
+     * and they will be sent once the scheduler is enabled.
+     */
+
+    'disabled' => env('SCHEDULED_NOTIFICATIONS_DISABLED', false),
 ];

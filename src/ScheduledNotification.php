@@ -21,9 +21,10 @@ class ScheduledNotification
     /** @var ScheduledNotificationModel */
     private $scheduleNotificationModel;
 
-    public function __construct(ScheduledNotificationModel $scheduleNotificationModel)
+    public function __construct()
     {
-        $this->scheduleNotificationModel = $scheduleNotificationModel;
+        $modelName = self::getScheduledNotificationModelClass();
+        $this->scheduleNotificationModel = new $modelName;
     }
 
     /**

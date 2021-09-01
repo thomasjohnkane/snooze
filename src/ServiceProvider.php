@@ -26,7 +26,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 } else {
                     $schedule->command('snooze:send')->{$frequency}();
                 }
-
             }
 
             if (config('snooze.pruneAge') !== null) {
@@ -35,7 +34,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 } else {
                     $schedule->command('snooze:prune')->daily();
                 }
-
             }
         });
 

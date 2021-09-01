@@ -20,11 +20,22 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             if (! config('snooze.disabled')) {
                 $frequency = config('snooze.sendFrequency', 'everyMinute');
                 $schedule = $this->app->make(Schedule::class);
-                $schedule->command('snooze:send')->{$frequency}();
+
+                if (config('snooze.onOneServer', false)) {
+                    $schedule->command('snooze:send')->{$frequency}()->onOneServer();
+                } else {
+                    $schedule->command('snooze:send')->{$frequency}();
+                }
+
             }
 
             if (config('snooze.pruneAge') !== null) {
-                $schedule->command('snooze:prune')->daily();
+                if (config('snooze.onOneServer', false)) {
+                    $schedule->command('snooze:prune')->daily()->onOneServer();
+                } else {
+                    $schedule->command('snooze:prune')->daily();
+                }
+
             }
         });
 

@@ -180,8 +180,6 @@ SCHEDULED_NOTIFICATIONS_ONE_SERVER = true
 
 ```
 
-
-
 ## Running the Tests
 
 ```bash

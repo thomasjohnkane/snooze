@@ -16,7 +16,11 @@ Laravel Snooze
 
 ### Why the fork?
 We required some additional functionalities to this package, but it didn't look like new PR's were getting accepted.
-Therefore we decided to use a forked version of the package and add our changes
+
+The decision was made to fork the package and continue to add our requirements.
+
+Please note that the changes made is purely for our own needs, all props still go to original developer of this package.
+Thanks for all the hard work on this!
 
 ### Why use this package?
 - Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?)

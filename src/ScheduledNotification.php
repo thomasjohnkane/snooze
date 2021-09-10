@@ -27,8 +27,8 @@ class ScheduledNotification
     }
 
     /**
-     * @param object            $notifiable
-     * @param Notification      $notification
+     * @param object $notifiable
+     * @param Notification $notification
      * @param DateTimeInterface $sendAt
      *
      * @return self
@@ -37,13 +37,15 @@ class ScheduledNotification
     public static function create(
         object $notifiable,
         Notification $notification,
-        DateTimeInterface $sendAt
+        DateTimeInterface $sendAt,
+        $meta = []
     ): self {
         if ($sendAt <= Carbon::now()->subMinute()) {
-            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s', $sendAt->format(DATE_ISO8601)));
+            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s',
+                $sendAt->format(DATE_ISO8601)));
         }
 
-        if (! method_exists($notifiable, 'notify')) {
+        if (!method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }
 
@@ -54,12 +56,13 @@ class ScheduledNotification
         $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
-            'target_id' => $targetId,
-            'target_type' => $targetType,
+            'target_id'         => $targetId,
+            'target_type'       => $targetType,
             'notification_type' => get_class($notification),
-            'target' => $serializer->serialize($notifiable),
-            'notification' => $serializer->serialize($notification),
-            'send_at' => $sendAt,
+            'target'            => $serializer->serialize($notifiable),
+            'notification'      => $serializer->serialize($notification),
+            'send_at'           => $sendAt,
+            'meta'              => $meta
         ]));
     }
 
@@ -85,7 +88,7 @@ class ScheduledNotification
 
     public static function findByTarget(object $notifiable): ?Collection
     {
-        if (! $notifiable instanceof Model) {
+        if (!$notifiable instanceof Model) {
             return null;
         }
 
@@ -104,11 +107,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
         $query = $modelClass::query();
 
-        if (! $includeSent) {
+        if (!$includeSent) {
             $query->whereNull('sent_at');
         }
 
-        if (! $includeCanceled) {
+        if (!$includeCanceled) {
             $query->whereNull('cancelled_at');
         }
 
@@ -117,7 +120,7 @@ class ScheduledNotification
 
     public static function cancelByTarget(object $notifiable): int
     {
-        if (! $notifiable instanceof Model) {
+        if (!$notifiable instanceof Model) {
             throw new LaravelSnoozeException(
                 'Cannot cancel AnonymousNotifiable by instance. Use the `cancelAnonymousNotificationsByChannel` method instead');
         }
@@ -143,7 +146,7 @@ class ScheduledNotification
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
-                    'id' => $model->id,
+                    'id'     => $model->id,
                     'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
@@ -158,7 +161,7 @@ class ScheduledNotification
 
     /**
      * @param DateTimeInterface|string $sendAt
-     * @param bool                     $force
+     * @param bool $force
      *
      * @return self
      * @throws NotificationAlreadySentException
@@ -276,6 +279,18 @@ class ScheduledNotification
     public function getUpdatedAt(): CarbonInterface
     {
         return $this->scheduleNotificationModel->updated_at;
+    }
+
+    /**
+     * @param null $key
+     */
+    public function getMeta($key = null)
+    {
+        if (is_null($key)) {
+            return $this->scheduleNotificationModel->meta;
+        } else {
+            return $this->scheduleNotificationModel->meta[$key];
+        }
     }
 
     /**

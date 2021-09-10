@@ -34,6 +34,7 @@ class ScheduledNotificationTest extends TestCase
             'cancelled_at',
             'created_at',
             'updated_at',
+            'meta'
         ], $columns);
     }
 
@@ -302,5 +303,20 @@ class ScheduledNotificationTest extends TestCase
 
         $this->assertInstanceOf(TestNotification::class, $scheduled_notification->getNotification());
         $this->assertEquals($scheduled_notification->getNotification()->newUser->email, $notification->newUser->email);
+    }
+
+    public function testItCanStoreAndRetrieveMetaInfo()
+    {
+        $target = User::find(1);
+        $notification = new TestNotification(User::find(2));
+
+        $meta = ['foo' => 'bar', 'hey' => 'you'];
+
+        $scheduled_notification = ScheduledNotification::create($target, $notification, Carbon::now()->addSeconds(10), $meta);
+
+        $this->assertSame($meta, $scheduled_notification->getMeta());
+
+        $this->assertSame("bar", $scheduled_notification->getMeta('foo'));
+        $this->assertSame("you", $scheduled_notification->getMeta('hey'));
     }
 }

@@ -170,6 +170,16 @@ If you would like to disable sending of scheduled notifications, set an env vari
 
 This could be useful for ensuring that scheduled notifications are only sent by a specific server, for example.
 
+**Enable onOneServer**
+
+If you would like the `snooze` commands to utilise the Laravel Scheduler's `onOneServer` functionality, you can use the following environment variable:
+
+```bash
+
+SCHEDULED_NOTIFICATIONS_ONE_SERVER = true
+
+```
+
 ## Running the Tests
 
 ```bash

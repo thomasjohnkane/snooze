@@ -40,6 +40,10 @@ return [
      * You will still be able to schedule notifications,
      * and they will be sent once the scheduler is enabled.
      */
-
     'disabled' => env('SCHEDULED_NOTIFICATIONS_DISABLED', false),
+
+    /*
+     * Should the snooze commands utilise the Laravel onOneServer functionality
+     */
+    'onOneServer' => env('SCHEDULED_NOTIFICATIONS_ONE_SERVER', false),
 ];

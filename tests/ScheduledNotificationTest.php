@@ -16,6 +16,7 @@ class ScheduledNotificationTest extends TestCase
 {
     /**
      * Check that the multiply method returns correct result.
+     *
      * @return void
      */
     public function testItRunsMigrations()

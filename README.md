@@ -49,9 +49,10 @@ It adds a `notifyAt()` method to your model to schedule notifications.
 
 ```php
 use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Model {
-    use SnoozeNotifiable;
+    use Notifiable, SnoozeNotifiable;
 
     // ...
 }

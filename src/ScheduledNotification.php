@@ -102,6 +102,17 @@ class ScheduledNotification
         return self::collection($models);
     }
 
+    public static function findByMeta($key, $value){
+
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        $models = $modelClass::query()
+            ->where("meta->{$key}", $value)
+            ->get();
+
+        return self::collection($models);
+    }
+
     public static function all(bool $includeSent = false, bool $includeCanceled = false): Collection
     {
         $modelClass = self::getScheduledNotificationModelClass();

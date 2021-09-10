@@ -14,8 +14,12 @@ Laravel Snooze
 [![Total Downloads](https://poser.pugx.org/thomasjohnkane/snooze/downloads)](https://packagist.org/packages/thomasjohnkane/snooze)
 [![License](https://poser.pugx.org/thomasjohnkane/snooze/license)](https://packagist.org/packages/thomasjohnkane/snooze)
 
+### Why the fork?
+We required some additional functionalities to this package, but it didn't look like new PR's were getting accepted.
+Therefore we decided to use a forked version of the package and add our changes
+
 ### Why use this package?
-- Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
+- Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?)
 - Want a simple on-boarding email drip?
 - How about happy birthday emails?
 
@@ -44,7 +48,7 @@ php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --
 ## Usage
 
 #### Using the model trait
-Snooze provides a trait for your model, similar to the standard `Notifiable` trait. 
+Snooze provides a trait for your model, similar to the standard `Notifiable` trait.
 It adds a `notifyAt()` method to your model to schedule notifications.
 
 ```php
@@ -67,7 +71,7 @@ $user->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'))
 ```
 
 #### Using the ScheduledNotification::create helper
-You can also use the `create` method on the `ScheduledNotification`. 
+You can also use the `create` method on the `ScheduledNotification`.
 ```php
 ScheduledNotification::create(
      Auth::user(), // Target
@@ -91,7 +95,7 @@ ScheduledNotification::create(
 
 #### An important note about scheduling the `snooze:send` command
 
-Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time. 
+Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time.
 
 The `snooze:send` command is scheduled to run every minute by default. You can change this value (`sendFrequency`) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
@@ -99,15 +103,15 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 
 ### Setting the send tolerance
 
-If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of 
-the old scheduled notifications at once, the command will only send mail within the configured tolerance. 
+If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of
+the old scheduled notifications at once, the command will only send mail within the configured tolerance.
 By default this is set to 24 hours, so only mail scheduled to be sent within that window will be sent. This can be
-configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` environment variable or in the `snooze.php` config file. 
+configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` environment variable or in the `snooze.php` config file.
 
 ### Setting the prune age
 
 The package can prune sent and cancelled messages that were sent/cancelled more than x days ago. You can
-configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file 
+configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file
 (unit is days). This feature is turned off by default.
 
 #### Detailed Examples

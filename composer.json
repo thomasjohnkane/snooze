@@ -1,5 +1,5 @@
 {
-  "name": "thomasjohnkane/snooze",
+  "name": "zero2one/snooze",
   "description": "Schedule future notifications and reminders in Laravel",
   "license": "MIT",
   "keywords": [
@@ -13,10 +13,14 @@
     {
       "name": "Thomas Kane",
       "email": "thomasjohnkane@gmail.com"
+    },
+    {
+      "name": "Ricus Swanepoel",
+      "email": "ricus@zero2one.co.za"
     }
   ],
   "require": {
-    "php": ">=7.2.5",
+    "php": ">=8.0",
     "illuminate/support": "~6.0 || ~7.0 || ~8.0"
   },
   "require-dev": {

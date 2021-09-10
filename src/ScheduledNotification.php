@@ -27,11 +27,11 @@ class ScheduledNotification
     }
 
     /**
-     * @param object            $notifiable
-     * @param Notification      $notification
-     * @param DateTimeInterface $sendAt
-     *
+     * @param  object  $notifiable
+     * @param  Notification  $notification
+     * @param  DateTimeInterface  $sendAt
      * @return self
+     *
      * @throws SchedulingFailedException
      */
     public static function create(
@@ -157,10 +157,10 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
-     * @param bool                     $force
-     *
+     * @param  DateTimeInterface|string  $sendAt
+     * @param  bool  $force
      * @return self
+     *
      * @throws NotificationAlreadySentException
      * @throws NotificationCancelledException
      */
@@ -170,8 +170,7 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
-     *
+     * @param  DateTimeInterface|string  $sendAt
      * @return self
      */
     public function scheduleAgainAt($sendAt): self

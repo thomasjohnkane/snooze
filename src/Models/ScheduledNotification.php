@@ -81,10 +81,8 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param object|null $notification
-     *
-     * @param object|null $notifiable
-     *
+     * @param  object|null  $notification
+     * @param  object|null  $notifiable
      * @return bool
      */
     public function shouldInterrupt(?object $notification = null, ?object $notifiable = null): bool
@@ -106,6 +104,7 @@ class ScheduledNotification extends Model
 
     /**
      * @return void
+     *
      * @throws NotificationAlreadySentException
      */
     public function cancel(): void
@@ -119,10 +118,10 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param \DateTimeInterface|string $sendAt
-     * @param bool                      $force
-     *
+     * @param  \DateTimeInterface|string  $sendAt
+     * @param  bool  $force
      * @return self
+     *
      * @throws NotificationAlreadySentException
      * @throws NotificationCancelledException
      */
@@ -152,8 +151,7 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param \DateTimeInterface|string $sendAt
-     *
+     * @param  \DateTimeInterface|string  $sendAt
      * @return self
      */
     public function scheduleAgainAt($sendAt): self

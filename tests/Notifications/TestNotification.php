@@ -16,7 +16,7 @@ class TestNotification extends Notification implements ShouldQueue
     public $newUser;
 
     /**
-     * @param User $newUser
+     * @param  User  $newUser
      */
     public function __construct(User $newUser)
     {
@@ -26,7 +26,7 @@ class TestNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's channels.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array|string
      */
     public function via($notifiable)

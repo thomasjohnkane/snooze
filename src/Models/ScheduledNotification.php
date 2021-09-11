@@ -46,7 +46,7 @@ class ScheduledNotification extends Model
     ];
 
     protected $casts = [
-        'meta' => 'array'
+        'meta' => 'array',
     ];
 
     public function __construct(array $attributes = [])

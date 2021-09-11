@@ -104,7 +104,6 @@ class ScheduledNotification
 
     public static function findByMeta($key, $value): ?Collection
     {
-
         $modelClass = self::getScheduledNotificationModelClass();
 
         $models = $modelClass::query()
@@ -301,7 +300,7 @@ class ScheduledNotification
         if (is_null($key)) {
             return $this->scheduleNotificationModel->meta;
         } else {
-            return $this->scheduleNotificationModel->meta[$key];
+            return $this->scheduleNotificationModel->meta[$key] ?? [];
         }
     }
 

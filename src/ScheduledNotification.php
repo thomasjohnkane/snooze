@@ -27,10 +27,10 @@ class ScheduledNotification
     }
 
     /**
-     * @param object $notifiable
-     * @param Notification $notification
-     * @param DateTimeInterface $sendAt
-     * @param array $meta
+     * @param  object  $notifiable
+     * @param  Notification  $notification
+     * @param  DateTimeInterface  $sendAt
+     * @param  array  $meta
      * @return self
      *
      * @throws SchedulingFailedException
@@ -172,8 +172,8 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
-     * @param bool $force
+     * @param  DateTimeInterface|string  $sendAt
+     * @param  bool  $force
      * @return self
      *
      * @throws NotificationAlreadySentException

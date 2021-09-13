@@ -32,6 +32,7 @@ class ScheduledNotification
      * @param DateTimeInterface $sendAt
      * @param array $meta
      * @return self
+     *
      * @throws SchedulingFailedException
      */
     public static function create(
@@ -88,7 +89,7 @@ class ScheduledNotification
 
     public static function findByTarget(object $notifiable): ?Collection
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             return null;
         }
 
@@ -173,8 +174,8 @@ class ScheduledNotification
     /**
      * @param DateTimeInterface|string $sendAt
      * @param bool $force
-     *
      * @return self
+     *
      * @throws NotificationAlreadySentException
      * @throws NotificationCancelledException
      */
@@ -185,7 +186,6 @@ class ScheduledNotification
 
     /**
      * @param DateTimeInterface|string $sendAt
-     *
      * @return self
      */
     public function scheduleAgainAt($sendAt): self

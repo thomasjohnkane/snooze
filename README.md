@@ -238,9 +238,6 @@ composer test
 
 If you discover any security related issues, please email instead of using the issue tracker.
 
-## Changelog
-Please be sure to run `php artisan migrate` when upgrading versions of this package.
-
 ## Contributing
 
 1. Fork it (<https://github.com/thomasjohnkane/snooze/fork>)

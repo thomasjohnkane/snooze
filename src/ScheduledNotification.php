@@ -39,7 +39,7 @@ class ScheduledNotification
         object $notifiable,
         Notification $notification,
         DateTimeInterface $sendAt,
-        $meta = []
+        array $meta = []
     ): self {
         if ($sendAt <= Carbon::now()->subMinute()) {
             throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s',

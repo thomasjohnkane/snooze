@@ -30,7 +30,7 @@ class ScheduledNotification
      * @param object $notifiable
      * @param Notification $notification
      * @param DateTimeInterface $sendAt
-     *
+     * @param array $meta
      * @return self
      * @throws SchedulingFailedException
      */
@@ -45,7 +45,7 @@ class ScheduledNotification
                 $sendAt->format(DATE_ISO8601)));
         }
 
-        if (!method_exists($notifiable, 'notify')) {
+        if (! method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }
 
@@ -62,7 +62,7 @@ class ScheduledNotification
             'target'            => $serializer->serialize($notifiable),
             'notification'      => $serializer->serialize($notification),
             'send_at'           => $sendAt,
-            'meta'              => $meta
+            'meta'              => $meta,
         ]));
     }
 
@@ -118,11 +118,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
         $query = $modelClass::query();
 
-        if (!$includeSent) {
+        if (! $includeSent) {
             $query->whereNull('sent_at');
         }
 
-        if (!$includeCanceled) {
+        if (! $includeCanceled) {
             $query->whereNull('cancelled_at');
         }
 
@@ -131,7 +131,7 @@ class ScheduledNotification
 
     public static function cancelByTarget(object $notifiable): int
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             throw new LaravelSnoozeException(
                 'Cannot cancel AnonymousNotifiable by instance. Use the `cancelAnonymousNotificationsByChannel` method instead');
         }

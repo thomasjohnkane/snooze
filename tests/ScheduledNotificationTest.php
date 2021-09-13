@@ -35,7 +35,7 @@ class ScheduledNotificationTest extends TestCase
             'cancelled_at',
             'created_at',
             'updated_at',
-            'meta'
+            'meta',
         ], $columns);
     }
 

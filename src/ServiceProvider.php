@@ -17,14 +17,25 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         // Schedule base command to run every minute
         $this->app->booted(function () {
+
+            //Ensure the schedule is available if snooze is disabled but a prune age is set
+            $schedule = $this->app->make(Schedule::class);
+
             if (! config('snooze.disabled')) {
                 $frequency = config('snooze.sendFrequency', 'everyMinute');
-                $schedule = $this->app->make(Schedule::class);
-                $schedule->command('snooze:send')->{$frequency}();
+                if (config('snooze.onOneServer', false)) {
+                    $schedule->command('snooze:send')->{$frequency}()->onOneServer();
+                } else {
+                    $schedule->command('snooze:send')->{$frequency}();
+                }
             }
 
             if (config('snooze.pruneAge') !== null) {
-                $schedule->command('snooze:prune')->daily();
+                if (config('snooze.onOneServer', false)) {
+                    $schedule->command('snooze:prune')->daily()->onOneServer();
+                } else {
+                    $schedule->command('snooze:prune')->daily();
+                }
             }
         });
 

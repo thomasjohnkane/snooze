@@ -49,9 +49,10 @@ It adds a `notifyAt()` method to your model to schedule notifications.
 
 ```php
 use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Model {
-    use SnoozeNotifiable;
+    use Notifiable, SnoozeNotifiable;
 
     // ...
 }
@@ -169,6 +170,16 @@ If this method is not present on your notification, the notification will *not* 
 If you would like to disable sending of scheduled notifications, set an env variable of `SCHEDULED_NOTIFICATIONS_DISABLED` to `true`. You will still be able to schedule notifications, and they will be sent once the scheduler is enabled.
 
 This could be useful for ensuring that scheduled notifications are only sent by a specific server, for example.
+
+**Enable onOneServer**
+
+If you would like the `snooze` commands to utilise the Laravel Scheduler's `onOneServer` functionality, you can use the following environment variable:
+
+```bash
+
+SCHEDULED_NOTIFICATIONS_ONE_SERVER = true
+
+```
 
 ## Running the Tests
 

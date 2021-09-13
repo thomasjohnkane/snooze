@@ -185,7 +185,7 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
+     * @param  DateTimeInterface|string  $sendAt
      * @return self
      */
     public function scheduleAgainAt($sendAt): self
@@ -293,7 +293,7 @@ class ScheduledNotification
     }
 
     /**
-     * @param null $key
+     * @param  null  $key
      */
     public function getMeta($key = null)
     {

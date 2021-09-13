@@ -329,5 +329,4 @@ class ScheduledNotificationTest extends TestCase
         $this->assertSame('you', $scheduled_notification->getMeta('hey'));
         $this->assertSame([], $scheduled_notification->getMeta('doesnt_exist'));
     }
-
 }

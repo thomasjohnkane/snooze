@@ -12,9 +12,9 @@ use Thomasjohnkane\Snooze\ScheduledNotification;
 trait SnoozeNotifiable
 {
     /**
-     * @param Notification $notification
-     * @param DateTimeInterface $sendAt
-     * @param array $meta
+     * @param  Notification  $notification
+     * @param  DateTimeInterface  $sendAt
+     * @param  array  $meta
      * @return ScheduledNotification
      *
      * @throws SchedulingFailedException

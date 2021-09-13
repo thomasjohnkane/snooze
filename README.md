@@ -15,7 +15,7 @@ Laravel Snooze
 [![License](https://poser.pugx.org/thomasjohnkane/snooze/license)](https://packagist.org/packages/thomasjohnkane/snooze)
 
 ### Why use this package?
-- Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?) 
+- Ever wanted to schedule a <b>future</b> notification to go out at a specific time? (was the delayed queue option not enough?)
 - Want a simple on-boarding email drip?
 - How about happy birthday emails?
 
@@ -44,7 +44,7 @@ php artisan vendor:publish --provider="Thomasjohnkane\Snooze\ServiceProvider" --
 ## Usage
 
 #### Using the model trait
-Snooze provides a trait for your model, similar to the standard `Notifiable` trait. 
+Snooze provides a trait for your model, similar to the standard `Notifiable` trait.
 It adds a `notifyAt()` method to your model to schedule notifications.
 
 ```php
@@ -68,7 +68,7 @@ $user->notifyAt(new NewYearNotification, Carbon::parse('last day of this year'))
 ```
 
 #### Using the ScheduledNotification::create helper
-You can also use the `create` method on the `ScheduledNotification`. 
+You can also use the `create` method on the `ScheduledNotification`.
 ```php
 ScheduledNotification::create(
      Auth::user(), // Target
@@ -92,7 +92,7 @@ ScheduledNotification::create(
 
 #### An important note about scheduling the `snooze:send` command
 
-Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time. 
+Creating a scheduled notification will add the notification to the database. It will be sent by running `snooze:send` command at (or after) the stored `sendAt` time.
 
 The `snooze:send` command is scheduled to run every minute by default. You can change this value (`sendFrequency`) in the published config file. Available options are `everyMinute`, `everyFiveMinutes`, `everyTenMinutes`, `everyFifteenMinutes`, `everyThirtyMinutes`, `hourly`, and `daily`.
 
@@ -100,15 +100,15 @@ The only thing you need to do is make sure `schedule:run` is also running. You c
 
 ### Setting the send tolerance
 
-If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of 
-the old scheduled notifications at once, the command will only send mail within the configured tolerance. 
+If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of
+the old scheduled notifications at once, the command will only send mail within the configured tolerance.
 By default this is set to 24 hours, so only mail scheduled to be sent within that window will be sent. This can be
-configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` environment variable or in the `snooze.php` config file. 
+configured (in seconds) using the `SCHEDULED_NOTIFICATION_SEND_TOLERANCE` environment variable or in the `snooze.php` config file.
 
 ### Setting the prune age
 
 The package can prune sent and cancelled messages that were sent/cancelled more than x days ago. You can
-configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file 
+configure this using the `SCHEDULED_NOTIFICATION_PRUNE_AGE` environment variable or in the `snooze.php` config file
 (unit is days). This feature is turned off by default.
 
 #### Detailed Examples
@@ -164,6 +164,53 @@ public function shouldInterrupt($notifiable) {
 ```
 
 If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
+
+**Scheduled Notification Meta Information**
+
+It's possible to store meta information on a scheduled notification, and then query the scheduled notifications by this meta information at a later stage.
+
+This functionality could be useful for when you store notifications for a future date, but some change in the system requires
+you to update them. By using the meta column, it's possible to more easily query these scheduled notifications from the database by something else than
+the notifiable.
+
+***Storing Meta Information***
+
+Using the `ScheduledNotification::create` helper
+
+```php
+ScheduledNotification::create(
+     $target, // Target
+     new ScheduledNotificationExample($order), // Notification
+     Carbon::now()->addDay(), // Send At,
+     ['foo' => 'bar'] // Meta Information
+);
+```
+
+Using the `notifyAt` trait
+
+```php
+  $user->notifyAt(new BirthdayNotification, Carbon::parse($user->birthday), ['foo' => 'bar']);
+```
+
+***Retrieving Meta Information from Scheduled Notifications***
+
+You can call the `getMeta` function on an existing scheduled notification to retrieve the meta information for the specific notification.
+
+Passing no parameters to this function will return the entire meta column in array form.
+
+Passing a string key (`getMeta('foo')`), will retrieve the specific key from the meta column.
+
+***Querying Scheduled Notifications using the ScheduledNotification::findByMeta helper***
+
+It's possible to query the database for scheduled notifications with certain meta information, by using the `findByMeta` helper.
+
+```php
+  ScheduledNotification::findByMeta('foo', 'bar'); //key and value
+```
+
+The first parameter is the meta key, and the second parameter is the value to look for.
+
+>Note: The index column doesn't currently make use of a database index
 
 **Conditionally turn off scheduler**
 

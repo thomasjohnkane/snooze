@@ -35,6 +35,7 @@ class ScheduledNotificationTest extends TestCase
             'cancelled_at',
             'created_at',
             'updated_at',
+            'meta',
         ], $columns);
     }
 
@@ -247,7 +248,8 @@ class ScheduledNotificationTest extends TestCase
         ScheduledNotification::create(
             $target,
             new TestNotification(User::find(2)),
-            Carbon::now()->addSeconds(10)
+            Carbon::now()->addSeconds(10),
+            ['foo' => 'baz']
         );
 
         ScheduledNotification::create(
@@ -259,7 +261,8 @@ class ScheduledNotificationTest extends TestCase
         ScheduledNotification::create(
             $target,
             new TestNotification(User::find(2)),
-            Carbon::now()->addSeconds(60)
+            Carbon::now()->addSeconds(60),
+            ['foo' => 'bar']
         );
 
         ScheduledNotification::create(
@@ -271,7 +274,8 @@ class ScheduledNotificationTest extends TestCase
         ScheduledNotification::create(
             $target,
             new TestNotificationTwo(User::find(2)),
-            Carbon::now()->addSeconds(60)
+            Carbon::now()->addSeconds(60),
+            ['foo' => 'bar']
         );
 
         $all = ScheduledNotification::all();
@@ -284,6 +288,9 @@ class ScheduledNotificationTest extends TestCase
         $this->assertSame(2, $type2->count());
 
         $this->assertSame(5, ScheduledNotification::findByTarget($target)->count());
+
+        $this->assertSame(2, ScheduledNotification::findByMeta('foo', 'bar')->count());
+        $this->assertSame(1, ScheduledNotification::findByMeta('foo', 'baz')->count());
 
         $all->first()->sendNow();
 
@@ -303,5 +310,23 @@ class ScheduledNotificationTest extends TestCase
 
         $this->assertInstanceOf(TestNotification::class, $scheduled_notification->getNotification());
         $this->assertEquals($scheduled_notification->getNotification()->newUser->email, $notification->newUser->email);
+    }
+
+    public function testItCanStoreAndRetrieveMetaInfo()
+    {
+        $target = User::find(1);
+        $notification = new TestNotification(User::find(2));
+
+        $meta = ['foo' => 'bar', 'hey' => 'you'];
+
+        $scheduled_notification = ScheduledNotification::create($target, $notification, Carbon::now()->addSeconds(10), $meta);
+        $scheduled_notification_no_meta = ScheduledNotification::create($target, $notification, Carbon::now()->addSeconds(10));
+
+        $this->assertSame($meta, $scheduled_notification->getMeta());
+        $this->assertSame([], $scheduled_notification_no_meta->getMeta());
+
+        $this->assertSame('bar', $scheduled_notification->getMeta('foo'));
+        $this->assertSame('you', $scheduled_notification->getMeta('hey'));
+        $this->assertSame([], $scheduled_notification->getMeta('doesnt_exist'));
     }
 }

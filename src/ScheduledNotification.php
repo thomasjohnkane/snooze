@@ -30,6 +30,7 @@ class ScheduledNotification
      * @param  object  $notifiable
      * @param  Notification  $notification
      * @param  DateTimeInterface  $sendAt
+     * @param  array  $meta
      * @return self
      *
      * @throws SchedulingFailedException
@@ -37,10 +38,12 @@ class ScheduledNotification
     public static function create(
         object $notifiable,
         Notification $notification,
-        DateTimeInterface $sendAt
+        DateTimeInterface $sendAt,
+        array $meta = []
     ): self {
         if ($sendAt <= Carbon::now()->subMinute()) {
-            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s', $sendAt->format(DATE_ISO8601)));
+            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s',
+                $sendAt->format(DATE_ISO8601)));
         }
 
         if (! method_exists($notifiable, 'notify')) {
@@ -54,12 +57,13 @@ class ScheduledNotification
         $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
-            'target_id' => $targetId,
-            'target_type' => $targetType,
+            'target_id'         => $targetId,
+            'target_type'       => $targetType,
             'notification_type' => get_class($notification),
-            'target' => $serializer->serialize($notifiable),
-            'notification' => $serializer->serialize($notification),
-            'send_at' => $sendAt,
+            'target'            => $serializer->serialize($notifiable),
+            'notification'      => $serializer->serialize($notification),
+            'send_at'           => $sendAt,
+            'meta'              => $meta,
         ]));
     }
 
@@ -94,6 +98,17 @@ class ScheduledNotification
         $models = $modelClass::query()
             ->whereTargetId($notifiable->getKey())
             ->whereTargetType(get_class($notifiable))
+            ->get();
+
+        return self::collection($models);
+    }
+
+    public static function findByMeta($key, $value): ?Collection
+    {
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        $models = $modelClass::query()
+            ->where("meta->{$key}", $value)
             ->get();
 
         return self::collection($models);
@@ -143,7 +158,7 @@ class ScheduledNotification
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
-                    'id' => $model->id,
+                    'id'     => $model->id,
                     'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
@@ -275,6 +290,18 @@ class ScheduledNotification
     public function getUpdatedAt(): CarbonInterface
     {
         return $this->scheduleNotificationModel->updated_at;
+    }
+
+    /**
+     * @param  null  $key
+     */
+    public function getMeta($key = null)
+    {
+        if (is_null($key)) {
+            return $this->scheduleNotificationModel->meta;
+        } else {
+            return $this->scheduleNotificationModel->meta[$key] ?? [];
+        }
     }
 
     /**

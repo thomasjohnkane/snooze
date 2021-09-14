@@ -17,7 +17,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
 
         //Check if snooze should schedule the commands automatically
-        if(config('snooze.scheduleCommands', true)){
+        if (config('snooze.scheduleCommands', true)) {
 
             // Schedule base command to run every minute
             $this->app->booted(function () {

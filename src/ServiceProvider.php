@@ -22,7 +22,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             // Schedule base command to run every minute
             $this->app->booted(function () {
 
-
                 //Ensure the schedule is available if snooze is disabled but a prune age is set
                 $schedule = $this->app->make(Schedule::class);
 
@@ -44,8 +43,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 }
             });
         }
-
-
 
         $this->publishes([
             self::CONFIG_PATH => config_path('snooze.php'),

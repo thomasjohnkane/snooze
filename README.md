@@ -98,6 +98,8 @@ The `snooze:send` command is scheduled to run every minute by default. You can c
 
 The only thing you need to do is make sure `schedule:run` is also running. You can test this by running `php artisan schedule:run` in the console. [To make it run automatically, read here][6].
 
+>Note: If you would prefer snooze to not automatically schedule the commands, you can set the `scheduleCommands` config value to `false`
+
 ### Setting the send tolerance
 
 If your scheduler stops working, a backlog of scheduled notifications will build up. To prevent users receiving all of

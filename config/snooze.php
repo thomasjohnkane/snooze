@@ -46,4 +46,9 @@ return [
      * Should the snooze commands utilise the Laravel onOneServer functionality
      */
     'onOneServer' => env('SCHEDULED_NOTIFICATIONS_ONE_SERVER', false),
+
+    /*
+     * Should snooze automatically schedule the snooze:send and snooze:prune commands
+     */
+    'scheduleCommands' => env('SCHEDULED_NOTIFICATIONS_SCHEDULE_COMMANDS', true),
 ];

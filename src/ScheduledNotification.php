@@ -15,6 +15,8 @@ use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
+use Illuminate\Database\Eloquent\Collection as ModelCollection;
+
 
 class ScheduledNotification
 {
@@ -65,6 +67,56 @@ class ScheduledNotification
             'send_at'           => $sendAt,
             'meta'              => $meta,
         ]));
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection|array|mixed  $notifiables
+     * @param  Notification  $notification
+     * @param  DateTimeInterface  $sendAt
+     * @param  array  $meta
+     * @return void
+     *
+     */
+    public static function createMany(
+        $notifiables,
+        Notification $notification,
+        DateTimeInterface $sendAt,
+        array $meta = []
+    ): void {
+
+        if ($sendAt <= Carbon::now()->subMinute()) {
+            throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s',
+                $sendAt->format(DATE_ISO8601)));
+        }
+
+        $notifiables = self::formatNotifiables($notifiables);
+
+        $modelClass = self::getScheduledNotificationModelClass();
+        $serializer = app(Serializer::class);
+
+        $scheduledNotifiables = [];
+
+        foreach ($notifiables as $notifiable) {
+
+            $targetId = $notifiable instanceof Model ? $notifiable->getKey() : null;
+            $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
+
+            $scheduledNotifiables[] = [
+                'target_id'         => $targetId,
+                'target_type'       => $targetType,
+                'notification_type' => get_class($notification),
+                'target'            => $serializer->serialize($notifiable),
+                'notification'      => $serializer->serialize($notification),
+                'send_at'           => $sendAt,
+                'meta'              => json_encode($meta),
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ];
+
+        }
+
+        $modelClass::insert($scheduledNotifiables);
+        
     }
 
     public static function find(int $scheduledNotificationId): ?self
@@ -322,5 +374,21 @@ class ScheduledNotification
         return $models->map(function (ScheduledNotificationModel $model) {
             return new self($model);
         });
+    }
+    
+    /**
+     * Format the notifiables into a Collection / array if necessary.
+     *
+     * @param  mixed  $notifiables
+     * @return \Illuminate\Database\Eloquent\Collection|array
+     */
+    protected static function formatNotifiables($notifiables)
+    {
+        if (! $notifiables instanceof Collection && ! is_array($notifiables)) {
+            return $notifiables instanceof Model
+                            ? new ModelCollection([$notifiables]) : [$notifiables];
+        }
+
+        return $notifiables;
     }
 }

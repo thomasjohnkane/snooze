@@ -221,7 +221,7 @@ class ScheduledNotificationTest extends TestCase
         $this->expectException(SchedulingFailedException::class);
 
         ScheduledNotification::create(
-            new \StdClass(),
+            new \stdClass(),
             new TestNotification(User::find(2)),
             Carbon::now()->addSeconds(10)
         );

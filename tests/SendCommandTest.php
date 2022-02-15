@@ -59,7 +59,9 @@ class SendCommandTest extends TestCase
 
     public function testItCatchesFailedScheduledNotifications()
     {
-        Log::swap(new LogFake());
+        Log::shouldReceive('error')->once()->withArgs(function ($message) {
+            return strpos($message, 'unserialize(): Error at offset 0 of 10 bytes') !== false;
+        });
 
         $target = User::find(1);
 
@@ -72,7 +74,5 @@ class SendCommandTest extends TestCase
         $this->artisan('snooze:send')
             ->expectsOutput('Starting Sending Scheduled Notifications')
             ->assertExitCode(0);
-
-        Log::assertLoggedMessage('error', 'unserialize(): Error at offset 0 of 10 bytes');
     }
 }

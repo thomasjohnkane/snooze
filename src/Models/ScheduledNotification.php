@@ -5,6 +5,7 @@ namespace Thomasjohnkane\Snooze\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
+use Thomasjohnkane\Snooze\Events\NotificationRescheduled;
 use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
@@ -77,6 +78,13 @@ class ScheduledNotification extends Model
             return;
         }
 
+        if($sendAt = $this->shouldRescheduleFor($notification, $notifiable)) {
+            $this->reschedule($sendAt);
+            event(new NotificationRescheduled($this));
+
+            return;
+        }
+
         $notifiable->notify($notification);
 
         event(new NotificationSent($this));
@@ -105,6 +113,27 @@ class ScheduledNotification extends Model
         }
 
         return false;
+    }
+
+    /**
+     * @param object|null $notification
+     * @param object|null $notifiable
+     * @return \DateTimeInterface|string|null
+     */
+    public function shouldRescheduleFor(?object $notification = null, ?object $notifiable = null) {
+        if (! $notification) {
+            $notification = $this->serializer->unserialize($this->notification);
+        }
+
+        if (! $notifiable) {
+            $notifiable = $this->serializer->unserialize($this->target);
+        }
+
+        if (method_exists($notification, 'shouldRescheduleFor')) {
+            return $notification->shouldRescheduleFor($notifiable);
+        }
+
+        return null;
     }
 
     /**

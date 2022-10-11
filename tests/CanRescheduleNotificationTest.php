@@ -5,11 +5,9 @@ namespace Thomasjohnkane\Snooze\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
-use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Events\NotificationRescheduled;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
-use Thomasjohnkane\Snooze\Tests\Notifications\TestInterruptableNotification;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestReschedulableNotification;
 
 class CanRescheduleNotificationTest extends TestCase

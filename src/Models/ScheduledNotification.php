@@ -78,7 +78,7 @@ class ScheduledNotification extends Model
             return;
         }
 
-        if($sendAt = $this->shouldRescheduleFor($notification, $notifiable)) {
+        if ($sendAt = $this->shouldRescheduleFor($notification, $notifiable)) {
             $this->reschedule($sendAt);
             event(new NotificationRescheduled($this));
 
@@ -116,11 +116,12 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param object|null $notification
-     * @param object|null $notifiable
+     * @param  object|null  $notification
+     * @param  object|null  $notifiable
      * @return \DateTimeInterface|string|null
      */
-    public function shouldRescheduleFor(?object $notification = null, ?object $notifiable = null) {
+    public function shouldRescheduleFor(?object $notification = null, ?object $notifiable = null)
+    {
         if (! $notification) {
             $notification = $this->serializer->unserialize($this->notification);
         }

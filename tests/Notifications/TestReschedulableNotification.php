@@ -43,7 +43,7 @@ class TestReschedulableNotification extends Notification implements ShouldQueue
 
     public function shouldRescheduleFor(object $notifiable)
     {
-        if($notifiable->id === 1){
+        if ($notifiable->id === 1) {
             return now()->addMinutes(5);
         }
 

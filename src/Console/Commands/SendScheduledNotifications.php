@@ -2,7 +2,6 @@
 
 namespace Thomasjohnkane\Snooze\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 use Thomasjohnkane\Snooze\ScheduledNotification;

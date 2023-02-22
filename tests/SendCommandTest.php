@@ -74,8 +74,7 @@ class SendCommandTest extends TestCase
             ->expectsOutput('Starting Sending Scheduled Notifications')
             ->assertExitCode(0);
 
-        Log::assertLogged(fn (LogEntry $log) =>
-            $log->level === 'error'
+        Log::assertLogged(fn (LogEntry $log) => $log->level === 'error'
             && $log->message === 'unserialize(): Error at offset 0 of 10 bytes'
         );
     }

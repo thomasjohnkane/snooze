@@ -87,7 +87,7 @@ class ScheduledNotification
         return self::collection($modelClass::whereNotificationType($notificationClass)->whereNull('sent_at')->get());
     }
 
-    public static function findByTarget(object $notifiable): Collection
+    public static function findByTarget(object $notifiable): ?Collection
     {
         if (! $notifiable instanceof Model) {
             return null;

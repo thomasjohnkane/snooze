@@ -47,6 +47,10 @@ class ScheduledNotification extends Model
 
     protected $casts = [
         'meta' => 'array',
+        'send_at' => 'datetime',
+        'sent_at' => 'datetime',
+        'rescheduled_at' => 'datetime',
+        'cancelled_at' => 'datetime',
     ];
 
     public function __construct(array $attributes = [])

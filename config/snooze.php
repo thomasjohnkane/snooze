@@ -51,4 +51,9 @@ return [
      * Should snooze automatically schedule the snooze:send and snooze:prune commands
      */
     'scheduleCommands' => env('SCHEDULED_NOTIFICATIONS_SCHEDULE_COMMANDS', true),
+
+    /*
+     * Should snooze automatically register the migrations
+     */
+    'registerMigrations' => env('SCHEDULED_NOTIFICATIONS_REGISTER_MIGRATIONS', true),
 ];

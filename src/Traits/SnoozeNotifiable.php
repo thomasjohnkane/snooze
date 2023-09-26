@@ -6,6 +6,7 @@ namespace Thomasjohnkane\Snooze\Traits;
 
 use DateTimeInterface;
 use Illuminate\Notifications\Notification;
+use Thomasjohnkane\Snooze\Concerns\ClassMapSerializable;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\ScheduledNotification;
 
@@ -22,5 +23,17 @@ trait SnoozeNotifiable
     public function notifyAt($notification, DateTimeInterface $sendAt, array $meta = []): ScheduledNotification
     {
         return ScheduledNotification::create($this, $notification, $sendAt, $meta);
+    }
+
+    public static function fromSerializedPayload(array $payload): ClassMapSerializable
+    {
+        return self::query()->findOrFail($payload['id']);
+    }
+
+    public function toSerializedPayload(): array
+    {
+        return [
+            'id' => $this->id
+        ];
     }
 }

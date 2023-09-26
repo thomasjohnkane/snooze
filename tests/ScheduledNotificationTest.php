@@ -8,8 +8,10 @@ use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
 use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Serializer;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
+use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationClassMapSerializable;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
 
 class ScheduledNotificationTest extends TestCase

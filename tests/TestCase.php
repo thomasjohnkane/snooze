@@ -8,8 +8,12 @@ use File;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Thomasjohnkane\Snooze\Facades\Snooze;
+use Thomasjohnkane\Snooze\Serializer;
 use Thomasjohnkane\Snooze\ServiceProvider;
 use Thomasjohnkane\Snooze\Tests\Models\User;
+use Thomasjohnkane\Snooze\Tests\Notifications\TestInterruptableNotification;
+use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
+use Thomasjohnkane\Snooze\Tests\Notifications\TestNotificationTwo;
 
 class TestCase extends Orchestra
 {
@@ -19,6 +23,13 @@ class TestCase extends Orchestra
 
         $this->initializeDirectory($this->getTempDirectory());
         $this->setUpDatabase($this->app);
+
+        Serializer::classMap([
+            User::class => 'user',
+            TestInterruptableNotification::class => 'test-interruptable-notification',
+            TestNotification::class => 'test-notification',
+            TestNotificationTwo::class => 'test-notification-two',
+        ]);
     }
 
     protected function getPackageProviders($app)
@@ -47,7 +58,7 @@ class TestCase extends Orchestra
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Foundation\Application $app
      */
     protected function getEnvironmentSetUp($app)
     {
@@ -64,7 +75,7 @@ class TestCase extends Orchestra
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Foundation\Application $app
      */
     protected function setUpDatabase($app)
     {

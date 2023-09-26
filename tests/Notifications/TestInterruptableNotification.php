@@ -6,9 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Thomasjohnkane\Snooze\Concerns\ClassMapSerializable;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 
-class TestInterruptableNotification extends Notification implements ShouldQueue
+class TestInterruptableNotification extends Notification implements ShouldQueue, ClassMapSerializable
 {
     use Queueable;
 
@@ -44,5 +45,17 @@ class TestInterruptableNotification extends Notification implements ShouldQueue
     public function shouldInterrupt(object $notifiable)
     {
         return $notifiable->id === 1;
+    }
+
+    public static function fromSerializedPayload(array $payload): ClassMapSerializable
+    {
+        return new self(User::findOrFail($payload['new_user_id']));
+    }
+
+    public function toSerializedPayload(): array
+    {
+        return [
+            'new_user_id' => $this->newUser->id
+        ];
     }
 }

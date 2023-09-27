@@ -4,44 +4,54 @@ declare(strict_types=1);
 
 namespace Thomasjohnkane\Snooze;
 
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\PostgresConnection;
-use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
+use Thomasjohnkane\Snooze\Concerns\ClassMapSerializable;
+use Thomasjohnkane\Snooze\Exception\ClassMapSerializationException;
 
 class Serializer
 {
-    use SerializesAndRestoresModelIdentifiers;
+    public static array $classMap = [
+        AnonymousNotifiable::class => 'anonymous-notifiable',
+    ];
 
-    /** @var ConnectionInterface */
-    protected $connection;
-
-    public function __construct(ConnectionInterface $connection)
+    public static function classMap(array $map = null, $merge = true): array
     {
-        $this->connection = $connection;
+        if (is_array($map)) {
+            static::$classMap = $merge && static::$classMap
+                ? $map + static::$classMap : $map;
+        }
+
+        if (count(self::$classMap) !== count(array_unique(self::$classMap))) {
+            throw new InvalidArgumentException('Duplicate values found in class map');
+        }
+
+        return static::$classMap;
     }
 
     public function serialize(object $notifiable): string
     {
-        $result = serialize($this->getSerializedPropertyValue(clone $notifiable));
+        $key = self::$classMap[get_class($notifiable)] ?? null;
 
-        if ($this->connection instanceof PostgresConnection && Str::contains($result, "\0")) {
-            $result = base64_encode($result);
+        if (! $key) {
+            throw new ClassMapSerializationException('No key found for class '.get_class($notifiable));
         }
 
-        return $result;
+        return json_encode([
+            'key' => self::$classMap[get_class($notifiable)],
+            'payload' => $notifiable->toSerializedPayload(),
+        ]);
     }
 
     public function unserialize(string $serialized)
     {
-        if ($this->connection instanceof PostgresConnection && ! Str::contains($serialized, [':', ';'])) {
-            $serialized = base64_decode($serialized);
+        $decoded = json_decode($serialized, true);
+        $class = array_search($decoded['key'], self::$classMap);
+
+        if (! $class || is_int($class) || ! class_exists($class)) {
+            throw new ClassMapSerializationException('No class found for '.$decoded['key']);
         }
 
-        $object = unserialize($serialized);
-
-        return $this->getRestoredPropertyValue(
-            $object
-        );
+        /** @var ClassMapSerializable $class */
+        return $class::fromSerializedPayload($decoded['payload']);
     }
 }

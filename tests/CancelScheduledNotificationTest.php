@@ -3,8 +3,8 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
-use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
+use Thomasjohnkane\Snooze\AnonymousNotifiable;
 use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
 use Thomasjohnkane\Snooze\ScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;

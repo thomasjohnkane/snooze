@@ -4,6 +4,7 @@ namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
+use Thomasjohnkane\Snooze\ClassKeyMap;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
 use Thomasjohnkane\Snooze\Exception\SchedulingFailedException;
@@ -59,7 +60,7 @@ class ScheduledNotificationTest extends TestCase
         $this->assertTrue($notification->isSent());
         $this->assertFalse($notification->isRescheduled());
         $this->assertFalse($notification->isCancelled());
-        $this->assertSame(TestNotification::class, $notification->getType());
+        $this->assertSame(ClassKeyMap::getKey(TestNotification::class), $notification->getType());
 
         $this->assertEquals(Carbon::now(), $notification->getSentAt());
         $this->assertNull($notification->getCancelledAt());
@@ -70,7 +71,7 @@ class ScheduledNotificationTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $notification->getUpdatedAt());
 
         $this->assertEquals(1, $notification->getTargetId());
-        $this->assertSame(User::class, $notification->getTargetType());
+        $this->assertSame(ClassKeyMap::getKey(User::class), $notification->getTargetType());
 
         Notification::assertSentTo(
             $target,

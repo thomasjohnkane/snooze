@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Thomasjohnkane\Snooze\Exception\LaravelSnoozeException;
@@ -54,12 +53,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
 
         $targetId = $notifiable instanceof Model ? $notifiable->getKey() : null;
-        $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
             'target_id'         => $targetId,
-            'target_type'       => $targetType,
-            'notification_type' => get_class($notification),
+            'target_type'       => ClassKeyMap::getKey($notifiable),
+            'notification_type' => ClassKeyMap::getKey($notification),
             'target'            => $serializer->serialize($notifiable),
             'notification'      => $serializer->serialize($notification),
             'send_at'           => $sendAt,
@@ -81,10 +79,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
 
         if ($includeSent) {
-            return self::collection($modelClass::whereNotificationType($notificationClass)->get());
+            return self::collection($modelClass::whereNotificationType(ClassKeyMap::getKey($notificationClass))->get());
         }
 
-        return self::collection($modelClass::whereNotificationType($notificationClass)->whereNull('sent_at')->get());
+        return self::collection($modelClass::whereNotificationType(ClassKeyMap::getKey($notificationClass))
+            ->whereNull('sent_at')->get());
     }
 
     public static function findByTarget(object $notifiable): ?Collection
@@ -97,7 +96,7 @@ class ScheduledNotification
 
         $models = $modelClass::query()
             ->whereTargetId($notifiable->getKey())
-            ->whereTargetType(get_class($notifiable))
+            ->whereTargetType(ClassKeyMap::getKey($notifiable))
             ->get();
 
         return self::collection($models);
@@ -142,7 +141,7 @@ class ScheduledNotification
         return $modelClass::whereNull('sent_at')
             ->whereNull('cancelled_at')
             ->whereTargetId($notifiable->getKey())
-            ->whereTargetType(get_class($notifiable))
+            ->whereTargetType(ClassKeyMap::getKey($notifiable))
             ->update(['cancelled_at' => Carbon::now()]);
     }
 
@@ -154,7 +153,7 @@ class ScheduledNotification
         $notificationsToCancel = $modelClass::whereNull('sent_at')
             ->whereNull('cancelled_at')
             ->whereTargetId(null)
-            ->whereTargetType(AnonymousNotifiable::class)
+            ->whereTargetType(ClassKeyMap::getKey(AnonymousNotifiable::class))
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [

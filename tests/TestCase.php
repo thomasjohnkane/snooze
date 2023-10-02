@@ -7,6 +7,7 @@ namespace Thomasjohnkane\Snooze\Tests;
 use File;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Thomasjohnkane\Snooze\ClassKeyMap;
 use Thomasjohnkane\Snooze\Facades\Snooze;
 use Thomasjohnkane\Snooze\Serializer;
 use Thomasjohnkane\Snooze\ServiceProvider;
@@ -24,11 +25,11 @@ class TestCase extends Orchestra
         $this->initializeDirectory($this->getTempDirectory());
         $this->setUpDatabase($this->app);
 
-        Serializer::classMap([
-            User::class => 'user',
-            TestInterruptableNotification::class => 'test-interruptable-notification',
-            TestNotification::class => 'test-notification',
-            TestNotificationTwo::class => 'test-notification-two',
+        ClassKeyMap::map([
+            'user' => User::class,
+            'test-interruptable-notification' => TestInterruptableNotification::class,
+            'test-notification' => TestNotification::class,
+            'test-notification-two' => TestNotificationTwo::class,
         ]);
     }
 

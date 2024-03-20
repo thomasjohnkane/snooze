@@ -56,7 +56,7 @@ class ScheduledNotification extends Model
             $notifiable = $this->serializer->unserialize($this->target);
             $notification = $this->serializer->unserialize($this->notification);
         } catch (\Exception $exception) {
-            throw new UnserializeFailedException('Cannot Send. Unserialize Failed.', 2, $exception);
+            throw new UnserializeFailedException(sprintf('Cannot Send. Unserialize Failed. (%s)', $exception->getMessage()), 2, $exception);
         }
 
         if ($this->shouldInterrupt($notification, $notifiable)) {
@@ -81,11 +81,11 @@ class ScheduledNotification extends Model
      */
     public function shouldInterrupt(?object $notification = null, ?object $notifiable = null): bool
     {
-        if (!$notification) {
+        if (! $notification) {
             $notification = $this->serializer->unserialize($this->notification);
         }
 
-        if (!$notifiable) {
+        if (! $notifiable) {
             $notifiable = $this->serializer->unserialize($this->target);
         }
 
@@ -121,7 +121,7 @@ class ScheduledNotification extends Model
      */
     public function reschedule($sendAt, $force = false): self
     {
-        if (!$sendAt instanceof \DateTimeInterface) {
+        if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -150,7 +150,7 @@ class ScheduledNotification extends Model
      */
     public function scheduleAgainAt($sendAt): self
     {
-        if (!$sendAt instanceof \DateTimeInterface) {
+        if (! $sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 

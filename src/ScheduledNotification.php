@@ -45,7 +45,7 @@ class ScheduledNotification
                 $sendAt->format(DATE_ATOM)));
         }
 
-        if (!method_exists($notifiable, 'notify')) {
+        if (! method_exists($notifiable, 'notify')) {
             throw new SchedulingFailedException(sprintf('%s is not notifiable', get_class($notifiable)));
         }
 
@@ -56,11 +56,11 @@ class ScheduledNotification
         $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
-            'target_id'         => $targetId,
-            'target_type'       => $targetType,
+            'target_id' => $targetId,
+            'target_type' => $targetType,
             'notification_type' => get_class($notification),
-            'target'            => $serializer->serialize($notifiable),
-            'notification'      => $serializer->serialize($notification),
+            'target' => $serializer->serialize($notifiable),
+            'notification' => $serializer->serialize($notification),
             'send_at' => $sendAt,
             'meta' => $meta,
         ]));
@@ -88,7 +88,7 @@ class ScheduledNotification
 
     public static function findByTarget(object $notifiable): ?Collection
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             return null;
         }
 
@@ -118,11 +118,11 @@ class ScheduledNotification
         $modelClass = self::getScheduledNotificationModelClass();
         $query = $modelClass::query();
 
-        if (!$includeSent) {
+        if (! $includeSent) {
             $query->whereNull('sent_at');
         }
 
-        if (!$includeCanceled) {
+        if (! $includeCanceled) {
             $query->whereNull('cancelled_at');
         }
 
@@ -131,7 +131,7 @@ class ScheduledNotification
 
     public static function cancelByTarget(object $notifiable): int
     {
-        if (!$notifiable instanceof Model) {
+        if (! $notifiable instanceof Model) {
             throw new LaravelSnoozeException(
                 'Cannot cancel AnonymousNotifiable by instance. Use the `cancelAnonymousNotificationsByChannel` method instead');
         }
@@ -157,7 +157,7 @@ class ScheduledNotification
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
-                    'id'     => $model->id,
+                    'id' => $model->id,
                     'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
@@ -178,7 +178,7 @@ class ScheduledNotification
      * @throws NotificationAlreadySentException
      * @throws NotificationCancelledException
      */
-    public function reschedule( $sendAt, $force = false): self
+    public function reschedule($sendAt, $force = false): self
     {
         return new self($this->scheduleNotificationModel->reschedule($sendAt, $force));
     }
@@ -252,32 +252,32 @@ class ScheduledNotification
         return $this->scheduleNotificationModel->target_id;
     }
 
-    public function getSentAt(): ?CarbonImmutable
+    public function getSentAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->sent_at;
     }
 
-    public function getCancelledAt(): ?CarbonImmutable
+    public function getCancelledAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->cancelled_at;
     }
 
-    public function getRescheduledAt(): ?CarbonImmutable
+    public function getRescheduledAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->rescheduled_at;
     }
 
-    public function getSendAt(): CarbonImmutable
+    public function getSendAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->send_at;
     }
 
-    public function getCreatedAt(): CarbonImmutable
+    public function getCreatedAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->created_at;
     }
 
-    public function getUpdatedAt(): CarbonImmutable
+    public function getUpdatedAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->updated_at;
     }

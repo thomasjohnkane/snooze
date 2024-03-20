@@ -75,7 +75,7 @@ class SendCommandTest extends TestCase
             ->assertExitCode(0);
 
         Log::assertLogged(fn (LogEntry $log) => $log->level === 'error'
-            && $log->message === 'unserialize(): Error at offset 0 of 10 bytes'
+            && $log->message === 'Cannot Send. Unserialize Failed. (unserialize(): Error at offset 0 of 10 bytes)'
         );
     }
 }

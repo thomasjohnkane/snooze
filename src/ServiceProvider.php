@@ -45,7 +45,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             self::CONFIG_PATH => config_path('snooze.php'),
         ], 'config');
 
-        $this->loadMigrationsFrom(__DIR__.'/../migrations');
+        if (config('snooze.registerMigrations', true)) {
+            $this->loadMigrationsFrom(__DIR__.'/../migrations');
+        }
 
         if ($this->app->runningInConsole()) {
             $this->commands($this->commands);

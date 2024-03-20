@@ -68,10 +68,10 @@ class ScheduledNotification extends Model
 
         $notifiable->notify($notification);
 
-        event(new NotificationSent($this));
-
         $this->sent_at = Carbon::now();
         $this->save();
+
+        event(new NotificationSent($this));
     }
 
     /**

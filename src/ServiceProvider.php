@@ -27,7 +27,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     if (config('snooze.onOneServer', false)) {
                         $schedule->command('snooze:send')->{$frequency}()->onOneServer();
                     } else {
-                        $schedule->command('snooze:send')->{$frequency}();
+                        $schedule->command('snooze:send')->{$frequency}()->withoutOverlapping();
                     }
                 }
 
@@ -35,7 +35,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     if (config('snooze.onOneServer', false)) {
                         $schedule->command('snooze:prune')->daily()->onOneServer();
                     } else {
-                        $schedule->command('snooze:prune')->daily();
+                        $schedule->command('snooze:prune')->daily()->withoutOverlapping();
                     }
                 }
             });

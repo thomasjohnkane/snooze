@@ -4,3 +4,4 @@
 /composer.lock
 /tests/temp
 .phpunit.result.cache
+.phpunit.cache

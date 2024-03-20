@@ -15,13 +15,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
-
         //Check if snooze should schedule the commands automatically
         if (config('snooze.scheduleCommands', true)) {
-
             // Schedule base command to run every minute
             $this->app->booted(function () {
-
                 //Ensure the schedule is available if snooze is disabled but a prune age is set
                 $schedule = $this->app->make(Schedule::class);
 

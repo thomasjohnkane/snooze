@@ -8,6 +8,7 @@ use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\UnserializeFailedException;
 use Thomasjohnkane\Snooze\Serializer;
 
 class ScheduledNotification extends Model
@@ -17,27 +18,7 @@ class ScheduledNotification extends Model
     /** @var Serializer */
     protected $serializer;
 
-    protected $dates = [
-        'send_at',
-        'sent_at',
-        'rescheduled_at',
-        'cancelled_at',
-    ];
-
-    protected $fillable = [
-        'target_id',
-        'target_type',
-        'target',
-        'notification_type',
-        'notification',
-        'send_at',
-        'sent_at',
-        'rescheduled',
-        'cancelled',
-        'created_at',
-        'updated_at',
-        'meta',
-    ];
+    protected $guarded = [];
 
     protected $attributes = [
         'sent_at' => null,
@@ -47,6 +28,10 @@ class ScheduledNotification extends Model
 
     protected $casts = [
         'meta' => 'array',
+        'send_at' => 'immutable_datetime',
+        'sent_at' => 'immutable_datetime',
+        'rescheduled_at' => 'immutable_datetime',
+        'cancelled_at' => 'immutable_datetime',
     ];
 
     public function __construct(array $attributes = [])
@@ -67,8 +52,12 @@ class ScheduledNotification extends Model
             throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
         }
 
-        $notifiable = $this->serializer->unserialize($this->target);
-        $notification = $this->serializer->unserialize($this->notification);
+        try {
+            $notifiable = $this->serializer->unserialize($this->target);
+            $notification = $this->serializer->unserialize($this->notification);
+        } catch (\Exception $exception) {
+            throw new UnserializeFailedException('Cannot Send. Unserialize Failed.', 2, $exception);
+        }
 
         if ($this->shouldInterrupt($notification, $notifiable)) {
             $this->cancel();
@@ -86,17 +75,18 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param  object|null  $notification
-     * @param  object|null  $notifiable
+     * @param object|null $notification
+     * @param object|null $notifiable
+     *
      * @return bool
      */
     public function shouldInterrupt(?object $notification = null, ?object $notifiable = null): bool
     {
-        if (! $notification) {
+        if (!$notification) {
             $notification = $this->serializer->unserialize($this->notification);
         }
 
-        if (! $notifiable) {
+        if (!$notifiable) {
             $notifiable = $this->serializer->unserialize($this->target);
         }
 
@@ -123,8 +113,9 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param  \DateTimeInterface|string  $sendAt
-     * @param  bool  $force
+     * @param \DateTimeInterface|string $sendAt
+     * @param bool                      $force
+     *
      * @return self
      *
      * @throws NotificationAlreadySentException
@@ -132,7 +123,7 @@ class ScheduledNotification extends Model
      */
     public function reschedule($sendAt, $force = false): self
     {
-        if (! $sendAt instanceof \DateTimeInterface) {
+        if (!$sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 
@@ -156,12 +147,13 @@ class ScheduledNotification extends Model
     }
 
     /**
-     * @param  \DateTimeInterface|string  $sendAt
+     * @param \DateTimeInterface|string $sendAt
+     *
      * @return self
      */
     public function scheduleAgainAt($sendAt): self
     {
-        if (! $sendAt instanceof \DateTimeInterface) {
+        if (!$sendAt instanceof \DateTimeInterface) {
             $sendAt = Carbon::parse($sendAt);
         }
 

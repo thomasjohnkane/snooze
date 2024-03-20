@@ -26,11 +26,10 @@ class ScheduledNotification
     }
 
     /**
-     * @param object            $notifiable
-     * @param Notification      $notification
-     * @param DateTimeInterface $sendAt
-     * @param array             $meta
-     *
+     * @param  object  $notifiable
+     * @param  Notification  $notification
+     * @param  DateTimeInterface  $sendAt
+     * @param  array  $meta
      * @return self
      *
      * @throws SchedulingFailedException
@@ -57,11 +56,11 @@ class ScheduledNotification
         $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
-            'target_id' => $targetId,
-            'target_type' => $targetType,
+            'target_id'         => $targetId,
+            'target_type'       => $targetType,
             'notification_type' => get_class($notification),
-            'target' => $serializer->serialize($notifiable),
-            'notification' => $serializer->serialize($notification),
+            'target'            => $serializer->serialize($notifiable),
+            'notification'      => $serializer->serialize($notification),
             'send_at' => $sendAt,
             'meta' => $meta,
         ]));
@@ -103,7 +102,7 @@ class ScheduledNotification
         return self::collection($models);
     }
 
-    public static function findByMeta($key, $value): ?Collection
+    public static function findByMeta($key, $value): Collection
     {
         $modelClass = self::getScheduledNotificationModelClass();
 
@@ -158,7 +157,7 @@ class ScheduledNotification
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
-                    'id' => $model->id,
+                    'id'     => $model->id,
                     'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
@@ -172,9 +171,8 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
-     * @param bool                     $force
-     *
+     * @param  DateTimeInterface|string  $sendAt
+     * @param  bool  $force
      * @return self
      *
      * @throws NotificationAlreadySentException
@@ -186,8 +184,7 @@ class ScheduledNotification
     }
 
     /**
-     * @param DateTimeInterface|string $sendAt
-     *
+     * @param  DateTimeInterface|string  $sendAt
      * @return self
      */
     public function scheduleAgainAt($sendAt): self
@@ -286,7 +283,7 @@ class ScheduledNotification
     }
 
     /**
-     * @param null $key
+     * @param  null  $key
      */
     public function getMeta($key = null)
     {

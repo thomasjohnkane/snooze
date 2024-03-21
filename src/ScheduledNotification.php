@@ -302,6 +302,14 @@ class ScheduledNotification
         return $this->scheduleNotificationModel->shouldInterrupt();
     }
 
+    /**
+     * @return \DateTimeInterface|string|null
+     */
+    public function shouldRescheduleFor()
+    {
+        return $this->scheduleNotificationModel->shouldRescheduleFor();
+    }
+
     private static function getScheduledNotificationModelClass(): string
     {
         return config('snooze.model') ?? ScheduledNotificationModel::class;

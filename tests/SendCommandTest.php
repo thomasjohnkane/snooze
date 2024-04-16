@@ -3,10 +3,12 @@
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Thomasjohnkane\Snooze\Models\ScheduledNotification as ScheduledNotificationModel;
 use Thomasjohnkane\Snooze\ScheduledNotification;
+use Thomasjohnkane\Snooze\Tests\Models\CustomScheduledNotification;
 use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Notifications\TestNotification;
 use TiMacDonald\Log\LogEntry;
@@ -76,6 +78,23 @@ class SendCommandTest extends TestCase
 
         Log::assertLogged(fn (LogEntry $log) => $log->level === 'error'
             && $log->message === 'Cannot Send. Unserialize Failed. (unserialize(): Error at offset 0 of 10 bytes)'
+        );
+    }
+
+    public function testUsesCustomModelWhenSending()
+    {
+        Log::swap(new LogFake());
+        $target = User::find(1);
+
+        Config::set('snooze.model', CustomScheduledNotification::class);
+        $target->notifyAt(new TestNotification(User::find(2)), Carbon::now());
+
+        $this->artisan('snooze:send')
+            ->expectsOutput('Starting Sending Scheduled Notifications')
+            ->assertExitCode(0);
+
+        Log::assertLogged(fn (LogEntry $log) => $log->level === 'error'
+            && $log->message === 'Custom send method'
         );
     }
 }

@@ -15,13 +15,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
-
         //Check if snooze should schedule the commands automatically
         if (config('snooze.scheduleCommands', true)) {
-
             // Schedule base command to run every minute
             $this->app->booted(function () {
-
                 //Ensure the schedule is available if snooze is disabled but a prune age is set
                 $schedule = $this->app->make(Schedule::class);
 
@@ -30,7 +27,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     if (config('snooze.onOneServer', false)) {
                         $schedule->command('snooze:send')->{$frequency}()->onOneServer();
                     } else {
-                        $schedule->command('snooze:send')->{$frequency}();
+                        $schedule->command('snooze:send')->{$frequency}()->withoutOverlapping();
                     }
                 }
 
@@ -38,7 +35,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     if (config('snooze.onOneServer', false)) {
                         $schedule->command('snooze:prune')->daily()->onOneServer();
                     } else {
-                        $schedule->command('snooze:prune')->daily();
+                        $schedule->command('snooze:prune')->daily()->withoutOverlapping();
                     }
                 }
             });
@@ -48,7 +45,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             self::CONFIG_PATH => config_path('snooze.php'),
         ], 'config');
 
-        $this->loadMigrationsFrom(__DIR__.'/../migrations');
+        if (config('snooze.registerMigrations', true)) {
+            $this->loadMigrationsFrom(__DIR__.'/../migrations');
+        }
 
         if ($this->app->runningInConsole()) {
             $this->commands($this->commands);

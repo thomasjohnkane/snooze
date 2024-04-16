@@ -7,7 +7,8 @@ Laravel Snooze
     <img src="./snooze-logo-v1.png" />
 </p>
 
-[![Build Status](https://travis-ci.org/thomasjohnkane/snooze.svg?branch=master)](https://travis-ci.org/thomasjohnkane/snooze)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/thomasjohnkane/snooze/php.yml?branch=master
+)](https://github.com/thomasjohnkane/snooze/actions)
 [![styleci](https://styleci.io/repos/173246329/shield)](https://styleci.io/repos/173246329)
 
 [![Latest Stable Version](https://poser.pugx.org/thomasjohnkane/snooze/v/stable)](https://packagist.org/packages/thomasjohnkane/snooze)

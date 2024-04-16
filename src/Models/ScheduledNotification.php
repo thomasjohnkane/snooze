@@ -9,6 +9,7 @@ use Thomasjohnkane\Snooze\Events\NotificationRescheduled;
 use Thomasjohnkane\Snooze\Events\NotificationSent;
 use Thomasjohnkane\Snooze\Exception\NotificationAlreadySentException;
 use Thomasjohnkane\Snooze\Exception\NotificationCancelledException;
+use Thomasjohnkane\Snooze\Exception\UnserializeFailedException;
 use Thomasjohnkane\Snooze\Serializer;
 
 class ScheduledNotification extends Model
@@ -18,27 +19,7 @@ class ScheduledNotification extends Model
     /** @var Serializer */
     protected $serializer;
 
-    protected $dates = [
-        'send_at',
-        'sent_at',
-        'rescheduled_at',
-        'cancelled_at',
-    ];
-
-    protected $fillable = [
-        'target_id',
-        'target_type',
-        'target',
-        'notification_type',
-        'notification',
-        'send_at',
-        'sent_at',
-        'rescheduled',
-        'cancelled',
-        'created_at',
-        'updated_at',
-        'meta',
-    ];
+    protected $guarded = [];
 
     protected $attributes = [
         'sent_at' => null,
@@ -48,6 +29,10 @@ class ScheduledNotification extends Model
 
     protected $casts = [
         'meta' => 'array',
+        'send_at' => 'immutable_datetime',
+        'sent_at' => 'immutable_datetime',
+        'rescheduled_at' => 'immutable_datetime',
+        'cancelled_at' => 'immutable_datetime',
     ];
 
     public function __construct(array $attributes = [])
@@ -68,8 +53,12 @@ class ScheduledNotification extends Model
             throw new NotificationAlreadySentException('Cannot Send. Notification already sent.', 1);
         }
 
-        $notifiable = $this->serializer->unserialize($this->target);
-        $notification = $this->serializer->unserialize($this->notification);
+        try {
+            $notifiable = $this->serializer->unserialize($this->target);
+            $notification = $this->serializer->unserialize($this->notification);
+        } catch (\Exception $exception) {
+            throw new UnserializeFailedException(sprintf('Cannot Send. Unserialize Failed. (%s)', $exception->getMessage()), 2, $exception);
+        }
 
         if ($this->shouldInterrupt($notification, $notifiable)) {
             $this->cancel();
@@ -87,10 +76,10 @@ class ScheduledNotification extends Model
 
         $notifiable->notify($notification);
 
-        event(new NotificationSent($this));
-
         $this->sent_at = Carbon::now();
         $this->save();
+
+        event(new NotificationSent($this));
     }
 
     /**

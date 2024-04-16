@@ -4,7 +4,6 @@ namespace Thomasjohnkane\Snooze;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -43,7 +42,7 @@ class ScheduledNotification
     ): self {
         if ($sendAt <= Carbon::now()->subMinute()) {
             throw new SchedulingFailedException(sprintf('`send_at` must not be in the past: %s',
-                $sendAt->format(DATE_ISO8601)));
+                $sendAt->format(DATE_ATOM)));
         }
 
         if (! method_exists($notifiable, 'notify')) {
@@ -57,14 +56,26 @@ class ScheduledNotification
         $targetType = $notifiable instanceof AnonymousNotifiable ? AnonymousNotifiable::class : get_class($notifiable);
 
         return new self($modelClass::create([
-            'target_id'         => $targetId,
-            'target_type'       => $targetType,
+            'target_id' => $targetId,
+            'target_type' => $targetType,
             'notification_type' => get_class($notification),
-            'target'            => $serializer->serialize($notifiable),
-            'notification'      => $serializer->serialize($notification),
-            'send_at'           => $sendAt,
-            'meta'              => $meta,
+            'target' => $serializer->serialize($notifiable),
+            'notification' => $serializer->serialize($notification),
+            'send_at' => $sendAt,
+            'meta' => $meta,
         ]));
+    }
+
+    public static function getPendingNotifications(int $tolerance = null): \Illuminate\Database\Eloquent\Collection
+    {
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        return $modelClass::query()
+            ->whereNull('sent_at')
+            ->whereNull('cancelled_at')
+            ->where('send_at', '<=', Carbon::now())
+            ->where('send_at', '>=', Carbon::now()->subSeconds($tolerance ?? 60))
+            ->get();
     }
 
     public static function find(int $scheduledNotificationId): ?self
@@ -158,7 +169,7 @@ class ScheduledNotification
             ->get()
             ->map(function (ScheduledNotificationModel $model) use ($serializer) {
                 return [
-                    'id'     => $model->id,
+                    'id' => $model->id,
                     'routes' => $serializer->unserialize($model->target)->routes,
                 ];
             })
@@ -253,41 +264,32 @@ class ScheduledNotification
         return $this->scheduleNotificationModel->target_id;
     }
 
-    public function getSentAt()
+    public function getSentAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->sent_at;
     }
 
-    public function getCancelledAt()
+    public function getCancelledAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->cancelled_at;
     }
 
-    public function getRescheduledAt()
+    public function getRescheduledAt(): Carbon|CarbonImmutable|null
     {
         return $this->scheduleNotificationModel->rescheduled_at;
     }
 
-    /**
-     * @return Carbon|CarbonImmutable
-     */
-    public function getSendAt(): CarbonInterface
+    public function getSendAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->send_at;
     }
 
-    /**
-     * @return Carbon|CarbonImmutable
-     */
-    public function getCreatedAt(): CarbonInterface
+    public function getCreatedAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->created_at;
     }
 
-    /**
-     * @return Carbon|CarbonImmutable
-     */
-    public function getUpdatedAt(): CarbonInterface
+    public function getUpdatedAt(): Carbon|CarbonImmutable
     {
         return $this->scheduleNotificationModel->updated_at;
     }

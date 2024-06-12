@@ -169,7 +169,7 @@ public function shouldInterrupt($notifiable) {
 If this method is not present on your notification, the notification will *not* be interrupted. Consider creating a shouldInterupt trait if you'd like to repeat conditional logic on groups of notifications.
 
 
-**Setting Next Schedult**
+**Setting Next Schedule**
 
 If you want to send a reoccuring notification, you can add the `nextSchedule()` method to any notification. This method will be used to tell snooze if and when to send another notifiaction.
 

@@ -181,7 +181,7 @@ public function nextSchedule($notifiable) {
 }
 ```
 
-If this method is not present on your notification, The time it returns will be used to schedule a notification again for that particular notification.
+If this method is present on your notification, The time it returns will be used to schedule a notification again for that particular notification.
 
 **Scheduled Notification Meta Information**
 

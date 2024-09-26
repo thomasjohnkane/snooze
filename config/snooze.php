@@ -56,4 +56,11 @@ return [
      * Should snooze automatically register the migrations
      */
     'registerMigrations' => env('SCHEDULED_NOTIFICATIONS_REGISTER_MIGRATIONS', true),
+
+    /*
+     * Set true if you want delete notification when
+     * any model missing during unserialization
+     * otherwise an exception will thrown
+     */
+    'deleteWhenMissingModels' => env('SCHEDULED_NOTIFICATIONS_DELETE_WHEN_MISSING_MODELS', false),
 ];

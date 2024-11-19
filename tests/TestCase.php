@@ -10,6 +10,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use Thomasjohnkane\Snooze\Facades\Snooze;
 use Thomasjohnkane\Snooze\ServiceProvider;
 use Thomasjohnkane\Snooze\Tests\Models\User;
+use Thomasjohnkane\Snooze\Tests\Models\Child;
 
 class TestCase extends Orchestra
 {
@@ -35,7 +36,7 @@ class TestCase extends Orchestra
 
     public function getTempDirectory($suffix = '')
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'temp'.($suffix == '' ? '' : DIRECTORY_SEPARATOR.$suffix);
+        return __DIR__ . DIRECTORY_SEPARATOR . 'temp' . ($suffix == '' ? '' : DIRECTORY_SEPARATOR . $suffix);
     }
 
     protected function initializeDirectory($directory)
@@ -56,7 +57,7 @@ class TestCase extends Orchestra
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
-            'database' => $this->getTempDirectory().'/database.sqlite',
+            'database' => $this->getTempDirectory() . '/database.sqlite',
             'prefix' => '',
         ]);
 
@@ -68,7 +69,7 @@ class TestCase extends Orchestra
      */
     protected function setUpDatabase($app)
     {
-        file_put_contents($this->getTempDirectory().'/database.sqlite', null);
+        file_put_contents($this->getTempDirectory() . '/database.sqlite', null);
 
         $this->artisan('migrate')->run();
 
@@ -81,14 +82,28 @@ class TestCase extends Orchestra
             $table->timestamps();
         });
 
+        $app['db']->connection()->getSchemaBuilder()->create('children', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
+        });
+
         foreach (range(1, 5) as $index) {
-            User::create(
-                [
-                    'name' => "user{$index}",
-                    'email' => "user{$index}@example.com",
-                    'password' => "password{$index}",
-                ]
-            );
+            $user = User::create([
+                'name' => "user{$index}",
+                'email' => "user{$index}@example.com",
+                'password' => "password{$index}",
+            ]);
+
+            // Create two children for each user
+            foreach (range(1, 2) as $childIndex) {
+                Child::create([
+                    'name' => "child{$childIndex}_user{$index}",
+                    'user_id' => $user->id,
+                ]);
+            }
         }
     }
 }

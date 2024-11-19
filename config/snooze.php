@@ -56,4 +56,9 @@ return [
      * Should snooze automatically register the migrations
      */
     'registerMigrations' => env('SCHEDULED_NOTIFICATIONS_REGISTER_MIGRATIONS', true),
+
+    /*
+     * Will not save loaded relationships to the database when serializing
+     */
+    'doNotLoadRelationsOnSerialize' => env('DO_NOT_LOAD_RELATIONS_ON_SERIALIZE', false)
 ];

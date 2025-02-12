@@ -36,7 +36,7 @@ class TestCase extends Orchestra
 
     public function getTempDirectory($suffix = '')
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'temp' . ($suffix == '' ? '' : DIRECTORY_SEPARATOR . $suffix);
+        return __DIR__.DIRECTORY_SEPARATOR.'temp'.($suffix == '' ? '' : DIRECTORY_SEPARATOR.$suffix);
     }
 
     protected function initializeDirectory($directory)
@@ -57,7 +57,7 @@ class TestCase extends Orchestra
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
-            'database' => $this->getTempDirectory() . '/database.sqlite',
+            'database' => $this->getTempDirectory().'/database.sqlite',
             'prefix' => '',
         ]);
 
@@ -69,7 +69,7 @@ class TestCase extends Orchestra
      */
     protected function setUpDatabase($app)
     {
-        file_put_contents($this->getTempDirectory() . '/database.sqlite', null);
+        file_put_contents($this->getTempDirectory().'/database.sqlite', null);
 
         $this->artisan('migrate')->run();
 

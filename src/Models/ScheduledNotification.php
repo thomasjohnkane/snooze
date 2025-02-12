@@ -4,6 +4,8 @@ namespace Thomasjohnkane\Snooze\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Thomasjohnkane\Snooze\Events\NotificationDeleted;
 use Thomasjohnkane\Snooze\Events\NotificationInterrupted;
 use Thomasjohnkane\Snooze\Events\NotificationRescheduled;
 use Thomasjohnkane\Snooze\Events\NotificationSent;
@@ -56,6 +58,15 @@ class ScheduledNotification extends Model
         try {
             $notifiable = $this->serializer->unserialize($this->target);
             $notification = $this->serializer->unserialize($this->notification);
+        } catch(ModelNotFoundException $e) {
+            if (config('snooze.deleteWhenMissingModels', false) === true) {
+                $this->delete();
+                event(new NotificationDeleted($this));
+
+                return;
+            }
+
+            throw $e;
         } catch (\Exception $exception) {
             throw new UnserializeFailedException(sprintf('Cannot Send. Unserialize Failed. (%s)', $exception->getMessage()), 2, $exception);
         }

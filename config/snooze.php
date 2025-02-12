@@ -61,4 +61,11 @@ return [
      * Will not save loaded relationships to the database when serializing
      */
     'doNotLoadRelationsOnSerialize' => env('DO_NOT_LOAD_RELATIONS_ON_SERIALIZE', false)
+
+    /*
+     * Set true if you want delete notification when
+     * any model missing during unserialization
+     * otherwise an exception will thrown
+     */
+    'deleteWhenMissingModels' => env('SCHEDULED_NOTIFICATIONS_DELETE_WHEN_MISSING_MODELS', false),
 ];

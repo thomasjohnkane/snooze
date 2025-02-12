@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Thomasjohnkane\Snooze\Tests;
 
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\PostgresConnection;
 use Mockery;
 use Thomasjohnkane\Snooze\Serializer;
 use Thomasjohnkane\Snooze\Tests\Models\User;

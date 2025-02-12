@@ -60,7 +60,7 @@ return [
     /*
      * Will not save loaded relationships to the database when serializing
      */
-    'doNotLoadRelationsOnSerialize' => env('DO_NOT_LOAD_RELATIONS_ON_SERIALIZE', false)
+    'doNotLoadRelationsOnSerialize' => env('DO_NOT_LOAD_RELATIONS_ON_SERIALIZE', false),
 
     /*
      * Set true if you want delete notification when

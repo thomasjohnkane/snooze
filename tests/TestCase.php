@@ -9,8 +9,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Thomasjohnkane\Snooze\Facades\Snooze;
 use Thomasjohnkane\Snooze\ServiceProvider;
-use Thomasjohnkane\Snooze\Tests\Models\User;
 use Thomasjohnkane\Snooze\Tests\Models\Child;
+use Thomasjohnkane\Snooze\Tests\Models\User;
 
 class TestCase extends Orchestra
 {

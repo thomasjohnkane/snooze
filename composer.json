@@ -20,7 +20,7 @@
         "illuminate/support": "^10.0 | ^11.0 | ^12.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0 | ^9.0",
+        "orchestra/testbench": "^8.0 | ^9.0 | ^10.0",
         "phpunit/phpunit": "^10.0 | ^11.0",
         "timacdonald/log-fake": "^2"
     },

@@ -66,7 +66,7 @@ class ScheduledNotification
         ]));
     }
 
-    public static function getPendingNotifications(int $tolerance = null): \Illuminate\Database\Eloquent\Collection
+    public static function getPendingNotifications(?int $tolerance = null): \Illuminate\Database\Eloquent\Collection
     {
         $modelClass = self::getScheduledNotificationModelClass();
 
